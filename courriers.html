@@ -1,0 +1,1532 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Gestion des Courriers · Secrétariat Technique ITIE-RDC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --blue: #1878d1;
+    --blue-strong: #1466b8;
+    --blue-light: #2b8ae0;
+    --blue-pale: #e3eefb;
+    --navy: #12395e;
+    --red: #ce1126;
+    --yellow: #ffc107;
+    --yellow-deep: #f5b301;
+    --bg: #f2f6fb;
+    --card: #ffffff;
+    --muted: #5b7186;
+    --line: #dde7f0;
+    --ok: #1e8e5a;
+    --warn: #d97706;
+    --danger: #d3202f;
+    --radius: 14px;
+    --shadow: 0 4px 18px rgba(18,57,94,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Public Sans', 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--navy);
+    line-height: 1.55;
+    min-height: 100vh;
+  }
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+  button { font-family: inherit; cursor: pointer; }
+  input, select, textarea { font-family: inherit; font-size: 0.9rem; color: var(--navy); }
+
+  /* ═══ BARRE DE NAVIGATION (charte : fond blanc, souligné jaune) ═══ */
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    background: #fff;
+    box-shadow: 0 2px 10px rgba(18,57,94,0.08);
+  }
+  .topbar-inner {
+    max-width: 1440px; margin: 0 auto;
+    padding: 0.7rem 2rem;
+    display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;
+  }
+  .logo { display: flex; align-items: baseline; gap: 0.15rem; text-decoration: none; line-height: 1; }
+  .logo .l-itie { font-weight: 900; font-style: italic; font-size: 1.7rem; color: var(--blue); letter-spacing: -0.02em; }
+  .logo .l-rdc  { font-weight: 900; font-style: italic; font-size: 1.7rem; color: var(--red); letter-spacing: -0.02em; }
+  .logo .l-loupe { font-size: 1.05rem; margin-left: 0.1rem; }
+  .logo-block { display: flex; flex-direction: column; }
+  .logo-block small { font-size: 0.58rem; color: var(--muted); letter-spacing: 0.02em; margin-top: 0.15rem; }
+  .nav-links { display: flex; gap: 0.4rem; margin-left: auto; flex-wrap: wrap; }
+  .nav-links button {
+    background: none; border: none;
+    padding: 0.55rem 0.9rem 0.5rem;
+    font-size: 0.92rem; font-weight: 600; color: var(--navy);
+    border-bottom: 3px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .nav-links button:hover { color: var(--blue); }
+  .nav-links button.active { color: var(--blue); border-bottom-color: var(--yellow); }
+  .nav-links .badge {
+    background: var(--red); color: #fff; border-radius: 10px;
+    font-size: 0.62rem; padding: 0.08rem 0.42rem; margin-left: 0.3rem; vertical-align: 2px;
+  }
+
+  /* ═══ BOUTONS (charte : pilule jaune / bleu) ═══ */
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    border: none; border-radius: 8px;
+    padding: 0.6rem 1.15rem;
+    font-size: 0.86rem; font-weight: 700;
+    transition: all 0.15s;
+  }
+  .btn-yellow { background: var(--yellow); color: var(--navy); box-shadow: 0 3px 10px rgba(245,179,1,0.35); }
+  .btn-yellow:hover { background: var(--yellow-deep); transform: translateY(-1px); }
+  .btn-blue { background: var(--blue); color: #fff; }
+  .btn-blue:hover { background: var(--blue-strong); }
+  .btn-white { background: #fff; color: var(--blue); border: 1px solid var(--line); }
+  .btn-white:hover { border-color: var(--blue); }
+  .btn-danger { background: #fff; color: var(--danger); border: 1px solid rgba(211,32,47,0.35); }
+  .btn-danger:hover { background: rgba(211,32,47,0.06); }
+  .btn-sm { padding: 0.35rem 0.7rem; font-size: 0.76rem; border-radius: 7px; }
+
+  /* ═══ HERO BLEU (charte : dégradé + carte chiffres clés) ═══ */
+  .hero {
+    background: linear-gradient(135deg, #1466b8 0%, #1d7fd6 55%, #2b8ae0 100%);
+    color: #fff;
+    position: relative; overflow: hidden;
+  }
+  .hero::after {
+    content: ''; position: absolute; inset: 0;
+    background-image: radial-gradient(rgba(255,255,255,0.14) 1.5px, transparent 1.5px);
+    background-size: 34px 34px; opacity: 0.5; pointer-events: none;
+  }
+  .hero-inner {
+    max-width: 1440px; margin: 0 auto; padding: 2.6rem 2rem 2.8rem;
+    display: grid; grid-template-columns: 1.25fr 1fr; gap: 2.5rem; align-items: center;
+    position: relative; z-index: 1;
+  }
+  @media (max-width: 980px) { .hero-inner { grid-template-columns: 1fr; } }
+  .hero h1 { font-size: clamp(1.9rem, 4vw, 3rem); font-weight: 900; line-height: 1.12; letter-spacing: -0.015em; }
+  .hero h1 .accent-bar { display: inline-block; width: 8px; height: 0.85em; background: var(--yellow); margin-right: 0.45rem; vertical-align: -0.08em; border-radius: 2px; }
+  .hero p { margin-top: 1rem; font-size: 1.02rem; opacity: 0.94; max-width: 56ch; }
+  .hero-cta { display: flex; gap: 0.8rem; margin-top: 1.6rem; flex-wrap: wrap; }
+  .keycard {
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: var(--radius);
+    padding: 1.4rem 1.6rem;
+    backdrop-filter: blur(4px);
+  }
+  .keycard h3 { font-size: 1.12rem; font-weight: 800; margin-bottom: 0.7rem; }
+  .keycard .krow {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+    padding: 0.62rem 0; border-bottom: 1px solid rgba(255,255,255,0.22);
+    font-size: 0.92rem;
+  }
+  .keycard .krow:last-child { border-bottom: none; }
+  .keycard .kval { color: var(--yellow); font-weight: 800; font-size: 1.15rem; white-space: nowrap; }
+
+  /* ═══ STRUCTURE ═══ */
+  .wrap { max-width: 1440px; margin: 0 auto; padding: 2rem 2rem 4rem; }
+  .view { display: none; }
+  .view.active { display: block; }
+  .eyebrow {
+    font-size: 0.74rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--blue); margin-bottom: 0.4rem;
+  }
+  .view-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .view-head h2 { font-size: 1.85rem; font-weight: 900; letter-spacing: -0.015em; line-height: 1.15; }
+  .view-head p { color: var(--muted); font-size: 0.9rem; max-width: 62ch; margin-top: 0.35rem; }
+  .head-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+
+  /* ═══ KPI ═══ */
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(195px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+  .kpi {
+    background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 1.15rem 1.3rem; border-left: 5px solid var(--blue);
+  }
+  .kpi.k-yellow { border-left-color: var(--yellow); }
+  .kpi.k-red { border-left-color: var(--red); }
+  .kpi.k-green { border-left-color: var(--ok); }
+  .kpi.k-navy { border-left-color: var(--navy); }
+  .kpi-num { font-size: 2.05rem; font-weight: 900; line-height: 1.1; letter-spacing: -0.02em; }
+  .kpi-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.09em; color: var(--muted); font-weight: 700; margin-top: 0.25rem; }
+  .kpi-sub { font-size: 0.76rem; color: var(--muted); margin-top: 0.3rem; }
+
+  .panel-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 1.2rem; align-items: start; }
+  @media (max-width: 980px) { .panel-grid { grid-template-columns: 1fr; } }
+  .panel { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.3rem 1.4rem; margin-bottom: 1.2rem; }
+  .panel h3 { font-size: 1.05rem; font-weight: 800; margin-bottom: 0.9rem; display: flex; justify-content: space-between; align-items: baseline; gap: 0.6rem; }
+  .panel h3 .hint { font-weight: 500; font-size: 0.72rem; color: var(--muted); }
+
+  /* Graphique en barres */
+  .chart { display: flex; align-items: flex-end; gap: 6px; height: 150px; padding-top: 0.4rem; }
+  .chart .col { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 3px; height: 100%; min-width: 0; }
+  .chart .bars { display: flex; align-items: flex-end; gap: 2px; width: 100%; flex: 1; justify-content: center; }
+  .chart .bar { width: 40%; max-width: 16px; border-radius: 3px 3px 0 0; min-height: 2px; }
+  .chart .bar.in { background: var(--blue); }
+  .chart .bar.out { background: var(--yellow); }
+  .chart .lbl { font-size: 0.6rem; color: var(--muted); text-transform: uppercase; }
+  .legend { display: flex; gap: 1.1rem; font-size: 0.74rem; color: var(--muted); margin-top: 0.6rem; }
+  .legend span::before { content: ''; display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 0.35rem; vertical-align: -1px; }
+  .legend .li-in::before { background: var(--blue); }
+  .legend .li-out::before { background: var(--yellow); }
+
+  .mini-list { list-style: none; }
+  .mini-list li {
+    display: flex; justify-content: space-between; gap: 0.8rem; align-items: baseline;
+    padding: 0.52rem 0; border-bottom: 1px solid var(--line); font-size: 0.85rem; cursor: pointer;
+  }
+  .mini-list li:last-child { border-bottom: none; }
+  .mini-list li:hover .obj { color: var(--blue); text-decoration: underline; }
+  .mini-list .obj { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mini-list .meta { font-size: 0.72rem; color: var(--muted); white-space: nowrap; }
+  .empty-note { color: var(--muted); font-size: 0.84rem; font-style: italic; padding: 0.4rem 0; }
+
+  .svc-row { display: flex; align-items: center; gap: 0.7rem; padding: 0.34rem 0; font-size: 0.82rem; }
+  .svc-row .svc-name { width: 42%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .svc-row .svc-bar { flex: 1; height: 9px; background: var(--blue-pale); border-radius: 5px; overflow: hidden; }
+  .svc-row .svc-fill { height: 100%; background: linear-gradient(90deg, var(--blue), var(--blue-light)); border-radius: 5px; }
+  .svc-row .svc-n { font-family: 'IBM Plex Mono'; font-size: 0.72rem; color: var(--muted); width: 2.2rem; text-align: right; }
+
+  /* ═══ ALERTE ═══ */
+  .alert-strip {
+    background: #fdecec; border: 1px solid rgba(206,17,38,0.3);
+    border-left: 5px solid var(--red); border-radius: 10px;
+    padding: 0.8rem 1.1rem; margin-bottom: 1.3rem; font-size: 0.87rem;
+    display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap;
+  }
+  .alert-strip strong { color: var(--red); }
+
+  /* ═══ FILTRES ═══ */
+  .filters {
+    display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center;
+    background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 0.8rem 1rem; margin-bottom: 1.1rem;
+  }
+  .filters input[type="search"] { flex: 1 1 230px; }
+  .filters input, .filters select {
+    padding: 0.5rem 0.65rem; border: 1px solid var(--line); border-radius: 8px;
+    background: var(--bg); font-size: 0.84rem;
+  }
+  .filters input:focus, .filters select:focus { outline: 2px solid rgba(24,120,209,0.35); border-color: var(--blue); }
+
+  /* ═══ TABLEAUX ═══ */
+  .table-wrap { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); overflow-x: auto; }
+  table.registry { width: 100%; border-collapse: collapse; font-size: 0.84rem; min-width: 880px; }
+  table.registry th {
+    text-align: left; font-size: 0.67rem; text-transform: uppercase; letter-spacing: 0.09em;
+    color: #fff; background: var(--navy); padding: 0.65rem 0.85rem; white-space: nowrap;
+    cursor: pointer; user-select: none;
+  }
+  table.registry th:first-child { border-top-left-radius: var(--radius); }
+  table.registry th:last-child { border-top-right-radius: var(--radius); }
+  table.registry th .arrow { opacity: 0.55; font-size: 0.6rem; }
+  table.registry td { padding: 0.66rem 0.85rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  table.registry tbody tr { cursor: pointer; transition: background 0.12s; }
+  table.registry tbody tr:hover { background: var(--blue-pale); }
+  table.registry tr.overdue td:first-child { box-shadow: inset 4px 0 0 var(--red); }
+  .num-cell { font-family: 'IBM Plex Mono'; font-weight: 600; font-size: 0.78rem; white-space: nowrap; }
+  .obj-cell { max-width: 360px; }
+  .obj-cell .obj-main { font-weight: 600; }
+  .obj-cell .obj-sub { font-size: 0.72rem; color: var(--muted); margin-top: 0.1rem; }
+  td.nowrap { white-space: nowrap; }
+
+  .chip {
+    display: inline-block; padding: 0.15rem 0.6rem; border-radius: 20px;
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.02em; white-space: nowrap;
+  }
+  .chip.st-enregistre { background: var(--blue-pale); color: var(--blue-strong); }
+  .chip.st-impute { background: #ede7fb; color: #6d4fc4; }
+  .chip.st-traitement { background: #fff3cd; color: #9a7500; }
+  .chip.st-traite { background: #ddf3e8; color: var(--ok); }
+  .chip.st-archive { background: #e7ecf1; color: #56708a; }
+  .chip.st-sans-suite { background: #e7ecf1; color: #56708a; text-decoration: line-through; }
+  .chip.st-redaction { background: var(--blue-pale); color: var(--blue-strong); }
+  .chip.st-signe { background: #fff3cd; color: #9a7500; }
+  .chip.st-expedie { background: #ddf3e8; color: var(--ok); }
+  .chip.pr-normale { background: #e7ecf1; color: #46607a; }
+  .chip.pr-urgente { background: #fde8d2; color: var(--warn); }
+  .chip.pr-tres-urgente { background: #fdd9dc; color: var(--danger); }
+  .chip.late { background: var(--red); color: #fff; }
+  .chip.soon { background: #fde8d2; color: var(--warn); }
+  .chip.conf { background: var(--navy); color: var(--yellow); }
+  .chip.sens-in { background: var(--blue-pale); color: var(--blue-strong); }
+  .chip.sens-out { background: #fff3cd; color: #9a7500; }
+
+  .table-foot { display: flex; justify-content: space-between; align-items: center; padding: 0.7rem 1rem; font-size: 0.78rem; color: var(--muted); flex-wrap: wrap; gap: 0.6rem; }
+
+  /* ═══ MODALES ═══ */
+  .modal-backdrop {
+    display: none; position: fixed; inset: 0; z-index: 300;
+    background: rgba(18,57,94,0.5); backdrop-filter: blur(3px);
+    align-items: flex-start; justify-content: center; overflow-y: auto; padding: 3vh 1rem;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal {
+    background: #fff; border-radius: 16px; width: 100%; max-width: 800px;
+    box-shadow: 0 24px 70px rgba(18,57,94,0.4);
+    margin-bottom: 3vh; overflow: hidden;
+  }
+  .modal-head {
+    padding: 1.25rem 1.6rem 1rem;
+    background: linear-gradient(135deg, #1466b8, #2b8ae0);
+    color: #fff;
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;
+  }
+  .modal-head h2 { font-size: 1.3rem; font-weight: 800; }
+  .modal-head .sub { font-size: 0.8rem; opacity: 0.9; margin-top: 0.15rem; }
+  .modal-close { background: rgba(255,255,255,0.15); border: none; border-radius: 8px; font-size: 1.3rem; line-height: 1; color: #fff; padding: 0.3rem 0.6rem; }
+  .modal-close:hover { background: var(--red); }
+  .modal-body { padding: 1.2rem 1.6rem 1.6rem; }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem 1.1rem; }
+  .form-grid .full { grid-column: 1 / -1; }
+  @media (max-width: 640px) { .form-grid { grid-template-columns: 1fr; } }
+  .field label { display: block; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--navy); margin-bottom: 0.3rem; }
+  .field label .req { color: var(--red); }
+  .field input, .field select, .field textarea {
+    width: 100%; padding: 0.58rem 0.7rem; border: 1px solid var(--line); border-radius: 8px;
+    background: var(--bg); font-size: 0.88rem;
+  }
+  .field textarea { resize: vertical; min-height: 64px; }
+  .field input:focus, .field select:focus, .field textarea:focus { outline: 2px solid rgba(24,120,209,0.35); border-color: var(--blue); background: #fff; }
+  .field .note { font-size: 0.7rem; color: var(--muted); margin-top: 0.22rem; }
+  .check-inline { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; padding-top: 1.5rem; }
+  .check-inline input { width: auto; }
+  .form-actions { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 1.3rem; flex-wrap: wrap; }
+  .sens-switch { display: flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin-bottom: 1.1rem; }
+  .sens-switch button { flex: 1; padding: 0.65rem; border: none; background: #fff; font-weight: 800; font-size: 0.84rem; letter-spacing: 0.03em; color: var(--muted); }
+  .sens-switch button.on-in { background: var(--blue); color: #fff; }
+  .sens-switch button.on-out { background: var(--yellow); color: var(--navy); }
+
+  /* ═══ ASSISTANT INTELLIGENT ═══ */
+  .smart-bar {
+    display: none;
+    background: linear-gradient(135deg, #eef6ff, #e8f2fd);
+    border: 1px solid rgba(24,120,209,0.3);
+    border-radius: 10px;
+    padding: 0.7rem 0.9rem; margin-bottom: 1rem;
+    font-size: 0.82rem;
+  }
+  .smart-bar.on { display: block; }
+  .smart-bar .smart-title { font-weight: 800; color: var(--blue-strong); display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.3rem; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; }
+  .smart-bar .sug { display: inline-flex; align-items: center; gap: 0.4rem; background: #fff; border: 1px solid var(--line); border-radius: 20px; padding: 0.22rem 0.4rem 0.22rem 0.75rem; margin: 0.18rem 0.3rem 0.18rem 0; font-size: 0.78rem; }
+  .smart-bar .sug b { color: var(--blue-strong); }
+  .smart-bar .sug button { background: var(--yellow); border: none; border-radius: 14px; padding: 0.12rem 0.6rem; font-size: 0.7rem; font-weight: 800; color: var(--navy); }
+  .smart-bar .dup { color: var(--danger); font-weight: 600; margin-top: 0.35rem; }
+  .smart-bar .dup .link-rep { color: var(--danger); }
+
+  /* ═══ FICHE DÉTAIL ═══ */
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem 1.4rem; margin: 0.9rem 0; }
+  .detail-grid .full { grid-column: 1 / -1; }
+  @media (max-width: 640px) { .detail-grid { grid-template-columns: 1fr; } }
+  .dt { font-size: 0.67rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 800; }
+  .dd { font-size: 0.92rem; margin-top: 0.12rem; }
+  .dd.big { font-weight: 700; }
+  .status-line { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin: 0.8rem 0 0.4rem; }
+  .hist { margin-top: 1.1rem; border-top: 1px dashed var(--line); padding-top: 0.9rem; }
+  .hist h4 { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.09em; color: var(--muted); margin-bottom: 0.5rem; }
+  .hist ul { list-style: none; }
+  .hist li { font-size: 0.79rem; padding: 0.22rem 0; }
+  .hist li .h-date { font-family: 'IBM Plex Mono'; font-size: 0.7rem; color: var(--muted); margin-right: 0.6rem; }
+  .link-rep { color: var(--blue); font-weight: 700; cursor: pointer; text-decoration: underline; }
+
+  /* ═══ JOURNAL / PARAMÈTRES ═══ */
+  .journal-list { list-style: none; background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+  .journal-list li { padding: 0.68rem 1.1rem; border-bottom: 1px solid var(--line); font-size: 0.84rem; display: flex; gap: 1rem; align-items: baseline; }
+  .journal-list li:last-child { border-bottom: none; }
+  .journal-list .j-date { font-family: 'IBM Plex Mono'; font-size: 0.72rem; color: var(--muted); white-space: nowrap; }
+  .svc-manage { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.6rem; }
+  .svc-tag { background: var(--blue-pale); border-radius: 20px; padding: 0.28rem 0.85rem; font-size: 0.8rem; font-weight: 600; color: var(--blue-strong); display: inline-flex; align-items: center; gap: 0.45rem; }
+  .svc-tag button { background: none; border: none; color: var(--red); font-weight: 800; font-size: 0.9rem; line-height: 1; }
+  .add-svc { display: flex; gap: 0.5rem; margin-top: 0.9rem; }
+  .add-svc input { flex: 1; padding: 0.55rem 0.7rem; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); }
+
+  /* ═══ TOAST ═══ */
+  #toast {
+    position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(130%);
+    background: var(--navy); color: #fff; padding: 0.75rem 1.4rem; border-radius: 10px;
+    border-left: 5px solid var(--yellow); font-size: 0.86rem; z-index: 500;
+    transition: transform 0.25s ease; max-width: 90vw; box-shadow: 0 10px 30px rgba(18,57,94,0.35);
+  }
+  #toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ═══ IMPRESSION ═══ */
+  #print-area { display: none; }
+  @media print {
+    body > *:not(#print-area) { display: none !important; }
+    body { background: #fff; }
+    #print-area { display: block; padding: 1.5cm 1cm; font-size: 11pt; color: #000; }
+    #print-area h1 { font-size: 15pt; text-align: center; margin-bottom: 0.2cm; }
+    #print-area .p-head { text-align: center; margin-bottom: 0.7cm; }
+    #print-area .p-head .p-org { font-weight: 800; font-size: 10pt; letter-spacing: 0.05em; text-transform: uppercase; }
+    #print-area .p-head .p-sub { font-size: 9pt; color: #333; }
+    #print-area .p-rule { border: none; border-top: 2.5pt solid #000; margin: 0.25cm 0 0.5cm; }
+    #print-area table { width: 100%; border-collapse: collapse; font-size: 9pt; }
+    #print-area table th, #print-area table td { border: 0.75pt solid #000; padding: 4pt 6pt; text-align: left; vertical-align: top; }
+    #print-area table th { background: #eee; text-transform: uppercase; font-size: 7.5pt; letter-spacing: 0.05em; }
+    #print-area .p-sign { display: flex; justify-content: space-between; margin-top: 1.4cm; font-size: 10pt; }
+    #print-area .p-sign div { width: 40%; text-align: center; }
+    #print-area .p-sign .sig-line { margin-top: 1.6cm; border-top: 0.75pt solid #000; padding-top: 3pt; font-size: 8.5pt; }
+    #print-area .p-meta { font-size: 9pt; margin-bottom: 0.4cm; }
+    #print-area .kv { margin: 0.12cm 0; }
+    #print-area .kv b { display: inline-block; min-width: 4.2cm; text-transform: uppercase; font-size: 8.5pt; }
+  }
+
+  @media (max-width: 700px) {
+    .wrap { padding: 1.2rem 1rem 3rem; }
+    .topbar-inner { padding: 0.6rem 1rem; gap: 0.8rem; }
+    .hero-inner { padding: 1.8rem 1rem 2rem; }
+    .view-head h2 { font-size: 1.45rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ NAVIGATION ═══════════ -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="logo" href="index.html" title="Retour au portail">
+      <span class="logo-block">
+        <span><span class="l-itie">iTiE</span><span class="l-rdc">RDC</span><span class="l-loupe">🔍</span></span>
+        <small>Initiative pour la Transparence des Industries Extractives</small>
+      </span>
+    </a>
+    <nav class="nav-links" role="tablist">
+      <button class="active" data-view="dashboard" onclick="App.show('dashboard')">Accueil</button>
+      <button data-view="entrants" onclick="App.show('entrants')">Courriers entrants <span class="badge" id="badge-in" hidden></span></button>
+      <button data-view="sortants" onclick="App.show('sortants')">Courriers sortants</button>
+      <button data-view="journal" onclick="App.show('journal')">Journal</button>
+      <button data-view="parametres" onclick="App.show('parametres')">Paramètres</button>
+    </nav>
+  </div>
+</header>
+
+<!-- ═══════════ HERO (charte) ═══════════ -->
+<section class="hero" id="hero">
+  <div class="hero-inner">
+    <div>
+      <h1><span class="accent-bar"></span>Gestion intelligente des courriers du Secrétariat Technique</h1>
+      <p>De l'enregistrement à l'archivage : l'application trace chaque correspondance entrante et sortante, impute automatiquement les services compétents, surveille les échéances et produit registres et bordereaux officiels.</p>
+      <div class="hero-cta">
+        <button class="btn btn-yellow" onclick="App.openForm('entrant')">+ Enregistrer un courrier entrant</button>
+        <button class="btn btn-white" onclick="App.openForm('sortant')">+ Courrier sortant</button>
+      </div>
+    </div>
+    <div class="keycard">
+      <h3>Chiffres clés du registre</h3>
+      <div id="keycard-rows"></div>
+    </div>
+  </div>
+</section>
+
+<main class="wrap">
+
+  <!-- ══════════ TABLEAU DE BORD ══════════ -->
+  <section class="view active" id="view-dashboard">
+    <div class="view-head">
+      <div>
+        <div class="eyebrow">Tableau de bord · Registre des correspondances</div>
+        <h2>Ce que le registre dit du courrier</h2>
+        <p>Flux, imputations et délais de traitement — toutes les valeurs proviennent directement du registre chronologique.</p>
+      </div>
+      <div class="head-actions">
+        <button class="btn btn-white" onclick="App.printRegistre()">🖨 Imprimer le registre</button>
+      </div>
+    </div>
+
+    <div id="dash-alert"></div>
+    <div class="kpi-grid" id="kpi-grid"></div>
+
+    <div class="panel-grid">
+      <div>
+        <div class="panel">
+          <h3>Flux mensuel des courriers <span class="hint">12 derniers mois</span></h3>
+          <div class="chart" id="chart"></div>
+          <div class="legend"><span class="li-in">Entrants</span><span class="li-out">Sortants</span></div>
+        </div>
+        <div class="panel">
+          <h3>Charge par service <span class="hint">courriers entrants non clôturés</span></h3>
+          <div id="svc-load"></div>
+        </div>
+      </div>
+      <div>
+        <div class="panel">
+          <h3>Échéances dépassées</h3>
+          <ul class="mini-list" id="dash-overdue"></ul>
+        </div>
+        <div class="panel">
+          <h3>Derniers enregistrements</h3>
+          <ul class="mini-list" id="dash-recent"></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ ENTRANTS ══════════ -->
+  <section class="view" id="view-entrants">
+    <div class="view-head">
+      <div>
+        <div class="eyebrow">Registre chronologique · Arrivées</div>
+        <h2>Courriers entrants</h2>
+        <p>Enregistrement, imputation aux services, suivi du traitement jusqu'à la clôture. Les courriers en retard sont marqués en rouge.</p>
+      </div>
+      <div class="head-actions">
+        <button class="btn btn-white" onclick="App.exportCSV('entrant')">⬇ Export CSV</button>
+        <button class="btn btn-yellow" onclick="App.openForm('entrant')">+ Enregistrer</button>
+      </div>
+    </div>
+    <div class="filters">
+      <input type="search" id="f-in-q" placeholder="Recherche intelligente (n° chrono, objet, expéditeur, référence — accents ignorés)…" oninput="App.renderTables()" />
+      <select id="f-in-statut" onchange="App.renderTables()"></select>
+      <select id="f-in-priorite" onchange="App.renderTables()"></select>
+      <select id="f-in-service" onchange="App.renderTables()"></select>
+      <input type="date" id="f-in-du" onchange="App.renderTables()" title="Reçus à partir du" />
+      <input type="date" id="f-in-au" onchange="App.renderTables()" title="Reçus jusqu'au" />
+      <button class="btn btn-white btn-sm" onclick="App.resetFilters('in')">Réinitialiser</button>
+    </div>
+    <div class="table-wrap">
+      <table class="registry" id="table-in">
+        <thead><tr>
+          <th onclick="App.sortBy('in','numero')">N° chrono <span class="arrow">↕</span></th>
+          <th onclick="App.sortBy('in','dateReception')">Reçu le <span class="arrow">↕</span></th>
+          <th onclick="App.sortBy('in','correspondant')">Expéditeur <span class="arrow">↕</span></th>
+          <th>Objet</th>
+          <th onclick="App.sortBy('in','service')">Service imputé <span class="arrow">↕</span></th>
+          <th onclick="App.sortBy('in','priorite')">Priorité <span class="arrow">↕</span></th>
+          <th onclick="App.sortBy('in','echeance')">Échéance <span class="arrow">↕</span></th>
+          <th onclick="App.sortBy('in','statut')">Statut <span class="arrow">↕</span></th>
+        </tr></thead>
+        <tbody id="tbody-in"></tbody>
+      </table>
+      <div class="table-foot"><span id="foot-in"></span><span>Cliquer sur une ligne pour ouvrir la fiche du courrier.</span></div>
+    </div>
+  </section>
+
+  <!-- ══════════ SORTANTS ══════════ -->
+  <section class="view" id="view-sortants">
+    <div class="view-head">
+      <div>
+        <div class="eyebrow">Registre chronologique · Départs</div>
+        <h2>Courriers sortants</h2>
+        <p>Correspondances émises par le Secrétariat Technique : rédaction, signature, expédition et archivage.</p>
+      </div>
+      <div class="head-actions">
+        <button class="btn btn-white" onclick="App.exportCSV('sortant')">⬇ Export CSV</button>
+        <button class="btn btn-blue" onclick="App.openForm('sortant')">+ Enregistrer</button>
+      </div>
+    </div>
+    <div class="filters">
+      <input type="search" id="f-out-q" placeholder="Recherche intelligente (n° chrono, objet, destinataire — accents ignorés)…" oninput="App.renderTables()" />
+      <select id="f-out-statut" onchange="App.renderTables()"></select>
+      <select id="f-out-service" onchange="App.renderTables()"></select>
+      <select id="f-out-mode" onchange="App.renderTables()"></select>
+      <input type="date" id="f-out-du" onchange="App.renderTables()" title="Émis à partir du" />
+      <input type="date" id="f-out-au" onchange="App.renderTables()" title="Émis jusqu'au" />
+      <button class="btn btn-white btn-sm" onclick="App.resetFilters('out')">Réinitialiser</button>
+    </div>
+    <div class="table-wrap">
+      <table class="registry" id="table-out">
+        <thead><tr>
+          <th onclick="App.sortBy('out','numero')">N° chrono <span class="arrow">↕</span></th>
+          <th onclick="App.sortBy('out','dateEnvoi')">Date d'envoi <span class="arrow">↕</span></th>
+          <th onclick="App.sortBy('out','correspondant')">Destinataire <span class="arrow">↕</span></th>
+          <th>Objet</th>
+          <th onclick="App.sortBy('out','service')">Service émetteur <span class="arrow">↕</span></th>
+          <th onclick="App.sortBy('out','signataire')">Signataire <span class="arrow">↕</span></th>
+          <th onclick="App.sortBy('out','modeEnvoi')">Mode d'envoi <span class="arrow">↕</span></th>
+          <th onclick="App.sortBy('out','statut')">Statut <span class="arrow">↕</span></th>
+        </tr></thead>
+        <tbody id="tbody-out"></tbody>
+      </table>
+      <div class="table-foot"><span id="foot-out"></span><span>Cliquer sur une ligne pour ouvrir la fiche du courrier.</span></div>
+    </div>
+  </section>
+
+  <!-- ══════════ JOURNAL ══════════ -->
+  <section class="view" id="view-journal">
+    <div class="view-head">
+      <div>
+        <div class="eyebrow">Traçabilité</div>
+        <h2>Journal d'activité</h2>
+        <p>Trace horodatée de toutes les opérations : enregistrements, modifications, changements de statut, relances, impressions et suppressions.</p>
+      </div>
+      <button class="btn btn-danger" onclick="App.clearJournal()">Vider le journal</button>
+    </div>
+    <ul class="journal-list" id="journal-list"></ul>
+  </section>
+
+  <!-- ══════════ PARAMÈTRES ══════════ -->
+  <section class="view" id="view-parametres">
+    <div class="view-head">
+      <div>
+        <div class="eyebrow">Configuration</div>
+        <h2>Paramètres</h2>
+        <p>Services d'imputation, sauvegarde et restauration des données du registre.</p>
+      </div>
+    </div>
+    <div class="panel">
+      <h3>Services / Directions</h3>
+      <p style="font-size:0.84rem;color:var(--muted)">Liste des services auxquels les courriers peuvent être imputés. L'assistant intelligent s'appuie sur cette liste pour ses suggestions.</p>
+      <div class="svc-manage" id="svc-manage"></div>
+      <div class="add-svc">
+        <input type="text" id="new-svc" placeholder="Nom du nouveau service (ex. Cellule Genre et Inclusion)" onkeydown="if(event.key==='Enter')App.addService()" />
+        <button class="btn btn-blue" onclick="App.addService()">Ajouter</button>
+      </div>
+    </div>
+    <div class="panel">
+      <h3>Données du registre</h3>
+      <p style="font-size:0.84rem;color:var(--muted);margin-bottom:0.9rem">
+        Les données sont conservées localement dans ce navigateur. Exportez régulièrement une sauvegarde JSON pour sécuriser le registre ou le transférer sur un autre poste.
+      </p>
+      <div class="head-actions">
+        <button class="btn btn-blue" onclick="App.backup()">⬇ Sauvegarde complète (JSON)</button>
+        <button class="btn btn-white" onclick="document.getElementById('restore-file').click()">⬆ Restaurer une sauvegarde</button>
+        <input type="file" id="restore-file" accept="application/json" hidden onchange="App.restore(this)" />
+        <button class="btn btn-white" onclick="App.seedDemo()">Charger des données de démonstration</button>
+        <button class="btn btn-danger" onclick="App.wipe()">Effacer toutes les données</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ══════════ MODALE FORMULAIRE ══════════ -->
+<div class="modal-backdrop" id="form-backdrop" onclick="if(event.target===this)App.closeForm()">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-head">
+      <div>
+        <h2 id="form-title">Enregistrer un courrier</h2>
+        <div class="sub" id="form-sub"></div>
+      </div>
+      <button class="modal-close" onclick="App.closeForm()" aria-label="Fermer">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="sens-switch" id="sens-switch">
+        <button type="button" id="sw-in" onclick="App.setSens('entrant')">↓ Entrant</button>
+        <button type="button" id="sw-out" onclick="App.setSens('sortant')">↑ Sortant</button>
+      </div>
+      <div class="smart-bar" id="smart-bar">
+        <div class="smart-title">💡 Assistant intelligent</div>
+        <div id="smart-suggestions"></div>
+        <div id="smart-dup"></div>
+      </div>
+      <form id="courrier-form" onsubmit="App.save(event)">
+        <div class="form-grid">
+          <div class="field">
+            <label>N° chrono</label>
+            <input type="text" id="fld-numero" class="mono" readonly />
+            <div class="note">Attribué automatiquement à l'enregistrement.</div>
+          </div>
+          <div class="field">
+            <label id="lbl-date-flux">Date de réception <span class="req">*</span></label>
+            <input type="date" id="fld-dateFlux" required />
+          </div>
+          <div class="field">
+            <label id="lbl-correspondant">Expéditeur <span class="req">*</span></label>
+            <input type="text" id="fld-correspondant" required placeholder="Institution ou personne" oninput="App.smartAnalyse()" />
+          </div>
+          <div class="field">
+            <label>Date portée sur le courrier</label>
+            <input type="date" id="fld-dateCourrier" />
+          </div>
+          <div class="field full">
+            <label>Objet <span class="req">*</span></label>
+            <input type="text" id="fld-objet" required placeholder="Objet du courrier — l'assistant analyse ce champ pour proposer type, service et priorité" oninput="App.smartAnalyse()" />
+          </div>
+          <div class="field">
+            <label id="lbl-reference">Référence du correspondant</label>
+            <input type="text" id="fld-reference" placeholder="ex. N/Réf. 045/DG/2026" />
+          </div>
+          <div class="field">
+            <label>Type de courrier</label>
+            <select id="fld-type"></select>
+          </div>
+          <div class="field">
+            <label id="lbl-service">Service imputé <span class="req">*</span></label>
+            <select id="fld-service" required></select>
+          </div>
+          <div class="field">
+            <label>Priorité</label>
+            <select id="fld-priorite" onchange="App.autoEcheance()"></select>
+          </div>
+          <div class="field" id="grp-echeance">
+            <label>Échéance de traitement</label>
+            <input type="date" id="fld-echeance" />
+            <div class="note">Proposée automatiquement selon la priorité (modifiable).</div>
+          </div>
+          <div class="field" id="grp-mode" hidden>
+            <label>Mode d'envoi</label>
+            <select id="fld-modeEnvoi"></select>
+          </div>
+          <div class="field" id="grp-signataire" hidden>
+            <label>Signataire</label>
+            <input type="text" id="fld-signataire" placeholder="ex. Le Coordonnateur National" />
+          </div>
+          <div class="field">
+            <label>Pièces jointes</label>
+            <input type="text" id="fld-pieces" placeholder="ex. 2 annexes, 1 rapport" />
+          </div>
+          <div class="field check-inline">
+            <input type="checkbox" id="fld-confidentiel" />
+            <label for="fld-confidentiel" style="margin:0;text-transform:none;font-size:0.85rem;letter-spacing:0">Courrier confidentiel</label>
+          </div>
+          <div class="field" id="grp-reponse">
+            <label id="lbl-reponse">En réponse au courrier</label>
+            <select id="fld-reponseA"></select>
+          </div>
+          <div class="field">
+            <label>Statut</label>
+            <select id="fld-statut"></select>
+          </div>
+          <div class="field full" id="grp-instructions">
+            <label>Instructions / annotations de la hiérarchie</label>
+            <textarea id="fld-instructions" placeholder="ex. Pour disposition à prendre — me tenir informé."></textarea>
+          </div>
+          <div class="field full">
+            <label>Observations</label>
+            <textarea id="fld-observations"></textarea>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-white" onclick="App.closeForm()">Annuler</button>
+          <button type="submit" class="btn btn-yellow" id="form-submit">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ MODALE DÉTAIL ══════════ -->
+<div class="modal-backdrop" id="detail-backdrop" onclick="if(event.target===this)App.closeDetail()">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-head">
+      <div>
+        <h2 id="detail-title">Fiche courrier</h2>
+        <div class="sub mono" id="detail-num"></div>
+      </div>
+      <button class="modal-close" onclick="App.closeDetail()" aria-label="Fermer">×</button>
+    </div>
+    <div class="modal-body" id="detail-body"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<div id="print-area"></div>
+
+<script>
+'use strict';
+
+/* ═══════════════════ CONSTANTES ═══════════════════ */
+const LS_KEY  = 'itierdc_courriers_v1';
+const LS_SVC  = 'itierdc_courriers_services_v1';
+const LS_LOG  = 'itierdc_courriers_journal_v1';
+
+const TYPES = ['Lettre officielle','Note de service','Note circulaire','Invitation','Rapport','Facture / Pièce comptable','Demande','Bordereau de transmission','Communiqué','Autre'];
+const PRIORITES = ['Normale','Urgente','Très urgente'];
+const DELAIS = { 'Normale': 10, 'Urgente': 5, 'Très urgente': 2 };
+const MODES = ['Porteur','Poste','Courrier électronique','Courrier express (DHL…)','Dépôt en mains propres'];
+const STATUTS = {
+  entrant: ['Enregistré','Imputé','En traitement','Traité','Archivé','Classé sans suite'],
+  sortant: ['En rédaction','Signé','Expédié','Archivé']
+};
+const STATUT_CLASS = {
+  'Enregistré':'st-enregistre','Imputé':'st-impute','En traitement':'st-traitement',
+  'Traité':'st-traite','Archivé':'st-archive','Classé sans suite':'st-sans-suite',
+  'En rédaction':'st-redaction','Signé':'st-signe','Expédié':'st-expedie'
+};
+const STATUT_CLOS = ['Traité','Archivé','Classé sans suite','Expédié'];
+const PRIO_CLASS = { 'Normale':'pr-normale','Urgente':'pr-urgente','Très urgente':'pr-tres-urgente' };
+const DEFAULT_SERVICES = ['Coordination Nationale','Secrétariat Technique','Direction Administrative et Financière','Cellule Technique / Rapportage','Cellule Communication','Cellule Juridique','Unité Passation des Marchés'];
+
+/* Règles de l'assistant : mots-clés (sans accents, minuscules) → suggestions */
+const SMART_RULES = [
+  { kw: ['facture','paiement','comptable','budget','decaissement','fonds','tresorerie','salaire'], service: 'Direction Administrative et Financière', type: 'Facture / Pièce comptable' },
+  { kw: ['invitation','atelier','reunion','ceremonie','conference','seminaire'], type: 'Invitation' },
+  { kw: ['rapport','declaration','donnees','rapportage','collecte','statistique','reconciliation'], service: 'Cellule Technique / Rapportage', type: 'Rapport' },
+  { kw: ['presse','communication','publication','site web','media','sensibilisation'], service: 'Cellule Communication', type: 'Communiqué' },
+  { kw: ['contrat','juridique','litige','convention','avenant','contentieux'], service: 'Cellule Juridique' },
+  { kw: ['marche','appel d\'offres','passation','soumission','cotation'], service: 'Unité Passation des Marchés' },
+  { kw: ['validation','norme itie','secretariat international','conseil d\'administration'], service: 'Coordination Nationale', priorite: 'Très urgente' },
+  { kw: ['urgent','immediat','sans delai','imperatif'], priorite: 'Très urgente' },
+  { kw: ['demande','requete','sollicitation'], type: 'Demande' },
+  { kw: ['circulaire'], type: 'Note circulaire' }
+];
+
+/* ═══════════════════ ÉTAT ═══════════════════ */
+let courriers = load(LS_KEY, []);
+let services  = load(LS_SVC, DEFAULT_SERVICES.slice());
+let journal   = load(LS_LOG, []);
+let editId    = null;
+let formSens  = 'entrant';
+let sortState = { in: { key: 'numero', dir: -1 }, out: { key: 'numero', dir: -1 } };
+
+function load(key, fallback) {
+  try { const v = JSON.parse(localStorage.getItem(key)); return Array.isArray(v) ? v : fallback; }
+  catch { return fallback; }
+}
+function persist() {
+  localStorage.setItem(LS_KEY, JSON.stringify(courriers));
+  localStorage.setItem(LS_SVC, JSON.stringify(services));
+  localStorage.setItem(LS_LOG, JSON.stringify(journal));
+}
+
+/* ═══════════════════ UTILITAIRES ═══════════════════ */
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const todayISO = () => new Date().toISOString().slice(0, 10);
+const norm = s => String(s ?? '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+const fmtDate = iso => {
+  if (!iso) return '—';
+  const [y, m, d] = iso.split('-');
+  return `${d}/${m}/${y}`;
+};
+const fmtDateTime = ts => new Date(ts).toLocaleString('fr-FR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+const uid = () => 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+
+function nextNumero(sens, year) {
+  const prefix = sens === 'entrant' ? 'CE' : 'CS';
+  let max = 0;
+  for (const c of courriers) {
+    if (c.sens !== sens) continue;
+    const m = /^C[ES]-(\d{4})-(\d+)$/.exec(c.numero || '');
+    if (m && +m[1] === year) max = Math.max(max, +m[2]);
+  }
+  return `${prefix}-${year}-${String(max + 1).padStart(4, '0')}`;
+}
+
+function fluxDate(c) { return c.sens === 'entrant' ? c.dateReception : c.dateEnvoi; }
+function isClos(c) { return STATUT_CLOS.includes(c.statut); }
+function isOverdue(c) { return c.sens === 'entrant' && c.echeance && !isClos(c) && c.echeance < todayISO(); }
+function isSoon(c) {
+  if (c.sens !== 'entrant' || !c.echeance || isClos(c) || isOverdue(c)) return false;
+  const lim = new Date(); lim.setDate(lim.getDate() + 3);
+  return c.echeance <= lim.toISOString().slice(0, 10);
+}
+
+function log(action, detail) {
+  journal.unshift({ ts: Date.now(), action, detail });
+  if (journal.length > 500) journal.length = 500;
+}
+
+function toast(msg) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._h);
+  t._h = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+function fillSelect(sel, options, { blank = null, selected = '' } = {}) {
+  sel.innerHTML = (blank !== null ? `<option value="">${esc(blank)}</option>` : '') +
+    options.map(o => `<option value="${esc(o)}"${o === selected ? ' selected' : ''}>${esc(o)}</option>`).join('');
+}
+
+/* ═══════════════════ APPLICATION ═══════════════════ */
+const App = {
+
+  /* ---------- Navigation ---------- */
+  show(view) {
+    document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + view));
+    document.querySelectorAll('.nav-links button').forEach(t => t.classList.toggle('active', t.dataset.view === view));
+    $('hero').style.display = view === 'dashboard' ? '' : 'none';
+    if (view === 'dashboard') this.renderDashboard();
+    if (view === 'journal') this.renderJournal();
+    if (view === 'parametres') this.renderParams();
+  },
+
+  refresh() {
+    persist();
+    this.renderDashboard();
+    this.renderTables();
+    this.renderJournal();
+    this.renderParams();
+  },
+
+  /* ---------- Tableau de bord ---------- */
+  renderDashboard() {
+    const now = new Date();
+    const ym = now.toISOString().slice(0, 7);
+    const entrants = courriers.filter(c => c.sens === 'entrant');
+    const sortants = courriers.filter(c => c.sens === 'sortant');
+    const enCours = entrants.filter(c => !isClos(c));
+    const retards = entrants.filter(isOverdue);
+    const urgents = enCours.filter(c => c.priorite !== 'Normale');
+    const inMonth = entrants.filter(c => (c.dateReception || '').startsWith(ym)).length;
+    const outMonth = sortants.filter(c => (c.dateEnvoi || '').startsWith(ym)).length;
+    const traites = entrants.filter(c => ['Traité','Archivé'].includes(c.statut));
+    const taux = entrants.length ? Math.round(100 * traites.length / entrants.length) : 0;
+
+    // Délai moyen de traitement (jours entre réception et clôture)
+    const delais = traites.filter(c => c.dateCloture && c.dateReception)
+      .map(c => Math.max(0, Math.round((new Date(c.dateCloture) - new Date(c.dateReception)) / 86400000)));
+    const delaiMoyen = delais.length ? (delais.reduce((a, b) => a + b, 0) / delais.length).toFixed(1) : null;
+
+    $('keycard-rows').innerHTML = `
+      <div class="krow"><span>Courriers enregistrés</span><span class="kval">${courriers.length}</span></div>
+      <div class="krow"><span>En attente de traitement</span><span class="kval">${enCours.length}</span></div>
+      <div class="krow"><span>Échéances dépassées</span><span class="kval">${retards.length}</span></div>
+      <div class="krow"><span>Taux de traitement</span><span class="kval">${taux} %</span></div>`;
+
+    $('kpi-grid').innerHTML = `
+      <div class="kpi"><div class="kpi-num">${entrants.length}</div><div class="kpi-label">Courriers entrants</div><div class="kpi-sub">${inMonth} reçu(s) ce mois</div></div>
+      <div class="kpi k-yellow"><div class="kpi-num">${sortants.length}</div><div class="kpi-label">Courriers sortants</div><div class="kpi-sub">${outMonth} émis ce mois</div></div>
+      <div class="kpi k-navy"><div class="kpi-num">${enCours.length}</div><div class="kpi-label">En attente</div><div class="kpi-sub">dont ${urgents.length} urgent(s)</div></div>
+      <div class="kpi k-red"><div class="kpi-num">${retards.length}</div><div class="kpi-label">Échéances dépassées</div><div class="kpi-sub">à traiter en priorité</div></div>
+      <div class="kpi k-green"><div class="kpi-num">${delaiMoyen ?? '—'}</div><div class="kpi-label">Délai moyen (jours)</div><div class="kpi-sub">${delaiMoyen ? delais.length + ' clôture(s) mesurée(s)' : 'aucune clôture mesurée'}</div></div>`;
+
+    const badge = $('badge-in');
+    badge.hidden = retards.length === 0;
+    badge.textContent = retards.length;
+
+    $('dash-alert').innerHTML = retards.length
+      ? `<div class="alert-strip">⚠️ <strong>${retards.length} courrier(s) entrant(s)</strong> ont dépassé leur échéance de traitement. Ouvrez leur fiche pour enregistrer une relance auprès des services concernés.</div>`
+      : '';
+
+    // Graphique 12 mois
+    const months = [];
+    for (let i = 11; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      months.push({ key: d.toISOString().slice(0, 7), lbl: d.toLocaleDateString('fr-FR', { month: 'short' }), in: 0, out: 0 });
+    }
+    for (const c of courriers) {
+      const k = (fluxDate(c) || '').slice(0, 7);
+      const m = months.find(x => x.key === k);
+      if (m) c.sens === 'entrant' ? m.in++ : m.out++;
+    }
+    const maxV = Math.max(1, ...months.map(m => Math.max(m.in, m.out)));
+    $('chart').innerHTML = months.map(m => `
+      <div class="col" title="${m.lbl} — ${m.in} entrant(s), ${m.out} sortant(s)">
+        <div class="bars">
+          <div class="bar in" style="height:${Math.round(100 * m.in / maxV)}%"></div>
+          <div class="bar out" style="height:${Math.round(100 * m.out / maxV)}%"></div>
+        </div>
+        <div class="lbl">${m.lbl}</div>
+      </div>`).join('');
+
+    // Charge par service
+    const bySvc = {};
+    enCours.forEach(c => { bySvc[c.service || '—'] = (bySvc[c.service || '—'] || 0) + 1; });
+    const rows = Object.entries(bySvc).sort((a, b) => b[1] - a[1]);
+    const maxSvc = Math.max(1, ...rows.map(r => r[1]));
+    $('svc-load').innerHTML = rows.length
+      ? rows.map(([s, n]) => `<div class="svc-row"><span class="svc-name" title="${esc(s)}">${esc(s)}</span><span class="svc-bar"><span class="svc-fill" style="width:${Math.round(100 * n / maxSvc)}%"></span></span><span class="svc-n">${n}</span></div>`).join('')
+      : '<div class="empty-note">Aucun courrier en cours de traitement.</div>';
+
+    // Retards
+    $('dash-overdue').innerHTML = retards.length
+      ? retards.sort((a, b) => a.echeance.localeCompare(b.echeance)).slice(0, 8).map(c =>
+          `<li onclick="App.openDetail('${c.id}')"><span class="obj"><span class="mono">${esc(c.numero)}</span> · ${esc(c.objet)}</span><span class="meta"><span class="chip late">échue le ${fmtDate(c.echeance)}</span></span></li>`).join('')
+      : '<div class="empty-note">Aucune échéance dépassée — registre à jour. ✓</div>';
+
+    // Récents
+    const recents = courriers.slice().sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)).slice(0, 8);
+    $('dash-recent').innerHTML = recents.length
+      ? recents.map(c =>
+          `<li onclick="App.openDetail('${c.id}')"><span class="obj"><span class="chip ${c.sens === 'entrant' ? 'sens-in' : 'sens-out'}">${c.sens === 'entrant' ? '↓' : '↑'}</span> <span class="mono">${esc(c.numero)}</span> · ${esc(c.objet)}</span><span class="meta">${fmtDate(fluxDate(c))}</span></li>`).join('')
+      : '<div class="empty-note">Aucun courrier enregistré. Utilisez les boutons « + » pour commencer, ou chargez les données de démonstration depuis les Paramètres.</div>';
+  },
+
+  /* ---------- Filtres & tableaux ---------- */
+  initFilters() {
+    fillSelect($('f-in-statut'), STATUTS.entrant, { blank: 'Tous statuts' });
+    fillSelect($('f-in-priorite'), PRIORITES, { blank: 'Toutes priorités' });
+    fillSelect($('f-in-service'), services, { blank: 'Tous services' });
+    fillSelect($('f-out-statut'), STATUTS.sortant, { blank: 'Tous statuts' });
+    fillSelect($('f-out-service'), services, { blank: 'Tous services' });
+    fillSelect($('f-out-mode'), MODES, { blank: 'Tous modes d\'envoi' });
+  },
+
+  resetFilters(which) {
+    const ids = which === 'in'
+      ? ['f-in-q','f-in-statut','f-in-priorite','f-in-service','f-in-du','f-in-au']
+      : ['f-out-q','f-out-statut','f-out-service','f-out-mode','f-out-du','f-out-au'];
+    ids.forEach(i => { $(i).value = ''; });
+    this.renderTables();
+  },
+
+  filtered(sens) {
+    const p = sens === 'entrant' ? 'in' : 'out';
+    const q = norm($(`f-${p}-q`).value.trim());
+    const st = $(`f-${p}-statut`).value;
+    const svc = $(`f-${p}-service`).value;
+    const du = $(`f-${p}-du`).value, au = $(`f-${p}-au`).value;
+    const prio = sens === 'entrant' ? $('f-in-priorite').value : '';
+    const mode = sens === 'sortant' ? $('f-out-mode').value : '';
+
+    return courriers.filter(c => {
+      if (c.sens !== sens) return false;
+      if (st && c.statut !== st) return false;
+      if (svc && c.service !== svc) return false;
+      if (prio && c.priorite !== prio) return false;
+      if (mode && c.modeEnvoi !== mode) return false;
+      const d = fluxDate(c) || '';
+      if (du && d < du) return false;
+      if (au && d > au) return false;
+      if (q) {
+        const hay = norm([c.numero, c.objet, c.correspondant, c.reference, c.service, c.signataire, c.observations, c.instructions].join(' '));
+        if (!q.split(/\s+/).every(tok => hay.includes(tok))) return false;
+      }
+      return true;
+    });
+  },
+
+  sortBy(which, key) {
+    const s = sortState[which];
+    if (s.key === key) s.dir *= -1; else { s.key = key; s.dir = 1; }
+    this.renderTables();
+  },
+
+  applySort(list, which) {
+    const { key, dir } = sortState[which];
+    const get = c => key === 'dateReception' || key === 'dateEnvoi' ? (fluxDate(c) || '') : (c[key] || '');
+    return list.slice().sort((a, b) => String(get(a)).localeCompare(String(get(b)), 'fr', { numeric: true }) * dir);
+  },
+
+  renderTables() {
+    // Entrants
+    const ins = this.applySort(this.filtered('entrant'), 'in');
+    $('tbody-in').innerHTML = ins.length ? ins.map(c => {
+      const late = isOverdue(c), soon = isSoon(c);
+      const ech = c.echeance
+        ? (late ? `<span class="chip late">${fmtDate(c.echeance)}</span>`
+           : soon ? `<span class="chip soon">${fmtDate(c.echeance)}</span>` : fmtDate(c.echeance))
+        : '—';
+      return `<tr class="${late ? 'overdue' : ''}" onclick="App.openDetail('${c.id}')">
+        <td class="num-cell">${esc(c.numero)}${c.confidentiel ? ' <span class="chip conf">Conf.</span>' : ''}</td>
+        <td class="nowrap">${fmtDate(c.dateReception)}</td>
+        <td>${esc(c.correspondant)}</td>
+        <td class="obj-cell"><div class="obj-main">${esc(c.objet)}</div>${c.reference ? `<div class="obj-sub">Réf. ${esc(c.reference)}</div>` : ''}</td>
+        <td>${esc(c.service || '—')}</td>
+        <td><span class="chip ${PRIO_CLASS[c.priorite] || 'pr-normale'}">${esc(c.priorite)}</span></td>
+        <td class="nowrap">${ech}</td>
+        <td><span class="chip ${STATUT_CLASS[c.statut] || ''}">${esc(c.statut)}</span></td>
+      </tr>`;
+    }).join('') : `<tr><td colspan="8"><div class="empty-note">Aucun courrier entrant ne correspond aux critères.</div></td></tr>`;
+    $('foot-in').textContent = `${ins.length} courrier(s) affiché(s) sur ${courriers.filter(c => c.sens === 'entrant').length} enregistré(s)`;
+
+    // Sortants
+    const outs = this.applySort(this.filtered('sortant'), 'out');
+    $('tbody-out').innerHTML = outs.length ? outs.map(c => `
+      <tr onclick="App.openDetail('${c.id}')">
+        <td class="num-cell">${esc(c.numero)}${c.confidentiel ? ' <span class="chip conf">Conf.</span>' : ''}</td>
+        <td class="nowrap">${fmtDate(c.dateEnvoi)}</td>
+        <td>${esc(c.correspondant)}</td>
+        <td class="obj-cell"><div class="obj-main">${esc(c.objet)}</div>${c.reponseA ? `<div class="obj-sub">En réponse à ${esc((courriers.find(x => x.id === c.reponseA) || {}).numero || '?')}</div>` : ''}</td>
+        <td>${esc(c.service || '—')}</td>
+        <td>${esc(c.signataire || '—')}</td>
+        <td>${esc(c.modeEnvoi || '—')}</td>
+        <td><span class="chip ${STATUT_CLASS[c.statut] || ''}">${esc(c.statut)}</span></td>
+      </tr>`).join('') : `<tr><td colspan="8"><div class="empty-note">Aucun courrier sortant ne correspond aux critères.</div></td></tr>`;
+    $('foot-out').textContent = `${outs.length} courrier(s) affiché(s) sur ${courriers.filter(c => c.sens === 'sortant').length} enregistré(s)`;
+  },
+
+  /* ---------- Assistant intelligent ---------- */
+  smartAnalyse() {
+    const text = norm($('fld-objet').value + ' ' + $('fld-correspondant').value);
+    const sugDiv = $('smart-suggestions');
+    const dupDiv = $('smart-dup');
+    const bar = $('smart-bar');
+    if (text.trim().length < 4) { bar.classList.remove('on'); return; }
+
+    // Suggestions par mots-clés
+    const found = { service: null, type: null, priorite: null };
+    for (const rule of SMART_RULES) {
+      if (rule.kw.some(k => text.includes(k))) {
+        if (rule.service && !found.service && services.includes(rule.service)) found.service = rule.service;
+        if (rule.type && !found.type) found.type = rule.type;
+        if (rule.priorite && !found.priorite) found.priorite = rule.priorite;
+      }
+    }
+    const sugs = [];
+    if (found.service && $('fld-service').value !== found.service)
+      sugs.push(`<span class="sug">Service : <b>${esc(found.service)}</b><button type="button" onclick="App.applySug('service','${esc(found.service)}')">Appliquer</button></span>`);
+    if (found.type && $('fld-type').value !== found.type)
+      sugs.push(`<span class="sug">Type : <b>${esc(found.type)}</b><button type="button" onclick="App.applySug('type','${esc(found.type)}')">Appliquer</button></span>`);
+    if (found.priorite && $('fld-priorite').value !== found.priorite)
+      sugs.push(`<span class="sug">Priorité : <b>${esc(found.priorite)}</b><button type="button" onclick="App.applySug('priorite','${esc(found.priorite)}')">Appliquer</button></span>`);
+    sugDiv.innerHTML = sugs.length ? sugs.join('') : '<span style="color:var(--muted)">Aucune suggestion pour le moment — continuez la saisie de l\'objet.</span>';
+
+    // Détection de doublons : même correspondant + objet similaire, à ±45 jours
+    const objTokens = new Set(norm($('fld-objet').value).split(/\W+/).filter(w => w.length > 3));
+    const corr = norm($('fld-correspondant').value);
+    let dup = null;
+    if (objTokens.size >= 2) {
+      for (const c of courriers) {
+        if (c.id === editId) continue;
+        const cTokens = new Set(norm(c.objet).split(/\W+/).filter(w => w.length > 3));
+        const inter = [...objTokens].filter(w => cTokens.has(w)).length;
+        const sim = inter / Math.max(1, Math.min(objTokens.size, cTokens.size));
+        const sameCorr = corr && norm(c.correspondant).includes(corr.slice(0, 12));
+        if (sim >= 0.6 && (sameCorr || sim >= 0.85)) { dup = c; break; }
+      }
+    }
+    dupDiv.innerHTML = dup
+      ? `<div class="dup">⚠ Doublon possible : <span class="link-rep" onclick="App.openDetail('${dup.id}')">${esc(dup.numero)}</span> — « ${esc(dup.objet)} » (${fmtDate(fluxDate(dup))}). Vérifiez avant d'enregistrer.</div>`
+      : '';
+    bar.classList.add('on');
+  },
+
+  applySug(field, value) {
+    $('fld-' + field).value = value;
+    if (field === 'priorite') this.autoEcheance();
+    this.smartAnalyse();
+  },
+
+  autoEcheance() {
+    if (formSens !== 'entrant') return;
+    const ech = $('fld-echeance');
+    if (ech.dataset.touched === '1' && ech.value) return;
+    const jours = DELAIS[$('fld-priorite').value] ?? 10;
+    const base = $('fld-dateFlux').value || todayISO();
+    const d = new Date(base);
+    d.setDate(d.getDate() + jours);
+    ech.value = d.toISOString().slice(0, 10);
+  },
+
+  /* ---------- Formulaire ---------- */
+  openForm(sens, id = null) {
+    editId = id;
+    const c = id ? courriers.find(x => x.id === id) : null;
+    formSens = c ? c.sens : sens;
+    $('sens-switch').style.display = c ? 'none' : 'flex';
+    $('form-title').textContent = c ? 'Modifier le courrier' : 'Enregistrer un courrier';
+    $('form-sub').textContent = c ? c.numero : 'Le numéro chrono sera attribué automatiquement.';
+    $('form-submit').textContent = c ? 'Enregistrer les modifications' : 'Enregistrer au registre';
+    $('smart-bar').classList.remove('on');
+    this.setSens(formSens, c);
+    $('form-backdrop').classList.add('open');
+    setTimeout(() => $('fld-correspondant').focus(), 60);
+  },
+
+  setSens(sens, c = null) {
+    formSens = sens;
+    const isIn = sens === 'entrant';
+    $('sw-in').className = isIn ? 'on-in' : '';
+    $('sw-out').className = isIn ? '' : 'on-out';
+    $('lbl-date-flux').innerHTML = (isIn ? 'Date de réception' : 'Date d\'envoi') + ' <span class="req">*</span>';
+    $('lbl-correspondant').innerHTML = (isIn ? 'Expéditeur' : 'Destinataire') + ' <span class="req">*</span>';
+    $('lbl-reference').textContent = isIn ? 'Référence du correspondant' : 'Référence interne';
+    $('lbl-service').innerHTML = (isIn ? 'Service imputé' : 'Service émetteur') + ' <span class="req">*</span>';
+    $('lbl-reponse').textContent = isIn ? 'Fait suite au courrier sortant' : 'En réponse au courrier entrant';
+    $('grp-echeance').hidden = !isIn;
+    $('grp-instructions').hidden = !isIn;
+    $('grp-mode').hidden = isIn;
+    $('grp-signataire').hidden = isIn;
+
+    const year = c ? +((fluxDate(c) || todayISO()).slice(0, 4)) : new Date().getFullYear();
+    $('fld-numero').value = c ? c.numero : nextNumero(sens, year);
+    $('fld-dateFlux').value = c ? (fluxDate(c) || '') : todayISO();
+    $('fld-correspondant').value = c ? c.correspondant : '';
+    $('fld-dateCourrier').value = c?.dateCourrier || '';
+    $('fld-objet').value = c ? c.objet : '';
+    $('fld-reference').value = c?.reference || '';
+    fillSelect($('fld-type'), TYPES, { selected: c?.type || 'Lettre officielle' });
+    fillSelect($('fld-service'), services, { blank: '— Sélectionner —', selected: c?.service || '' });
+    fillSelect($('fld-priorite'), PRIORITES, { selected: c?.priorite || 'Normale' });
+    fillSelect($('fld-statut'), STATUTS[sens], { selected: c?.statut || STATUTS[sens][0] });
+    fillSelect($('fld-modeEnvoi'), MODES, { blank: '— Sélectionner —', selected: c?.modeEnvoi || '' });
+    $('fld-signataire').value = c?.signataire || '';
+    const ech = $('fld-echeance');
+    ech.value = c?.echeance || '';
+    ech.dataset.touched = c?.echeance ? '1' : '0';
+    ech.onchange = () => { ech.dataset.touched = '1'; };
+    $('fld-pieces').value = c?.pieces || '';
+    $('fld-confidentiel').checked = !!c?.confidentiel;
+    $('fld-instructions').value = c?.instructions || '';
+    $('fld-observations').value = c?.observations || '';
+    if (!c && isIn) this.autoEcheance();
+
+    const opposite = courriers.filter(x => x.sens !== sens).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    $('fld-reponseA').innerHTML = '<option value="">— Aucun —</option>' +
+      opposite.map(x => `<option value="${x.id}"${c?.reponseA === x.id ? ' selected' : ''}>${esc(x.numero)} · ${esc(x.objet.slice(0, 60))}</option>`).join('');
+  },
+
+  closeForm() { $('form-backdrop').classList.remove('open'); editId = null; },
+
+  save(ev) {
+    ev.preventDefault();
+    const isIn = formSens === 'entrant';
+    const dateFlux = $('fld-dateFlux').value;
+    const existing = editId ? courriers.find(x => x.id === editId) : null;
+
+    const data = {
+      sens: formSens,
+      dateCourrier: $('fld-dateCourrier').value || null,
+      correspondant: $('fld-correspondant').value.trim(),
+      objet: $('fld-objet').value.trim(),
+      reference: $('fld-reference').value.trim(),
+      type: $('fld-type').value,
+      service: $('fld-service').value,
+      priorite: $('fld-priorite').value,
+      statut: $('fld-statut').value,
+      echeance: isIn ? ($('fld-echeance').value || null) : null,
+      modeEnvoi: isIn ? null : $('fld-modeEnvoi').value,
+      signataire: isIn ? null : $('fld-signataire').value.trim(),
+      pieces: $('fld-pieces').value.trim(),
+      confidentiel: $('fld-confidentiel').checked,
+      instructions: isIn ? $('fld-instructions').value.trim() : '',
+      observations: $('fld-observations').value.trim(),
+      reponseA: $('fld-reponseA').value || null,
+      dateReception: isIn ? dateFlux : null,
+      dateEnvoi: isIn ? null : dateFlux
+    };
+
+    if (existing) {
+      const oldStatut = existing.statut;
+      Object.assign(existing, data);
+      if (oldStatut !== data.statut && ['Traité','Archivé'].includes(data.statut) && !existing.dateCloture) existing.dateCloture = todayISO();
+      existing.historique.push({ ts: Date.now(), txt: oldStatut !== data.statut ? `Statut modifié : ${oldStatut} → ${data.statut}` : 'Fiche modifiée' });
+      log('Modification', `${existing.numero} — ${existing.objet}`);
+      toast(`Courrier ${existing.numero} mis à jour.`);
+    } else {
+      const year = +(dateFlux || todayISO()).slice(0, 4);
+      const c = Object.assign({
+        id: uid(),
+        numero: nextNumero(formSens, year),
+        createdAt: Date.now(),
+        dateCloture: null,
+        historique: [{ ts: Date.now(), txt: 'Enregistrement au registre' }]
+      }, data);
+      courriers.push(c);
+      log('Enregistrement', `${c.numero} — ${c.objet}`);
+      toast(`Courrier enregistré sous le n° ${c.numero}.`);
+    }
+    this.closeForm();
+    this.refresh();
+  },
+
+  /* ---------- Fiche détail ---------- */
+  openDetail(id) {
+    const c = courriers.find(x => x.id === id);
+    if (!c) return;
+    const isIn = c.sens === 'entrant';
+    const linked = c.reponseA ? courriers.find(x => x.id === c.reponseA) : null;
+    const replies = courriers.filter(x => x.reponseA === c.id);
+
+    $('detail-title').textContent = isIn ? 'Courrier entrant' : 'Courrier sortant';
+    $('detail-num').textContent = c.numero;
+
+    const rows = [
+      [isIn ? 'Reçu le' : 'Envoyé le', fmtDate(fluxDate(c))],
+      ['Date du courrier', fmtDate(c.dateCourrier)],
+      [isIn ? 'Expéditeur' : 'Destinataire', esc(c.correspondant), true],
+      ['Type', esc(c.type)],
+      [isIn ? 'Référence du correspondant' : 'Référence interne', esc(c.reference || '—')],
+      [isIn ? 'Service imputé' : 'Service émetteur', esc(c.service || '—')],
+      ['Priorité', `<span class="chip ${PRIO_CLASS[c.priorite] || ''}">${esc(c.priorite)}</span>`],
+      ['Pièces jointes', esc(c.pieces || '—')]
+    ];
+    if (isIn) {
+      rows.push(['Échéance', c.echeance ? (isOverdue(c) ? `<span class="chip late">${fmtDate(c.echeance)} — dépassée</span>` : fmtDate(c.echeance)) : '—']);
+      if (c.dateCloture) rows.push(['Clôturé le', fmtDate(c.dateCloture)]);
+    } else {
+      rows.push(['Mode d\'envoi', esc(c.modeEnvoi || '—')]);
+      rows.push(['Signataire', esc(c.signataire || '—')]);
+    }
+
+    const statutBtns = STATUTS[c.sens].filter(s => s !== c.statut)
+      .map(s => `<button class="btn btn-white btn-sm" onclick="App.setStatut('${c.id}', '${esc(s)}')">→ ${esc(s)}</button>`).join(' ');
+
+    $('detail-body').innerHTML = `
+      <div class="status-line">
+        <span class="chip ${STATUT_CLASS[c.statut] || ''}" style="font-size:0.8rem">${esc(c.statut)}</span>
+        ${c.confidentiel ? '<span class="chip conf">Confidentiel</span>' : ''}
+        ${isOverdue(c) ? '<span class="chip late">En retard</span>' : ''}
+      </div>
+      <div class="detail-grid">
+        <div class="full"><div class="dt">Objet</div><div class="dd big">${esc(c.objet)}</div></div>
+        ${rows.map(([t, d, big]) => `<div><div class="dt">${t}</div><div class="dd${big ? ' big' : ''}">${d}</div></div>`).join('')}
+        ${linked ? `<div class="full"><div class="dt">${isIn ? 'Fait suite à' : 'En réponse à'}</div><div class="dd"><span class="link-rep" onclick="App.openDetail('${linked.id}')">${esc(linked.numero)} — ${esc(linked.objet)}</span></div></div>` : ''}
+        ${replies.length ? `<div class="full"><div class="dt">Courriers liés</div><div class="dd">${replies.map(r => `<span class="link-rep" onclick="App.openDetail('${r.id}')">${esc(r.numero)}</span>`).join(' · ')}</div></div>` : ''}
+        ${c.instructions ? `<div class="full"><div class="dt">Instructions de la hiérarchie</div><div class="dd">${esc(c.instructions)}</div></div>` : ''}
+        ${c.observations ? `<div class="full"><div class="dt">Observations</div><div class="dd">${esc(c.observations)}</div></div>` : ''}
+      </div>
+      <div class="status-line"><span class="dt" style="width:100%">Faire évoluer le statut</span>${statutBtns}</div>
+      <div class="hist">
+        <h4>Historique</h4>
+        <ul>${c.historique.slice().reverse().map(h => `<li><span class="h-date">${fmtDateTime(h.ts)}</span>${esc(h.txt)}</li>`).join('')}</ul>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-danger" onclick="App.remove('${c.id}')">Supprimer</button>
+        ${isIn && !isClos(c) ? `<button class="btn btn-white" onclick="App.relance('${c.id}')">📣 Enregistrer une relance</button>` : ''}
+        ${isIn ? `<button class="btn btn-white" onclick="App.printBordereau('${c.id}')">🖨 Bordereau de transmission</button>` : ''}
+        <button class="btn btn-white" onclick="App.replyTo('${c.id}')">↩ ${isIn ? 'Créer la réponse (sortant)' : 'Enregistrer la suite (entrant)'}</button>
+        <button class="btn btn-yellow" onclick="App.closeDetail(); App.openForm(null, '${c.id}')">✎ Modifier</button>
+      </div>`;
+    $('detail-backdrop').classList.add('open');
+  },
+
+  closeDetail() { $('detail-backdrop').classList.remove('open'); },
+
+  setStatut(id, statut) {
+    const c = courriers.find(x => x.id === id);
+    if (!c) return;
+    const old = c.statut;
+    c.statut = statut;
+    if (['Traité','Archivé'].includes(statut) && !c.dateCloture) c.dateCloture = todayISO();
+    c.historique.push({ ts: Date.now(), txt: `Statut modifié : ${old} → ${statut}` });
+    log('Changement de statut', `${c.numero} : ${old} → ${statut}`);
+    this.refresh();
+    this.openDetail(id);
+    toast(`${c.numero} : statut « ${statut} ».`);
+  },
+
+  relance(id) {
+    const c = courriers.find(x => x.id === id);
+    if (!c) return;
+    c.historique.push({ ts: Date.now(), txt: `Relance adressée au service « ${c.service || '—'} »` });
+    log('Relance', `${c.numero} — relance au service ${c.service || '—'}`);
+    this.refresh();
+    this.openDetail(id);
+    toast(`Relance enregistrée pour ${c.numero}.`);
+  },
+
+  replyTo(id) {
+    const c = courriers.find(x => x.id === id);
+    if (!c) return;
+    this.closeDetail();
+    const sens = c.sens === 'entrant' ? 'sortant' : 'entrant';
+    this.openForm(sens);
+    $('fld-correspondant').value = c.correspondant;
+    $('fld-objet').value = (c.sens === 'entrant' ? 'Réponse : ' : 'Suite : ') + c.objet;
+    $('fld-reponseA').value = c.id;
+    if (c.service) $('fld-service').value = c.service;
+  },
+
+  remove(id) {
+    const c = courriers.find(x => x.id === id);
+    if (!c) return;
+    if (!confirm(`Supprimer définitivement le courrier ${c.numero} ?\n« ${c.objet} »`)) return;
+    courriers = courriers.filter(x => x.id !== id);
+    courriers.forEach(x => { if (x.reponseA === id) x.reponseA = null; });
+    log('Suppression', `${c.numero} — ${c.objet}`);
+    this.closeDetail();
+    this.refresh();
+    toast(`Courrier ${c.numero} supprimé.`);
+  },
+
+  /* ---------- Journal ---------- */
+  renderJournal() {
+    $('journal-list').innerHTML = journal.length
+      ? journal.map(j => `<li><span class="j-date">${fmtDateTime(j.ts)}</span><span><strong>${esc(j.action)}</strong> — ${esc(j.detail)}</span></li>`).join('')
+      : '<li><span class="empty-note">Aucune activité enregistrée.</span></li>';
+  },
+
+  clearJournal() {
+    if (!confirm('Vider le journal d\'activité ?')) return;
+    journal = [];
+    persist();
+    this.renderJournal();
+    toast('Journal vidé.');
+  },
+
+  /* ---------- Paramètres ---------- */
+  renderParams() {
+    $('svc-manage').innerHTML = services.map((s, i) =>
+      `<span class="svc-tag">${esc(s)}<button title="Retirer" onclick="App.removeService(${i})">×</button></span>`).join('');
+  },
+
+  addService() {
+    const v = $('new-svc').value.trim();
+    if (!v) return;
+    if (services.some(s => s.toLowerCase() === v.toLowerCase())) { toast('Ce service existe déjà.'); return; }
+    services.push(v);
+    $('new-svc').value = '';
+    log('Paramètres', `Service ajouté : ${v}`);
+    persist();
+    this.renderParams();
+    this.initFilters();
+    toast(`Service « ${v} » ajouté.`);
+  },
+
+  removeService(i) {
+    const s = services[i];
+    const used = courriers.some(c => c.service === s);
+    if (used && !confirm(`Le service « ${s} » est utilisé par des courriers existants (ils le conserveront). Retirer de la liste ?`)) return;
+    services.splice(i, 1);
+    log('Paramètres', `Service retiré : ${s}`);
+    persist();
+    this.renderParams();
+    this.initFilters();
+  },
+
+  /* ---------- Export / sauvegarde ---------- */
+  exportCSV(sens) {
+    const list = this.filtered(sens);
+    if (!list.length) { toast('Aucun courrier à exporter avec ces filtres.'); return; }
+    const isIn = sens === 'entrant';
+    const heads = isIn
+      ? ['N° chrono','Date réception','Date courrier','Expéditeur','Référence','Objet','Type','Service imputé','Priorité','Échéance','Statut','Clôturé le','Confidentiel','Pièces jointes','Instructions','Observations']
+      : ['N° chrono','Date envoi','Date courrier','Destinataire','Référence','Objet','Type','Service émetteur','Signataire','Mode d\'envoi','Statut','Confidentiel','Pièces jointes','Observations'];
+    const cell = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+    const lines = [heads.map(cell).join(';')];
+    for (const c of list) {
+      const row = isIn
+        ? [c.numero, fmtDate(c.dateReception), fmtDate(c.dateCourrier), c.correspondant, c.reference, c.objet, c.type, c.service, c.priorite, fmtDate(c.echeance), c.statut, fmtDate(c.dateCloture), c.confidentiel ? 'Oui' : 'Non', c.pieces, c.instructions, c.observations]
+        : [c.numero, fmtDate(c.dateEnvoi), fmtDate(c.dateCourrier), c.correspondant, c.reference, c.objet, c.type, c.service, c.signataire, c.modeEnvoi, c.statut, c.confidentiel ? 'Oui' : 'Non', c.pieces, c.observations];
+      lines.push(row.map(cell).join(';'));
+    }
+    this.download(`registre-courriers-${sens}s-${todayISO()}.csv`, '﻿' + lines.join('\r\n'), 'text/csv;charset=utf-8');
+    log('Export', `Registre ${sens} exporté en CSV (${list.length} ligne(s))`);
+    toast(`${list.length} courrier(s) exporté(s) en CSV.`);
+  },
+
+  backup() {
+    const payload = { app: 'itierdc-gestion-courriers', version: 1, exportedAt: new Date().toISOString(), services, courriers, journal };
+    this.download(`sauvegarde-courriers-${todayISO()}.json`, JSON.stringify(payload, null, 2), 'application/json');
+    log('Sauvegarde', `Export JSON complet (${courriers.length} courrier(s))`);
+    toast('Sauvegarde JSON téléchargée.');
+  },
+
+  restore(input) {
+    const file = input.files[0];
+    input.value = '';
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result);
+        if (!data || !Array.isArray(data.courriers)) throw new Error('format');
+        if (!confirm(`Restaurer cette sauvegarde (${data.courriers.length} courrier(s)) ?\nLes données actuelles seront remplacées.`)) return;
+        courriers = data.courriers;
+        services = Array.isArray(data.services) && data.services.length ? data.services : services;
+        journal = Array.isArray(data.journal) ? data.journal : journal;
+        log('Restauration', `Sauvegarde restaurée (${courriers.length} courrier(s))`);
+        this.initFilters();
+        this.refresh();
+        toast('Sauvegarde restaurée avec succès.');
+      } catch {
+        alert('Fichier invalide : ce n\'est pas une sauvegarde du registre des courriers.');
+      }
+    };
+    reader.readAsText(file);
+  },
+
+  download(name, content, mime) {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([content], { type: mime }));
+    a.download = name;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  },
+
+  wipe() {
+    if (!confirm('Effacer TOUTES les données du registre (courriers, journal) ? Cette action est irréversible.')) return;
+    if (!confirm('Confirmez-vous la suppression définitive ?')) return;
+    courriers = []; journal = [];
+    persist();
+    this.refresh();
+    toast('Toutes les données ont été effacées.');
+  },
+
+  /* ---------- Impression ---------- */
+  printHeader(titre) {
+    return `<div class="p-head">
+      <div class="p-org">République Démocratique du Congo</div>
+      <div class="p-sub">Initiative pour la Transparence des Industries Extractives — ITIE-RDC · Secrétariat Technique</div>
+      <hr class="p-rule" />
+      <h1>${titre}</h1>
+    </div>`;
+  },
+
+  printBordereau(id) {
+    const c = courriers.find(x => x.id === id);
+    if (!c) return;
+    $('print-area').innerHTML = `
+      ${this.printHeader('Bordereau de transmission')}
+      <div class="p-meta">
+        <div class="kv"><b>N° chrono</b> ${esc(c.numero)}</div>
+        <div class="kv"><b>Date de réception</b> ${fmtDate(c.dateReception)}</div>
+        <div class="kv"><b>Expéditeur</b> ${esc(c.correspondant)}</div>
+        <div class="kv"><b>Référence</b> ${esc(c.reference || '—')}</div>
+        <div class="kv"><b>Objet</b> ${esc(c.objet)}</div>
+        <div class="kv"><b>Type</b> ${esc(c.type)} ${c.confidentiel ? '(CONFIDENTIEL)' : ''}</div>
+        <div class="kv"><b>Priorité</b> ${esc(c.priorite)}</div>
+        <div class="kv"><b>Pièces jointes</b> ${esc(c.pieces || '—')}</div>
+        <div class="kv"><b>Service imputé</b> ${esc(c.service || '—')}</div>
+        <div class="kv"><b>Échéance</b> ${fmtDate(c.echeance)}</div>
+        <div class="kv"><b>Instructions</b> ${esc(c.instructions || '—')}</div>
+      </div>
+      <div class="p-sign">
+        <div>Le Bureau Courrier<div class="sig-line">Date, nom et signature</div></div>
+        <div>Le Service destinataire<div class="sig-line">Date, nom et signature (accusé de réception)</div></div>
+      </div>`;
+    window.print();
+    log('Impression', `Bordereau de transmission — ${c.numero}`);
+  },
+
+  printRegistre() {
+    const ins = courriers.filter(c => c.sens === 'entrant').sort((a, b) => (a.numero || '').localeCompare(b.numero || '', 'fr', { numeric: true }));
+    const outs = courriers.filter(c => c.sens === 'sortant').sort((a, b) => (a.numero || '').localeCompare(b.numero || '', 'fr', { numeric: true }));
+    const row = (c, isIn) => `<tr>
+      <td>${esc(c.numero)}</td><td>${fmtDate(fluxDate(c))}</td><td>${esc(c.correspondant)}</td>
+      <td>${esc(c.objet)}</td><td>${esc(c.service || '—')}</td><td>${isIn ? fmtDate(c.echeance) : esc(c.modeEnvoi || '—')}</td><td>${esc(c.statut)}</td>
+    </tr>`;
+    $('print-area').innerHTML = `
+      ${this.printHeader('Registre des correspondances')}
+      <div class="p-meta">Édité le ${fmtDate(todayISO())} — ${ins.length} courrier(s) entrant(s), ${outs.length} courrier(s) sortant(s).</div>
+      <h1 style="text-align:left;font-size:12pt;margin:0.5cm 0 0.2cm">I. Courriers entrants</h1>
+      <table><thead><tr><th>N° chrono</th><th>Reçu le</th><th>Expéditeur</th><th>Objet</th><th>Service imputé</th><th>Échéance</th><th>Statut</th></tr></thead>
+      <tbody>${ins.map(c => row(c, true)).join('') || '<tr><td colspan="7">Néant</td></tr>'}</tbody></table>
+      <h1 style="text-align:left;font-size:12pt;margin:0.6cm 0 0.2cm">II. Courriers sortants</h1>
+      <table><thead><tr><th>N° chrono</th><th>Envoyé le</th><th>Destinataire</th><th>Objet</th><th>Service émetteur</th><th>Mode d'envoi</th><th>Statut</th></tr></thead>
+      <tbody>${outs.map(c => row(c, false)).join('') || '<tr><td colspan="7">Néant</td></tr>'}</tbody></table>`;
+    window.print();
+    log('Impression', 'Registre complet des correspondances');
+  },
+
+  /* ---------- Démonstration ---------- */
+  seedDemo() {
+    if (courriers.length && !confirm('Ajouter des données de démonstration au registre existant ?')) return;
+    const y = new Date().getFullYear();
+    const d = (offset) => { const dt = new Date(); dt.setDate(dt.getDate() + offset); return dt.toISOString().slice(0, 10); };
+    const demo = [
+      { sens: 'entrant', dateReception: d(-24), correspondant: 'Ministère des Finances', reference: '128/CAB/MIN/FIN/2026', objet: 'Transmission des états de paiements du secteur extractif — exercice 2025', type: 'Lettre officielle', service: 'Cellule Technique / Rapportage', priorite: 'Urgente', echeance: d(-4), statut: 'En traitement', pieces: '1 tableau annexe', instructions: 'Vérifier la concordance avec les déclarations des entreprises.' },
+      { sens: 'entrant', dateReception: d(-15), correspondant: 'Secrétariat International ITIE (Oslo)', reference: 'EITI/2026/117', objet: 'Préparation de la Validation 2026 — calendrier et exigences', type: 'Lettre officielle', service: 'Coordination Nationale', priorite: 'Très urgente', echeance: d(6), statut: 'Imputé', pieces: '2 annexes', instructions: 'Préparer un projet de feuille de route sous huitaine.' },
+      { sens: 'entrant', dateReception: d(-9), correspondant: 'Ministère des Mines', reference: '512/SG/MINES/2026', objet: 'Désignation du point focal pour le rapportage FARI', type: 'Note de service', service: 'Secrétariat Technique', priorite: 'Normale', echeance: d(12), statut: 'Enregistré', pieces: '—' },
+      { sens: 'entrant', dateReception: d(-6), correspondant: 'Coalition Publiez Ce Que Vous Payez — RDC', reference: 'PCQVP/026/2026', objet: 'Demande d\'accès aux données de production minière désagrégées', type: 'Demande', service: 'Cellule Communication', priorite: 'Normale', echeance: d(9), statut: 'Imputé', pieces: '1 note de position' },
+      { sens: 'entrant', dateReception: d(-2), correspondant: 'PNUD RDC', reference: 'UNDP/CD/2026/389', objet: 'Invitation à l\'atelier de restitution du modèle FARI — Kinshasa', type: 'Invitation', service: 'Coordination Nationale', priorite: 'Urgente', echeance: d(3), statut: 'Enregistré', pieces: 'Agenda provisoire' },
+      { sens: 'sortant', dateEnvoi: d(-12), correspondant: 'Ministère des Finances', reference: `042/ITIE-RDC/ST/${y}`, objet: 'Accusé de réception et observations sur les états de paiements 2025', type: 'Lettre officielle', service: 'Cellule Technique / Rapportage', priorite: 'Normale', signataire: 'Le Coordonnateur National', modeEnvoi: 'Porteur', statut: 'Expédié', pieces: '1 note technique' },
+      { sens: 'sortant', dateEnvoi: d(-5), correspondant: 'Ensemble des entreprises extractives déclarantes', reference: `047/ITIE-RDC/ST/${y}`, objet: 'Circulaire : lancement de la collecte des déclarations — exercice 2025', type: 'Note circulaire', service: 'Cellule Technique / Rapportage', priorite: 'Urgente', signataire: 'Le Secrétaire Technique', modeEnvoi: 'Courrier électronique', statut: 'Expédié', pieces: 'Formulaires de déclaration' },
+      { sens: 'sortant', dateEnvoi: d(-1), correspondant: 'Secrétariat International ITIE (Oslo)', reference: `051/ITIE-RDC/CN/${y}`, objet: 'Réponse : feuille de route de préparation à la Validation 2026', type: 'Lettre officielle', service: 'Coordination Nationale', priorite: 'Très urgente', signataire: 'Le Coordonnateur National', modeEnvoi: 'Courrier électronique', statut: 'Signé', pieces: 'Feuille de route (12 p.)' }
+    ];
+    let n = 0;
+    for (const item of demo) {
+      const year = +(fluxDate(item) || todayISO()).slice(0, 4);
+      courriers.push(Object.assign({
+        id: uid() + (n++),
+        numero: nextNumero(item.sens, year),
+        createdAt: Date.now() - (demo.length - n) * 60000,
+        confidentiel: false, dateCourrier: null, reponseA: null, dateCloture: null,
+        instructions: '', observations: '', echeance: null, modeEnvoi: null, signataire: null,
+        historique: [{ ts: Date.now(), txt: 'Enregistrement au registre (démonstration)' }]
+      }, item));
+    }
+    const oslo = courriers.find(c => c.reference === 'EITI/2026/117');
+    const rep = courriers.find(c => (c.reference || '').startsWith('051/ITIE-RDC'));
+    if (oslo && rep) rep.reponseA = oslo.id;
+    log('Démonstration', `${demo.length} courriers de démonstration chargés`);
+    this.refresh();
+    toast('Données de démonstration chargées.');
+  },
+
+  /* ---------- Initialisation ---------- */
+  init() {
+    this.initFilters();
+    this.renderDashboard();
+    this.renderTables();
+    this.renderJournal();
+    this.renderParams();
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') { this.closeForm(); this.closeDetail(); }
+    });
+  }
+};
+
+App.init();
+</script>
+</body>
+</html>
