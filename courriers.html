@@ -462,6 +462,40 @@
     #print-area .kv b { display: inline-block; min-width: 4.2cm; text-transform: uppercase; font-size: 8.5pt; }
   }
 
+  /* ═══ CONNEXION & HABILITATIONS ═══ */
+  body.locked .shell { display: none; }
+  .login-screen {
+    position: fixed; inset: 0; z-index: 600;
+    background: var(--navy);
+    background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.025) 0 2px, transparent 2px 14px);
+    display: flex; align-items: center; justify-content: center; padding: 1rem;
+  }
+  .login-screen[hidden] { display: none; }
+  .login-card {
+    background: var(--card); border: 2px solid var(--ink);
+    box-shadow: 10px 10px 0 rgba(0,0,0,0.5);
+    width: min(430px, 94vw); padding: 1.7rem 1.9rem 1.4rem;
+  }
+  .login-head { border-bottom: 3px double var(--ink); margin-bottom: 1.15rem; padding-bottom: 0.85rem; }
+  .login-brand { font-family: 'Fraunces', serif; font-weight: 900; font-size: 2rem; line-height: 1; }
+  .login-sub { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-top: 0.4rem; }
+  .login-card .field { margin-bottom: 0.85rem; }
+  .login-btn { width: 100%; margin-top: 0.4rem; }
+  .login-err { color: var(--red); font-size: 0.7rem; margin: 0.1rem 0 0.6rem; }
+  .login-note { font-size: 0.74rem; color: var(--muted); font-style: italic; margin-top: 0.85rem; }
+  .side-user { padding: 0.85rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.14); }
+  .su-name { font-weight: 700; color: #fff; font-size: 0.92rem; }
+  .su-role { font-size: 0.58rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--yellow); margin-top: 0.2rem; }
+  .su-actions { display: flex; gap: 0.45rem; margin-top: 0.6rem; flex-wrap: wrap; }
+  body:not(.role-admin) .nav-links button[data-view="parametres"] { display: none; }
+  body:not(.role-admin) .req-admin { display: none !important; }
+  body.role-lecteur .req-write { display: none !important; }
+  .users-wrap { box-shadow: none; border-width: 1px; margin-top: 0.9rem; }
+  .users-wrap table.registry { min-width: 700px; }
+  .users-wrap table.registry tbody tr { cursor: default; }
+  .role-select { padding: 0.3rem 0.4rem; border: 1px solid var(--hair-dark); background: #fff; font-size: 0.78rem; font-family: inherit; }
+  .j-user { color: var(--navy); font-size: 0.68rem; font-weight: 700; font-family: 'IBM Plex Mono', monospace; }
+
   /* ═══ RESPONSIVE ═══ */
   @media (max-width: 860px) {
     .shell { flex-direction: column; }
@@ -477,7 +511,33 @@
   }
 </style>
 </head>
-<body>
+<body class="locked">
+
+<!-- ═══════════ ÉCRAN DE CONNEXION ═══════════ -->
+<div id="login-screen" class="login-screen" hidden>
+  <div class="login-card">
+    <div class="login-head">
+      <div class="login-brand">Letters</div>
+      <div class="login-sub">ITIE-RDC · Secrétariat Technique — Bureau d'Ordre</div>
+    </div>
+    <form id="login-form" onsubmit="Auth.submitLogin(event)" hidden>
+      <div class="field"><label>Identifiant</label><input type="text" id="lg-username" autocomplete="username" required /></div>
+      <div class="field"><label>Mot de passe</label><input type="password" id="lg-pass" autocomplete="current-password" required /></div>
+      <div class="login-err mono" id="login-err" hidden></div>
+      <button type="submit" class="btn btn-yellow login-btn">Ouvrir une session</button>
+      <p class="login-note">Les comptes d'accès sont attribués par l'administrateur du registre.</p>
+    </form>
+    <form id="setup-form" onsubmit="Auth.submitSetup(event)" hidden>
+      <p class="login-note" style="margin:0 0 1rem">Première utilisation — créez le compte <strong>administrateur</strong> qui gérera les utilisateurs et les paramètres du registre.</p>
+      <div class="field"><label>Identifiant administrateur</label><input type="text" id="su-username" required pattern="[A-Za-z0-9._-]{3,24}" title="3 à 24 caractères : lettres, chiffres, point, tiret, tiret bas" /></div>
+      <div class="field"><label>Nom complet</label><input type="text" id="su-name" placeholder="facultatif" /></div>
+      <div class="field"><label>Mot de passe (6 caractères min.)</label><input type="password" id="su-pass" required minlength="6" /></div>
+      <div class="field"><label>Confirmer le mot de passe</label><input type="password" id="su-pass2" required minlength="6" /></div>
+      <div class="login-err mono" id="setup-err" hidden></div>
+      <button type="submit" class="btn btn-yellow login-btn">Créer le compte administrateur</button>
+    </form>
+  </div>
+</div>
 
 <div class="shell">
 
@@ -500,6 +560,14 @@
             </svg>
     </a>
     <div class="side-title">Letters<span>Bureau d'ordre · Courriers</span></div>
+    <div class="side-user" id="side-user" hidden>
+      <div class="su-name" id="su-name-disp"></div>
+      <div class="su-role mono" id="su-role-disp"></div>
+      <div class="su-actions">
+        <button class="btn btn-ghost btn-sm" onclick="Auth.changeOwnPass()">Mot de passe</button>
+        <button class="btn btn-ghost btn-sm" onclick="Auth.logout()">Déconnexion</button>
+      </div>
+    </div>
     <nav class="nav-links" role="tablist">
       <button class="active" data-view="dashboard" onclick="App.show('dashboard')"><span class="n-ico">§</span>Tableau de bord</button>
       <button data-view="entrants" onclick="App.show('entrants')"><span class="n-ico">↓</span>Entrants <span class="badge" id="badge-in" hidden></span></button>
@@ -510,8 +578,8 @@
     <div class="side-sep">Synthèse du registre</div>
     <div class="side-stats" id="side-stats"></div>
     <div class="side-actions">
-      <button class="btn btn-yellow" onclick="App.openForm('entrant')">+ Courrier entrant</button>
-      <button class="btn btn-ghost" onclick="App.openForm('sortant')">+ Courrier sortant</button>
+      <button class="btn btn-yellow req-write" onclick="App.openForm('entrant')">+ Courrier entrant</button>
+      <button class="btn btn-ghost req-write" onclick="App.openForm('sortant')">+ Courrier sortant</button>
     </div>
   </aside>
 
@@ -575,7 +643,7 @@
       </div>
       <div class="head-actions">
         <button class="btn btn-white" onclick="App.exportCSV('entrant')">⬇ Export CSV</button>
-        <button class="btn btn-yellow" onclick="App.openForm('entrant')">+ Enregistrer</button>
+        <button class="btn btn-yellow req-write" onclick="App.openForm('entrant')">+ Enregistrer</button>
       </div>
     </div>
     <div class="filters">
@@ -615,7 +683,7 @@
       </div>
       <div class="head-actions">
         <button class="btn btn-white" onclick="App.exportCSV('sortant')">⬇ Export CSV</button>
-        <button class="btn btn-blue" onclick="App.openForm('sortant')">+ Enregistrer</button>
+        <button class="btn btn-blue req-write" onclick="App.openForm('sortant')">+ Enregistrer</button>
       </div>
     </div>
     <div class="filters">
@@ -653,7 +721,7 @@
         <h2>Journal d'activité</h2>
         <p>Trace horodatée de toutes les opérations : enregistrements, modifications, changements de statut, relances, impressions et suppressions.</p>
       </div>
-      <button class="btn btn-danger" onclick="App.clearJournal()">Vider le journal</button>
+      <button class="btn btn-danger req-admin" onclick="App.clearJournal()">Vider le journal</button>
     </div>
     <ul class="journal-list" id="journal-list"></ul>
   </section>
@@ -665,6 +733,20 @@
         <div class="eyebrow">Configuration</div>
         <h2>Paramètres</h2>
         <p>Services d'imputation, sauvegarde et restauration des données du registre.</p>
+      </div>
+    </div>
+    <div class="panel">
+      <h3>Utilisateurs &amp; habilitations</h3>
+      <p style="font-size:0.84rem;color:var(--muted)">Chaque agent accède au registre avec l'identifiant et le mot de passe que vous lui attribuez. Trois niveaux d'habilitation : <strong>Administrateur</strong> (tout, y compris cette section), <strong>Gestionnaire du courrier</strong> (enregistrement et traitement des courriers), <strong>Consultation seule</strong> (lecture, impression et export uniquement).</p>
+      <div class="table-wrap users-wrap">
+        <table class="registry"><thead><tr><th>Identifiant</th><th>Nom</th><th>Habilitation</th><th>État</th><th>Dernière connexion</th><th>Actions</th></tr></thead><tbody id="tbody-users"></tbody></table>
+      </div>
+      <div class="form-grid" style="margin-top:1.1rem">
+        <div class="field"><label>Identifiant</label><input type="text" id="u-username" placeholder="ex. mkalenga" autocomplete="off" /></div>
+        <div class="field"><label>Nom complet</label><input type="text" id="u-name" placeholder="ex. M. Kalenga Mwamba" /></div>
+        <div class="field"><label>Habilitation</label><select id="u-role"><option value="gestionnaire">Gestionnaire du courrier</option><option value="lecteur">Consultation seule</option><option value="admin">Administrateur</option></select></div>
+        <div class="field"><label>Mot de passe attribué</label><input type="text" id="u-pass" placeholder="6 caractères minimum" autocomplete="off" /></div>
+        <div class="full" style="text-align:right"><button class="btn btn-blue" onclick="Auth.createUser()">Créer l'utilisateur</button></div>
       </div>
     </div>
     <div class="panel">
@@ -909,7 +991,7 @@ function isSoon(c) {
 }
 
 function log(action, detail) {
-  journal.unshift({ ts: Date.now(), action, detail });
+  journal.unshift({ ts: Date.now(), action, detail, user: currentUser ? currentUser.username : '—' });
   if (journal.length > 500) journal.length = 500;
 }
 
@@ -926,11 +1008,248 @@ function fillSelect(sel, options, { blank = null, selected = '' } = {}) {
     options.map(o => `<option value="${esc(o)}"${o === selected ? ' selected' : ''}>${esc(o)}</option>`).join('');
 }
 
+
+/* ═══════════════════ AUTHENTIFICATION & HABILITATIONS ═══════════════════ */
+const LS_USERS = 'itierdc_courriers_users_v1';
+const SS_SESSION = 'itierdc_courriers_session_v1';
+const ROLES = { admin: 'Administrateur', gestionnaire: 'Gestionnaire du courrier', lecteur: 'Consultation seule' };
+const PERMS = { admin: ['read', 'write', 'settings'], gestionnaire: ['read', 'write'], lecteur: ['read'] };
+let users = load(LS_USERS, []);
+let currentUser = null;
+
+function saveUsers() { localStorage.setItem(LS_USERS, JSON.stringify(users)); }
+function can(p) { return !!currentUser && (PERMS[currentUser.role] || []).includes(p); }
+
+function jsHash(str) {
+  let h1 = 0x811c9dc5 >>> 0, h2 = 0xcbf29ce4 >>> 0;
+  for (let r = 0; r < 64; r++) for (let i = 0; i < str.length; i++) {
+    h1 = Math.imul(h1 ^ str.charCodeAt(i), 16777619) >>> 0;
+    h2 = (Math.imul(h2, 31) + str.charCodeAt(i) + r) >>> 0;
+  }
+  return h1.toString(16).padStart(8, '0') + h2.toString(16).padStart(8, '0');
+}
+async function hashPass(pass, salt) {
+  const msg = salt + '::' + pass;
+  try {
+    if (crypto && crypto.subtle) {
+      let buf = new TextEncoder().encode(msg);
+      for (let i = 0; i < 5; i++) buf = new Uint8Array(await crypto.subtle.digest('SHA-256', buf));
+      return 'S:' + Array.from(buf).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+  } catch (e) { /* contexte sans WebCrypto */ }
+  return 'J:' + jsHash(msg);
+}
+async function verifyPass(pass, salt, stored) {
+  if (String(stored).startsWith('J:')) return ('J:' + jsHash(salt + '::' + pass)) === stored;
+  return (await hashPass(pass, salt)) === stored;
+}
+
+const Auth = {
+  init() {
+    const sid = sessionStorage.getItem(SS_SESSION);
+    const u = sid ? users.find(x => x.id === sid && x.active !== false) : null;
+    if (u) this.enter(u); else this.gate();
+  },
+
+  gate() {
+    document.body.classList.add('locked');
+    $('login-screen').hidden = false;
+    const setup = users.length === 0;
+    $('setup-form').hidden = !setup;
+    $('login-form').hidden = setup;
+    setTimeout(() => { const f = $(setup ? 'su-username' : 'lg-username'); if (f) f.focus(); }, 80);
+  },
+
+  err(id, msg) { const e = $(id); e.textContent = msg; e.hidden = false; },
+
+  async submitSetup(ev) {
+    ev.preventDefault();
+    const username = $('su-username').value.trim().toLowerCase();
+    const name = $('su-name').value.trim();
+    const p1 = $('su-pass').value, p2 = $('su-pass2').value;
+    if (p1.length < 6) return this.err('setup-err', 'Le mot de passe doit compter au moins 6 caractères.');
+    if (p1 !== p2) return this.err('setup-err', 'Les deux mots de passe ne correspondent pas.');
+    const salt = uid();
+    const u = { id: uid(), username, name: name || username, role: 'admin', salt, pass: await hashPass(p1, salt), active: true, createdAt: Date.now(), lastLogin: null };
+    users.push(u);
+    saveUsers();
+    journal.unshift({ ts: Date.now(), action: 'Initialisation', detail: `Compte administrateur « ${username} » créé`, user: username });
+    persist();
+    this.loginAs(u);
+  },
+
+  async submitLogin(ev) {
+    ev.preventDefault();
+    const username = $('lg-username').value.trim().toLowerCase();
+    const pass = $('lg-pass').value;
+    const u = users.find(x => x.username === username);
+    if (!u || !(await verifyPass(pass, u.salt, u.pass))) return this.err('login-err', 'Identifiant ou mot de passe incorrect.');
+    if (u.active === false) return this.err('login-err', 'Ce compte a été désactivé par l\'administrateur.');
+    this.loginAs(u);
+  },
+
+  loginAs(u) {
+    sessionStorage.setItem(SS_SESSION, u.id);
+    journal.unshift({ ts: Date.now(), action: 'Connexion', detail: `Ouverture de session (${ROLES[u.role]})`, user: u.username });
+    this.enter(u);
+  },
+
+  enter(u) {
+    currentUser = u;
+    u.lastLogin = Date.now();
+    saveUsers();
+    persist();
+    $('login-screen').hidden = true;
+    document.body.classList.remove('locked');
+    document.body.classList.toggle('role-admin', u.role === 'admin');
+    document.body.classList.toggle('role-lecteur', u.role === 'lecteur');
+    $('side-user').hidden = false;
+    $('su-name-disp').textContent = u.name;
+    $('su-role-disp').textContent = ROLES[u.role];
+    const active = document.querySelector('.view.active');
+    if (active && active.id === 'view-parametres' && u.role !== 'admin') App.show('dashboard');
+    App.refresh();
+  },
+
+  logout() {
+    if (currentUser) {
+      journal.unshift({ ts: Date.now(), action: 'Déconnexion', detail: 'Fermeture de session', user: currentUser.username });
+      persist();
+    }
+    sessionStorage.removeItem(SS_SESSION);
+    location.reload();
+  },
+
+  async changeOwnPass() {
+    const old = prompt('Mot de passe actuel :');
+    if (old === null) return;
+    if (!(await verifyPass(old, currentUser.salt, currentUser.pass))) { toast('Mot de passe actuel incorrect.'); return; }
+    const p = prompt('Nouveau mot de passe (6 caractères minimum) :');
+    if (p === null) return;
+    if (p.length < 6) { toast('Mot de passe trop court (6 caractères minimum).'); return; }
+    currentUser.salt = uid();
+    currentUser.pass = await hashPass(p, currentUser.salt);
+    saveUsers();
+    log('Utilisateurs', 'Changement de son propre mot de passe');
+    persist();
+    App.renderJournal();
+    toast('Votre mot de passe a été modifié.');
+  },
+
+  /* ── Gestion des comptes (administrateur) ── */
+  async createUser() {
+    if (!can('settings')) { toast('Réservé à l\'administrateur.'); return; }
+    const username = $('u-username').value.trim().toLowerCase();
+    const name = $('u-name').value.trim();
+    const role = $('u-role').value;
+    const pass = $('u-pass').value;
+    if (!username || !pass) { toast('Identifiant et mot de passe requis.'); return; }
+    if (!/^[a-z0-9._-]{3,24}$/.test(username)) { toast('Identifiant invalide (3 à 24 caractères : lettres, chiffres, . _ -).'); return; }
+    if (pass.length < 6) { toast('Mot de passe trop court (6 caractères minimum).'); return; }
+    if (users.some(x => x.username === username)) { toast('Cet identifiant existe déjà.'); return; }
+    const salt = uid();
+    users.push({ id: uid(), username, name: name || username, role, salt, pass: await hashPass(pass, salt), active: true, createdAt: Date.now(), lastLogin: null });
+    saveUsers();
+    ['u-username', 'u-name', 'u-pass'].forEach(i => { $(i).value = ''; });
+    log('Utilisateurs', `Compte « ${username} » créé — ${ROLES[role]}`);
+    persist();
+    this.renderUsers();
+    App.renderJournal();
+    toast(`Utilisateur « ${username} » créé (${ROLES[role]}).`);
+  },
+
+  async resetPass(id) {
+    if (!can('settings')) return;
+    const u = users.find(x => x.id === id);
+    if (!u) return;
+    const p = prompt(`Nouveau mot de passe pour « ${u.username} » (6 caractères minimum) :`);
+    if (p === null) return;
+    if (p.length < 6) { toast('Mot de passe trop court (6 caractères minimum).'); return; }
+    u.salt = uid();
+    u.pass = await hashPass(p, u.salt);
+    saveUsers();
+    log('Utilisateurs', `Mot de passe réinitialisé pour « ${u.username} »`);
+    persist();
+    App.renderJournal();
+    toast(`Mot de passe de « ${u.username} » réinitialisé.`);
+  },
+
+  countActiveAdmins() { return users.filter(x => x.role === 'admin' && x.active !== false).length; },
+
+  setRole(id, role) {
+    if (!can('settings')) return;
+    const u = users.find(x => x.id === id);
+    if (!u) return;
+    if (u.role === 'admin' && role !== 'admin' && this.countActiveAdmins() <= 1) {
+      toast('Impossible : il doit rester au moins un administrateur actif.');
+      this.renderUsers();
+      return;
+    }
+    u.role = role;
+    saveUsers();
+    log('Utilisateurs', `Habilitation de « ${u.username} » : ${ROLES[role]}`);
+    persist();
+    this.renderUsers();
+    App.renderJournal();
+    toast(`« ${u.username} » : ${ROLES[role]}.`);
+  },
+
+  toggleActive(id) {
+    if (!can('settings')) return;
+    const u = users.find(x => x.id === id);
+    if (!u || u.id === currentUser.id) return;
+    if (u.active !== false && u.role === 'admin' && this.countActiveAdmins() <= 1) { toast('Impossible : il doit rester au moins un administrateur actif.'); return; }
+    u.active = u.active === false;
+    saveUsers();
+    log('Utilisateurs', `Compte « ${u.username} » ${u.active ? 'réactivé' : 'désactivé'}`);
+    persist();
+    this.renderUsers();
+    App.renderJournal();
+  },
+
+  removeUser(id) {
+    if (!can('settings')) return;
+    const u = users.find(x => x.id === id);
+    if (!u || u.id === currentUser.id) return;
+    if (u.role === 'admin' && this.countActiveAdmins() <= 1) { toast('Impossible : il doit rester au moins un administrateur actif.'); return; }
+    if (!confirm(`Supprimer définitivement le compte « ${u.username} » ?`)) return;
+    users = users.filter(x => x.id !== id);
+    saveUsers();
+    log('Utilisateurs', `Compte « ${u.username} » supprimé`);
+    persist();
+    this.renderUsers();
+    App.renderJournal();
+    toast(`Compte « ${u.username} » supprimé.`);
+  },
+
+  renderUsers() {
+    if (!currentUser) return;
+    const tb = $('tbody-users');
+    if (!tb) return;
+    tb.innerHTML = users.map(u => `
+      <tr>
+        <td class="num-cell">${esc(u.username)}</td>
+        <td>${esc(u.name)}</td>
+        <td><select class="role-select" onchange="Auth.setRole('${u.id}', this.value)" ${u.id === currentUser.id ? 'disabled title="Modifiez votre propre rôle via un autre administrateur"' : ''}>
+          ${Object.entries(ROLES).map(([k, v]) => `<option value="${k}"${u.role === k ? ' selected' : ''}>${v}</option>`).join('')}
+        </select></td>
+        <td>${u.active !== false ? '<span class="chip st-traite">Actif</span>' : '<span class="chip st-sans-suite">Désactivé</span>'}</td>
+        <td class="nowrap">${u.lastLogin ? fmtDateTime(u.lastLogin) : '—'}</td>
+        <td class="nowrap">
+          <button class="btn btn-white btn-sm" onclick="Auth.resetPass('${u.id}')">Mot de passe</button>
+          ${u.id !== currentUser.id ? `<button class="btn btn-white btn-sm" onclick="Auth.toggleActive('${u.id}')">${u.active !== false ? 'Désactiver' : 'Réactiver'}</button>
+          <button class="btn btn-danger btn-sm" onclick="Auth.removeUser('${u.id}')" title="Supprimer le compte">×</button>` : ''}
+        </td>
+      </tr>`).join('');
+  }
+};
+
 /* ═══════════════════ APPLICATION ═══════════════════ */
 const App = {
 
   /* ---------- Navigation ---------- */
   show(view) {
+    if (view === 'parametres' && !can('settings')) { toast('Section réservée à l\'administrateur.'); return; }
     document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + view));
     document.querySelectorAll('.nav-links button').forEach(t => t.classList.toggle('active', t.dataset.view === view));
     if (view === 'dashboard') this.renderDashboard();
@@ -1189,6 +1508,7 @@ const App = {
 
   /* ---------- Formulaire ---------- */
   openForm(sens, id = null) {
+    if (!can('write')) { toast('Habilitation insuffisante — consultation seule.'); return; }
     editId = id;
     const c = id ? courriers.find(x => x.id === id) : null;
     formSens = c ? c.sens : sens;
@@ -1249,6 +1569,7 @@ const App = {
 
   save(ev) {
     ev.preventDefault();
+    if (!can('write')) { toast('Habilitation insuffisante — consultation seule.'); return; }
     const isIn = formSens === 'entrant';
     const dateFlux = $('fld-dateFlux').value;
     const existing = editId ? courriers.find(x => x.id === editId) : null;
@@ -1345,17 +1666,17 @@ const App = {
         ${c.instructions ? `<div class="full"><div class="dt">Instructions de la hiérarchie</div><div class="dd">${esc(c.instructions)}</div></div>` : ''}
         ${c.observations ? `<div class="full"><div class="dt">Observations</div><div class="dd">${esc(c.observations)}</div></div>` : ''}
       </div>
-      <div class="status-line"><span class="dt" style="width:100%">Faire évoluer le statut</span>${statutBtns}</div>
+      ${can('write') ? `<div class="status-line"><span class="dt" style="width:100%">Faire évoluer le statut</span>${statutBtns}</div>` : ''}
       <div class="hist">
         <h4>Historique</h4>
         <ul>${c.historique.slice().reverse().map(h => `<li><span class="h-date">${fmtDateTime(h.ts)}</span>${esc(h.txt)}</li>`).join('')}</ul>
       </div>
       <div class="form-actions">
-        <button class="btn btn-danger" onclick="App.remove('${c.id}')">Supprimer</button>
-        ${isIn && !isClos(c) ? `<button class="btn btn-white" onclick="App.relance('${c.id}')">📣 Enregistrer une relance</button>` : ''}
+        ${can('write') ? `<button class="btn btn-danger" onclick="App.remove('${c.id}')">Supprimer</button>` : ''}
+        ${can('write') && isIn && !isClos(c) ? `<button class="btn btn-white" onclick="App.relance('${c.id}')">📣 Enregistrer une relance</button>` : ''}
         ${isIn ? `<button class="btn btn-white" onclick="App.printBordereau('${c.id}')">🖨 Bordereau de transmission</button>` : ''}
-        <button class="btn btn-white" onclick="App.replyTo('${c.id}')">↩ ${isIn ? 'Créer la réponse (sortant)' : 'Enregistrer la suite (entrant)'}</button>
-        <button class="btn btn-yellow" onclick="App.closeDetail(); App.openForm(null, '${c.id}')">✎ Modifier</button>
+        ${can('write') ? `<button class="btn btn-white" onclick="App.replyTo('${c.id}')">↩ ${isIn ? 'Créer la réponse (sortant)' : 'Enregistrer la suite (entrant)'}</button>
+        <button class="btn btn-yellow" onclick="App.closeDetail(); App.openForm(null, '${c.id}')">✎ Modifier</button>` : ''}
       </div>`;
     $('detail-backdrop').classList.add('open');
   },
@@ -1363,6 +1684,7 @@ const App = {
   closeDetail() { $('detail-backdrop').classList.remove('open'); },
 
   setStatut(id, statut) {
+    if (!can('write')) { toast('Habilitation insuffisante — consultation seule.'); return; }
     const c = courriers.find(x => x.id === id);
     if (!c) return;
     const old = c.statut;
@@ -1376,6 +1698,7 @@ const App = {
   },
 
   relance(id) {
+    if (!can('write')) { toast('Habilitation insuffisante — consultation seule.'); return; }
     const c = courriers.find(x => x.id === id);
     if (!c) return;
     c.historique.push({ ts: Date.now(), txt: `Relance adressée au service « ${c.service || '—'} »` });
@@ -1398,6 +1721,7 @@ const App = {
   },
 
   remove(id) {
+    if (!can('write')) { toast('Habilitation insuffisante — consultation seule.'); return; }
     const c = courriers.find(x => x.id === id);
     if (!c) return;
     if (!confirm(`Supprimer définitivement le courrier ${c.numero} ?\n« ${c.objet} »`)) return;
@@ -1412,11 +1736,12 @@ const App = {
   /* ---------- Journal ---------- */
   renderJournal() {
     $('journal-list').innerHTML = journal.length
-      ? journal.map(j => `<li><span class="j-date">${fmtDateTime(j.ts)}</span><span><strong>${esc(j.action)}</strong> — ${esc(j.detail)}</span></li>`).join('')
+      ? journal.map(j => `<li><span class="j-date">${fmtDateTime(j.ts)}</span><span><strong>${esc(j.action)}</strong> <span class="j-user">[${esc(j.user || '—')}]</span> — ${esc(j.detail)}</span></li>`).join('')
       : '<li><span class="empty-note">Aucune activité enregistrée.</span></li>';
   },
 
   clearJournal() {
+    if (!can('settings')) { toast('Réservé à l\'administrateur.'); return; }
     if (!confirm('Vider le journal d\'activité ?')) return;
     journal = [];
     persist();
@@ -1428,9 +1753,11 @@ const App = {
   renderParams() {
     $('svc-manage').innerHTML = services.map((s, i) =>
       `<span class="svc-tag">${esc(s)}<button title="Retirer" onclick="App.removeService(${i})">×</button></span>`).join('');
+    Auth.renderUsers();
   },
 
   addService() {
+    if (!can('settings')) { toast('Réservé à l\'administrateur.'); return; }
     const v = $('new-svc').value.trim();
     if (!v) return;
     if (services.some(s => s.toLowerCase() === v.toLowerCase())) { toast('Ce service existe déjà.'); return; }
@@ -1444,6 +1771,7 @@ const App = {
   },
 
   removeService(i) {
+    if (!can('settings')) { toast('Réservé à l\'administrateur.'); return; }
     const s = services[i];
     const used = courriers.some(c => c.service === s);
     if (used && !confirm(`Le service « ${s} » est utilisé par des courriers existants (ils le conserveront). Retirer de la liste ?`)) return;
@@ -1476,13 +1804,15 @@ const App = {
   },
 
   backup() {
-    const payload = { app: 'itierdc-gestion-courriers', version: 1, exportedAt: new Date().toISOString(), services, courriers, journal };
+    if (!can('settings')) { toast('Réservé à l\'administrateur.'); return; }
+    const payload = { app: 'itierdc-gestion-courriers', version: 2, exportedAt: new Date().toISOString(), services, courriers, journal, users };
     this.download(`sauvegarde-courriers-${todayISO()}.json`, JSON.stringify(payload, null, 2), 'application/json');
     log('Sauvegarde', `Export JSON complet (${courriers.length} courrier(s))`);
     toast('Sauvegarde JSON téléchargée.');
   },
 
   restore(input) {
+    if (!can('settings')) { toast('Réservé à l\'administrateur.'); return; }
     const file = input.files[0];
     input.value = '';
     if (!file) return;
@@ -1495,7 +1825,16 @@ const App = {
         courriers = data.courriers;
         services = Array.isArray(data.services) && data.services.length ? data.services : services;
         journal = Array.isArray(data.journal) ? data.journal : journal;
-        log('Restauration', `Sauvegarde restaurée (${courriers.length} courrier(s))`);
+        let usersRestored = false;
+        if (Array.isArray(data.users) && data.users.length) { users = data.users; saveUsers(); usersRestored = true; }
+        log('Restauration', `Sauvegarde restaurée (${courriers.length} courrier(s)${usersRestored ? ', comptes utilisateurs inclus' : ''})`);
+        if (usersRestored && !users.find(x => x.id === currentUser.id)) {
+          persist();
+          alert('Les comptes utilisateurs ont été restaurés depuis la sauvegarde — veuillez vous reconnecter.');
+          sessionStorage.removeItem(SS_SESSION);
+          location.reload();
+          return;
+        }
         this.initFilters();
         this.refresh();
         toast('Sauvegarde restaurée avec succès.');
@@ -1515,6 +1854,7 @@ const App = {
   },
 
   wipe() {
+    if (!can('settings')) { toast('Réservé à l\'administrateur.'); return; }
     if (!confirm('Effacer TOUTES les données du registre (courriers, journal) ? Cette action est irréversible.')) return;
     if (!confirm('Confirmez-vous la suppression définitive ?')) return;
     courriers = []; journal = [];
@@ -1581,6 +1921,7 @@ const App = {
 
   /* ---------- Démonstration ---------- */
   seedDemo() {
+    if (!can('settings')) { toast('Réservé à l\'administrateur.'); return; }
     if (courriers.length && !confirm('Ajouter des données de démonstration au registre existant ?')) return;
     const y = new Date().getFullYear();
     const d = (offset) => { const dt = new Date(); dt.setDate(dt.getDate() + offset); return dt.toISOString().slice(0, 10); };
@@ -1629,6 +1970,7 @@ const App = {
 };
 
 App.init();
+Auth.init();
 </script>
 </body>
 </html>
