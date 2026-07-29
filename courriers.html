@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Gestion des Courriers · Secrétariat Technique ITIE-RDC</title>
+<title>Letters · Secrétariat Technique ITIE-RDC</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -52,11 +52,14 @@
     padding: 0.7rem 2rem;
     display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;
   }
-  .logo { display: flex; align-items: baseline; gap: 0.15rem; text-decoration: none; line-height: 1; }
-  .logo .l-itie { font-weight: 900; font-style: italic; font-size: 1.7rem; color: var(--blue); letter-spacing: -0.02em; }
-  .logo .l-rdc  { font-weight: 900; font-style: italic; font-size: 1.7rem; color: var(--red); letter-spacing: -0.02em; }
-  .logo .l-loupe { font-size: 1.05rem; margin-left: 0.1rem; }
-  .logo-block { display: flex; flex-direction: column; }
+  .logo { display: flex; align-items: baseline; text-decoration: none; line-height: 1; }
+  .logo-mark { position: relative; display: inline-flex; align-items: baseline; padding-right: 0.7rem; }
+  .logo .l-itie { font-weight: 900; font-style: italic; font-size: 1.7rem; color: var(--blue); letter-spacing: -0.02em; position: relative; z-index: 1; }
+  .logo .l-rdc  { font-weight: 900; font-style: italic; font-size: 1.7rem; color: var(--red); letter-spacing: -0.02em; position: relative; z-index: 1; }
+  .logo-mark { padding-right: 1rem; }
+  .logo-mark .l-map { position: absolute; right: -0.45rem; top: -0.45rem; width: 2.3rem; height: 2.3rem; z-index: 0; opacity: 0.92; }
+  .logo-mark .l-glass { position: absolute; right: -0.7rem; bottom: -0.35rem; width: 1.3rem; height: 1.3rem; z-index: 2; }
+  .logo-block { display: flex; flex-direction: column; align-items: flex-start; }
   .logo-block small { font-size: 0.58rem; color: var(--muted); letter-spacing: 0.02em; margin-top: 0.15rem; }
   .nav-links { display: flex; gap: 0.4rem; margin-left: auto; flex-wrap: wrap; }
   .nav-links button {
@@ -391,7 +394,11 @@
   <div class="topbar-inner">
     <a class="logo" href="index.html" title="Retour au portail">
       <span class="logo-block">
-        <span><span class="l-itie">iTiE</span><span class="l-rdc">RDC</span><span class="l-loupe">🔍</span></span>
+        <span class="logo-mark">
+          <span class="l-itie">iTiE</span><span class="l-rdc">RDC</span>
+          <svg class="l-map" viewBox="0 0 100 100" aria-hidden="true"><path d="M45,4 C56,2 68,6 75,13 C80,18 84,26 86,34 C88,42 87,50 85,57 C89,63 93,70 92,78 C91,86 84,92 76,90 C70,88 66,80 65,72 C60,76 54,79 48,80 C44,86 38,92 30,93 C22,94 12,96 8,92 C5,88 12,84 15,79 C11,74 8,66 8,57 C8,45 10,32 16,22 C22,12 33,6 45,4 Z" fill="#ce1126"/></svg>
+          <svg class="l-glass" viewBox="0 0 44 44" aria-hidden="true"><circle cx="17" cy="17" r="11.5" fill="rgba(227,238,251,0.75)" stroke="#12395e" stroke-width="5"/><line x1="26" y1="26" x2="39" y2="39" stroke="#12395e" stroke-width="7" stroke-linecap="round"/></svg>
+        </span>
         <small>Initiative pour la Transparence des Industries Extractives</small>
       </span>
     </a>
@@ -409,8 +416,7 @@
 <section class="hero" id="hero">
   <div class="hero-inner">
     <div>
-      <h1><span class="accent-bar"></span>Gestion intelligente des courriers du Secrétariat Technique</h1>
-      <p>De l'enregistrement à l'archivage : l'application trace chaque correspondance entrante et sortante, impute automatiquement les services compétents, surveille les échéances et produit registres et bordereaux officiels.</p>
+      <h1><span class="accent-bar"></span>Letters</h1>
       <div class="hero-cta">
         <button class="btn btn-yellow" onclick="App.openForm('entrant')">+ Enregistrer un courrier entrant</button>
         <button class="btn btn-white" onclick="App.openForm('sortant')">+ Courrier sortant</button>
