@@ -3,311 +3,366 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Gestion des Courriers · ITIE-RDC · Projet PAAJ</title>
+<title>Gestion des Courriers · Secrétariat Technique ITIE-RDC</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --ink: #0d1b2a;
-    --ink-soft: #1b2a3a;
-    --paper: #f5f1e8;
-    --paper-warm: #ede5d1;
-    --paper-light: #faf6ec;
-    --rdc-blue: #007fff;
-    --rdc-red: #ce1126;
-    --rdc-yellow: #fcd116;
-    --forest: #0f5132;
-    --forest-light: #2d6a4f;
-    --forest-deep: #052e16;
-    --earth: #8b4513;
-    --muted: #6b7280;
-    --line: rgba(13,27,42,0.12);
-    --ok: #0f5132;
-    --warn: #b45309;
-    --danger: #ce1126;
+    --blue: #1878d1;
+    --blue-strong: #1466b8;
+    --blue-light: #2b8ae0;
+    --blue-pale: #e3eefb;
+    --navy: #12395e;
+    --red: #ce1126;
+    --yellow: #ffc107;
+    --yellow-deep: #f5b301;
+    --bg: #f2f6fb;
+    --card: #ffffff;
+    --muted: #5b7186;
+    --line: #dde7f0;
+    --ok: #1e8e5a;
+    --warn: #d97706;
+    --danger: #d3202f;
+    --radius: 14px;
+    --shadow: 0 4px 18px rgba(18,57,94,0.08);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
   body {
-    font-family: 'IBM Plex Sans', sans-serif;
-    background: var(--paper);
-    color: var(--ink);
-    line-height: 1.5;
+    font-family: 'Public Sans', 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--navy);
+    line-height: 1.55;
     min-height: 100vh;
   }
   .mono { font-family: 'IBM Plex Mono', monospace; }
   button { font-family: inherit; cursor: pointer; }
-  input, select, textarea { font-family: inherit; font-size: 0.9rem; }
+  input, select, textarea { font-family: inherit; font-size: 0.9rem; color: var(--navy); }
 
-  /* ===== BARRE SUPÉRIEURE ===== */
+  /* ═══ BARRE DE NAVIGATION (charte : fond blanc, souligné jaune) ═══ */
   .topbar {
     position: sticky; top: 0; z-index: 100;
-    background: var(--ink);
-    color: var(--paper);
-    border-bottom: 3px solid var(--rdc-yellow);
+    background: #fff;
+    box-shadow: 0 2px 10px rgba(18,57,94,0.08);
   }
   .topbar-inner {
-    max-width: 1400px; margin: 0 auto;
-    padding: 0.85rem 2rem;
-    display: flex; align-items: center; justify-content: space-between;
-    gap: 1.5rem; flex-wrap: wrap;
+    max-width: 1440px; margin: 0 auto;
+    padding: 0.7rem 2rem;
+    display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;
   }
-  .brand {
-    display: flex; align-items: center; gap: 0.75rem;
-    font-family: 'Fraunces', serif; font-weight: 700;
-    font-size: 1.05rem; letter-spacing: 0.02em;
+  .logo { display: flex; align-items: baseline; gap: 0.15rem; text-decoration: none; line-height: 1; }
+  .logo .l-itie { font-weight: 900; font-style: italic; font-size: 1.7rem; color: var(--blue); letter-spacing: -0.02em; }
+  .logo .l-rdc  { font-weight: 900; font-style: italic; font-size: 1.7rem; color: var(--red); letter-spacing: -0.02em; }
+  .logo .l-loupe { font-size: 1.05rem; margin-left: 0.1rem; }
+  .logo-block { display: flex; flex-direction: column; }
+  .logo-block small { font-size: 0.58rem; color: var(--muted); letter-spacing: 0.02em; margin-top: 0.15rem; }
+  .nav-links { display: flex; gap: 0.4rem; margin-left: auto; flex-wrap: wrap; }
+  .nav-links button {
+    background: none; border: none;
+    padding: 0.55rem 0.9rem 0.5rem;
+    font-size: 0.92rem; font-weight: 600; color: var(--navy);
+    border-bottom: 3px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
   }
-  .brand-flag { width: 32px; height: 22px; flex-shrink: 0; box-shadow: 0 0 0 1px rgba(245,241,232,0.2); }
-  .brand-flag svg { width: 100%; height: 100%; display: block; }
-  .brand small { display: block; font-family: 'IBM Plex Sans'; font-weight: 400; font-size: 0.68rem; opacity: 0.7; letter-spacing: 0.08em; text-transform: uppercase; }
-  .top-actions { display: flex; gap: 0.6rem; align-items: center; }
+  .nav-links button:hover { color: var(--blue); }
+  .nav-links button.active { color: var(--blue); border-bottom-color: var(--yellow); }
+  .nav-links .badge {
+    background: var(--red); color: #fff; border-radius: 10px;
+    font-size: 0.62rem; padding: 0.08rem 0.42rem; margin-left: 0.3rem; vertical-align: 2px;
+  }
+
+  /* ═══ BOUTONS (charte : pilule jaune / bleu) ═══ */
   .btn {
     display: inline-flex; align-items: center; gap: 0.45rem;
-    border: none; border-radius: 4px;
-    padding: 0.55rem 1rem;
-    font-size: 0.82rem; font-weight: 600; letter-spacing: 0.03em;
+    border: none; border-radius: 8px;
+    padding: 0.6rem 1.15rem;
+    font-size: 0.86rem; font-weight: 700;
     transition: all 0.15s;
   }
-  .btn-primary { background: var(--rdc-yellow); color: var(--ink); }
-  .btn-primary:hover { background: #ffdf47; }
-  .btn-forest { background: var(--forest); color: #fff; }
-  .btn-forest:hover { background: var(--forest-light); }
-  .btn-ghost { background: transparent; color: var(--paper); border: 1px solid rgba(245,241,232,0.35); }
-  .btn-ghost:hover { border-color: var(--rdc-yellow); color: var(--rdc-yellow); }
-  .btn-outline { background: #fff; color: var(--ink); border: 1px solid var(--line); }
-  .btn-outline:hover { border-color: var(--ink); }
-  .btn-danger { background: #fff; color: var(--danger); border: 1px solid rgba(206,17,38,0.4); }
-  .btn-danger:hover { background: rgba(206,17,38,0.06); }
-  .btn-sm { padding: 0.32rem 0.6rem; font-size: 0.74rem; }
+  .btn-yellow { background: var(--yellow); color: var(--navy); box-shadow: 0 3px 10px rgba(245,179,1,0.35); }
+  .btn-yellow:hover { background: var(--yellow-deep); transform: translateY(-1px); }
+  .btn-blue { background: var(--blue); color: #fff; }
+  .btn-blue:hover { background: var(--blue-strong); }
+  .btn-white { background: #fff; color: var(--blue); border: 1px solid var(--line); }
+  .btn-white:hover { border-color: var(--blue); }
+  .btn-danger { background: #fff; color: var(--danger); border: 1px solid rgba(211,32,47,0.35); }
+  .btn-danger:hover { background: rgba(211,32,47,0.06); }
+  .btn-sm { padding: 0.35rem 0.7rem; font-size: 0.76rem; border-radius: 7px; }
 
-  /* ===== ONGLETS ===== */
-  .tabs-bar { background: var(--ink-soft); }
-  .tabs {
-    max-width: 1400px; margin: 0 auto; padding: 0 2rem;
-    display: flex; gap: 0.25rem; overflow-x: auto;
+  /* ═══ HERO BLEU (charte : dégradé + carte chiffres clés) ═══ */
+  .hero {
+    background: linear-gradient(135deg, #1466b8 0%, #1d7fd6 55%, #2b8ae0 100%);
+    color: #fff;
+    position: relative; overflow: hidden;
   }
-  .tab {
-    background: transparent; border: none; color: rgba(245,241,232,0.65);
-    padding: 0.75rem 1.1rem; font-size: 0.8rem; font-weight: 600;
-    letter-spacing: 0.06em; text-transform: uppercase;
-    border-bottom: 3px solid transparent; white-space: nowrap;
+  .hero::after {
+    content: ''; position: absolute; inset: 0;
+    background-image: radial-gradient(rgba(255,255,255,0.14) 1.5px, transparent 1.5px);
+    background-size: 34px 34px; opacity: 0.5; pointer-events: none;
   }
-  .tab:hover { color: var(--paper); }
-  .tab.active { color: var(--rdc-yellow); border-bottom-color: var(--rdc-yellow); }
-  .tab .badge {
-    background: var(--rdc-red); color: #fff; border-radius: 10px;
-    font-size: 0.62rem; padding: 0.05rem 0.42rem; margin-left: 0.35rem; vertical-align: 1px;
+  .hero-inner {
+    max-width: 1440px; margin: 0 auto; padding: 2.6rem 2rem 2.8rem;
+    display: grid; grid-template-columns: 1.25fr 1fr; gap: 2.5rem; align-items: center;
+    position: relative; z-index: 1;
   }
+  @media (max-width: 980px) { .hero-inner { grid-template-columns: 1fr; } }
+  .hero h1 { font-size: clamp(1.9rem, 4vw, 3rem); font-weight: 900; line-height: 1.12; letter-spacing: -0.015em; }
+  .hero h1 .accent-bar { display: inline-block; width: 8px; height: 0.85em; background: var(--yellow); margin-right: 0.45rem; vertical-align: -0.08em; border-radius: 2px; }
+  .hero p { margin-top: 1rem; font-size: 1.02rem; opacity: 0.94; max-width: 56ch; }
+  .hero-cta { display: flex; gap: 0.8rem; margin-top: 1.6rem; flex-wrap: wrap; }
+  .keycard {
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: var(--radius);
+    padding: 1.4rem 1.6rem;
+    backdrop-filter: blur(4px);
+  }
+  .keycard h3 { font-size: 1.12rem; font-weight: 800; margin-bottom: 0.7rem; }
+  .keycard .krow {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+    padding: 0.62rem 0; border-bottom: 1px solid rgba(255,255,255,0.22);
+    font-size: 0.92rem;
+  }
+  .keycard .krow:last-child { border-bottom: none; }
+  .keycard .kval { color: var(--yellow); font-weight: 800; font-size: 1.15rem; white-space: nowrap; }
 
-  /* ===== STRUCTURE ===== */
-  .wrap { max-width: 1400px; margin: 0 auto; padding: 1.8rem 2rem 4rem; }
+  /* ═══ STRUCTURE ═══ */
+  .wrap { max-width: 1440px; margin: 0 auto; padding: 2rem 2rem 4rem; }
   .view { display: none; }
   .view.active { display: block; }
-  .view-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.4rem; }
-  .view-head h1 { font-family: 'Fraunces', serif; font-size: 1.75rem; font-weight: 700; }
-  .view-head p { color: var(--muted); font-size: 0.88rem; max-width: 60ch; }
-
-  /* ===== CARTES KPI ===== */
-  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 1rem; margin-bottom: 1.6rem; }
-  .kpi {
-    background: #fff; border: 1px solid var(--line); border-radius: 6px;
-    padding: 1.1rem 1.2rem; border-top: 4px solid var(--forest);
+  .eyebrow {
+    font-size: 0.74rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--blue); margin-bottom: 0.4rem;
   }
-  .kpi.k-blue { border-top-color: var(--rdc-blue); }
-  .kpi.k-red { border-top-color: var(--rdc-red); }
-  .kpi.k-yellow { border-top-color: var(--rdc-yellow); }
-  .kpi.k-earth { border-top-color: var(--earth); }
-  .kpi .kpi-num { font-family: 'Fraunces', serif; font-size: 2.1rem; font-weight: 900; line-height: 1.1; }
-  .kpi .kpi-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 600; margin-top: 0.2rem; }
-  .kpi .kpi-sub { font-size: 0.75rem; color: var(--muted); margin-top: 0.35rem; }
+  .view-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .view-head h2 { font-size: 1.85rem; font-weight: 900; letter-spacing: -0.015em; line-height: 1.15; }
+  .view-head p { color: var(--muted); font-size: 0.9rem; max-width: 62ch; margin-top: 0.35rem; }
+  .head-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+
+  /* ═══ KPI ═══ */
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(195px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+  .kpi {
+    background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 1.15rem 1.3rem; border-left: 5px solid var(--blue);
+  }
+  .kpi.k-yellow { border-left-color: var(--yellow); }
+  .kpi.k-red { border-left-color: var(--red); }
+  .kpi.k-green { border-left-color: var(--ok); }
+  .kpi.k-navy { border-left-color: var(--navy); }
+  .kpi-num { font-size: 2.05rem; font-weight: 900; line-height: 1.1; letter-spacing: -0.02em; }
+  .kpi-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.09em; color: var(--muted); font-weight: 700; margin-top: 0.25rem; }
+  .kpi-sub { font-size: 0.76rem; color: var(--muted); margin-top: 0.3rem; }
 
   .panel-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 1.2rem; align-items: start; }
   @media (max-width: 980px) { .panel-grid { grid-template-columns: 1fr; } }
-  .panel { background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 1.2rem 1.3rem; margin-bottom: 1.2rem; }
-  .panel h3 { font-family: 'Fraunces', serif; font-size: 1.05rem; margin-bottom: 0.9rem; display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
-  .panel h3 .hint { font-family: 'IBM Plex Sans'; font-weight: 400; font-size: 0.72rem; color: var(--muted); }
+  .panel { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.3rem 1.4rem; margin-bottom: 1.2rem; }
+  .panel h3 { font-size: 1.05rem; font-weight: 800; margin-bottom: 0.9rem; display: flex; justify-content: space-between; align-items: baseline; gap: 0.6rem; }
+  .panel h3 .hint { font-weight: 500; font-size: 0.72rem; color: var(--muted); }
 
-  /* Graphique en barres CSS */
+  /* Graphique en barres */
   .chart { display: flex; align-items: flex-end; gap: 6px; height: 150px; padding-top: 0.4rem; }
   .chart .col { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 3px; height: 100%; min-width: 0; }
   .chart .bars { display: flex; align-items: flex-end; gap: 2px; width: 100%; flex: 1; justify-content: center; }
-  .chart .bar { width: 40%; max-width: 16px; border-radius: 2px 2px 0 0; min-height: 2px; }
-  .chart .bar.in { background: var(--forest); }
-  .chart .bar.out { background: var(--rdc-blue); }
-  .chart .lbl { font-size: 0.6rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; }
-  .legend { display: flex; gap: 1.1rem; font-size: 0.72rem; color: var(--muted); margin-top: 0.6rem; }
-  .legend span::before { content: ''; display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 0.35rem; vertical-align: -1px; }
-  .legend .li-in::before { background: var(--forest); }
-  .legend .li-out::before { background: var(--rdc-blue); }
+  .chart .bar { width: 40%; max-width: 16px; border-radius: 3px 3px 0 0; min-height: 2px; }
+  .chart .bar.in { background: var(--blue); }
+  .chart .bar.out { background: var(--yellow); }
+  .chart .lbl { font-size: 0.6rem; color: var(--muted); text-transform: uppercase; }
+  .legend { display: flex; gap: 1.1rem; font-size: 0.74rem; color: var(--muted); margin-top: 0.6rem; }
+  .legend span::before { content: ''; display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 0.35rem; vertical-align: -1px; }
+  .legend .li-in::before { background: var(--blue); }
+  .legend .li-out::before { background: var(--yellow); }
 
   .mini-list { list-style: none; }
   .mini-list li {
     display: flex; justify-content: space-between; gap: 0.8rem; align-items: baseline;
-    padding: 0.5rem 0; border-bottom: 1px dashed var(--line); font-size: 0.84rem; cursor: pointer;
+    padding: 0.52rem 0; border-bottom: 1px solid var(--line); font-size: 0.85rem; cursor: pointer;
   }
   .mini-list li:last-child { border-bottom: none; }
-  .mini-list li:hover .obj { color: var(--forest); text-decoration: underline; }
+  .mini-list li:hover .obj { color: var(--blue); text-decoration: underline; }
   .mini-list .obj { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .mini-list .meta { font-size: 0.72rem; color: var(--muted); white-space: nowrap; }
-  .empty-note { color: var(--muted); font-size: 0.83rem; font-style: italic; padding: 0.4rem 0; }
+  .empty-note { color: var(--muted); font-size: 0.84rem; font-style: italic; padding: 0.4rem 0; }
 
-  .svc-row { display: flex; align-items: center; gap: 0.7rem; padding: 0.32rem 0; font-size: 0.8rem; }
-  .svc-row .svc-name { width: 40%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .svc-row .svc-bar { flex: 1; height: 9px; background: var(--paper-warm); border-radius: 4px; overflow: hidden; }
-  .svc-row .svc-fill { height: 100%; background: var(--forest-light); border-radius: 4px; }
+  .svc-row { display: flex; align-items: center; gap: 0.7rem; padding: 0.34rem 0; font-size: 0.82rem; }
+  .svc-row .svc-name { width: 42%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .svc-row .svc-bar { flex: 1; height: 9px; background: var(--blue-pale); border-radius: 5px; overflow: hidden; }
+  .svc-row .svc-fill { height: 100%; background: linear-gradient(90deg, var(--blue), var(--blue-light)); border-radius: 5px; }
   .svc-row .svc-n { font-family: 'IBM Plex Mono'; font-size: 0.72rem; color: var(--muted); width: 2.2rem; text-align: right; }
 
-  /* ===== FILTRES ===== */
+  /* ═══ ALERTE ═══ */
+  .alert-strip {
+    background: #fdecec; border: 1px solid rgba(206,17,38,0.3);
+    border-left: 5px solid var(--red); border-radius: 10px;
+    padding: 0.8rem 1.1rem; margin-bottom: 1.3rem; font-size: 0.87rem;
+    display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap;
+  }
+  .alert-strip strong { color: var(--red); }
+
+  /* ═══ FILTRES ═══ */
   .filters {
     display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center;
-    background: #fff; border: 1px solid var(--line); border-radius: 6px;
-    padding: 0.7rem 0.9rem; margin-bottom: 1rem;
+    background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 0.8rem 1rem; margin-bottom: 1.1rem;
   }
-  .filters input[type="search"] { flex: 1 1 220px; }
+  .filters input[type="search"] { flex: 1 1 230px; }
   .filters input, .filters select {
-    padding: 0.48rem 0.6rem; border: 1px solid var(--line); border-radius: 4px;
-    background: var(--paper-light); font-size: 0.83rem;
+    padding: 0.5rem 0.65rem; border: 1px solid var(--line); border-radius: 8px;
+    background: var(--bg); font-size: 0.84rem;
   }
-  .filters input:focus, .filters select:focus { outline: 2px solid rgba(15,81,50,0.35); border-color: var(--forest); }
+  .filters input:focus, .filters select:focus { outline: 2px solid rgba(24,120,209,0.35); border-color: var(--blue); }
 
-  /* ===== TABLEAUX ===== */
-  .table-wrap { background: #fff; border: 1px solid var(--line); border-radius: 6px; overflow-x: auto; }
-  table.registry { width: 100%; border-collapse: collapse; font-size: 0.83rem; min-width: 860px; }
+  /* ═══ TABLEAUX ═══ */
+  .table-wrap { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); overflow-x: auto; }
+  table.registry { width: 100%; border-collapse: collapse; font-size: 0.84rem; min-width: 880px; }
   table.registry th {
-    text-align: left; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em;
-    color: var(--paper); background: var(--ink-soft); padding: 0.6rem 0.8rem; white-space: nowrap;
+    text-align: left; font-size: 0.67rem; text-transform: uppercase; letter-spacing: 0.09em;
+    color: #fff; background: var(--navy); padding: 0.65rem 0.85rem; white-space: nowrap;
     cursor: pointer; user-select: none;
   }
-  table.registry th .arrow { opacity: 0.6; font-size: 0.6rem; }
-  table.registry td { padding: 0.62rem 0.8rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  table.registry th:first-child { border-top-left-radius: var(--radius); }
+  table.registry th:last-child { border-top-right-radius: var(--radius); }
+  table.registry th .arrow { opacity: 0.55; font-size: 0.6rem; }
+  table.registry td { padding: 0.66rem 0.85rem; border-bottom: 1px solid var(--line); vertical-align: top; }
   table.registry tbody tr { cursor: pointer; transition: background 0.12s; }
-  table.registry tbody tr:hover { background: var(--paper-light); }
-  table.registry tr.overdue td:first-child { box-shadow: inset 4px 0 0 var(--rdc-red); }
+  table.registry tbody tr:hover { background: var(--blue-pale); }
+  table.registry tr.overdue td:first-child { box-shadow: inset 4px 0 0 var(--red); }
   .num-cell { font-family: 'IBM Plex Mono'; font-weight: 600; font-size: 0.78rem; white-space: nowrap; }
-  .obj-cell { max-width: 340px; }
+  .obj-cell { max-width: 360px; }
   .obj-cell .obj-main { font-weight: 600; }
   .obj-cell .obj-sub { font-size: 0.72rem; color: var(--muted); margin-top: 0.1rem; }
   td.nowrap { white-space: nowrap; }
 
   .chip {
-    display: inline-block; padding: 0.14rem 0.55rem; border-radius: 12px;
-    font-size: 0.68rem; font-weight: 600; letter-spacing: 0.03em; white-space: nowrap;
+    display: inline-block; padding: 0.15rem 0.6rem; border-radius: 20px;
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.02em; white-space: nowrap;
   }
-  .chip.st-enregistre { background: rgba(0,127,255,0.12); color: #075ab8; }
-  .chip.st-impute { background: rgba(139,69,19,0.14); color: var(--earth); }
-  .chip.st-traitement { background: rgba(252,209,22,0.28); color: #8a6d00; }
-  .chip.st-traite { background: rgba(15,81,50,0.14); color: var(--forest); }
-  .chip.st-archive { background: rgba(107,114,128,0.15); color: #4b5563; }
-  .chip.st-sans-suite { background: rgba(107,114,128,0.15); color: #4b5563; text-decoration: line-through; }
-  .chip.st-redaction { background: rgba(0,127,255,0.12); color: #075ab8; }
-  .chip.st-signe { background: rgba(252,209,22,0.28); color: #8a6d00; }
-  .chip.st-expedie { background: rgba(15,81,50,0.14); color: var(--forest); }
-  .chip.pr-normale { background: var(--paper-warm); color: var(--ink-soft); }
-  .chip.pr-urgente { background: rgba(180,83,9,0.15); color: var(--warn); }
-  .chip.pr-tres-urgente { background: rgba(206,17,38,0.13); color: var(--danger); }
-  .chip.late { background: var(--rdc-red); color: #fff; }
-  .chip.soon { background: rgba(180,83,9,0.18); color: var(--warn); }
-  .chip.conf { background: var(--ink); color: var(--rdc-yellow); }
-  .chip.sens-in { background: rgba(15,81,50,0.12); color: var(--forest); }
-  .chip.sens-out { background: rgba(0,127,255,0.12); color: #075ab8; }
+  .chip.st-enregistre { background: var(--blue-pale); color: var(--blue-strong); }
+  .chip.st-impute { background: #ede7fb; color: #6d4fc4; }
+  .chip.st-traitement { background: #fff3cd; color: #9a7500; }
+  .chip.st-traite { background: #ddf3e8; color: var(--ok); }
+  .chip.st-archive { background: #e7ecf1; color: #56708a; }
+  .chip.st-sans-suite { background: #e7ecf1; color: #56708a; text-decoration: line-through; }
+  .chip.st-redaction { background: var(--blue-pale); color: var(--blue-strong); }
+  .chip.st-signe { background: #fff3cd; color: #9a7500; }
+  .chip.st-expedie { background: #ddf3e8; color: var(--ok); }
+  .chip.pr-normale { background: #e7ecf1; color: #46607a; }
+  .chip.pr-urgente { background: #fde8d2; color: var(--warn); }
+  .chip.pr-tres-urgente { background: #fdd9dc; color: var(--danger); }
+  .chip.late { background: var(--red); color: #fff; }
+  .chip.soon { background: #fde8d2; color: var(--warn); }
+  .chip.conf { background: var(--navy); color: var(--yellow); }
+  .chip.sens-in { background: var(--blue-pale); color: var(--blue-strong); }
+  .chip.sens-out { background: #fff3cd; color: #9a7500; }
 
-  .table-foot { display: flex; justify-content: space-between; align-items: center; padding: 0.7rem 0.9rem; font-size: 0.78rem; color: var(--muted); flex-wrap: wrap; gap: 0.6rem; }
+  .table-foot { display: flex; justify-content: space-between; align-items: center; padding: 0.7rem 1rem; font-size: 0.78rem; color: var(--muted); flex-wrap: wrap; gap: 0.6rem; }
 
-  /* ===== ALERTES ===== */
-  .alert-strip {
-    background: rgba(206,17,38,0.08); border: 1px solid rgba(206,17,38,0.35);
-    border-left: 5px solid var(--rdc-red); border-radius: 4px;
-    padding: 0.75rem 1rem; margin-bottom: 1.2rem; font-size: 0.85rem;
-    display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap;
-  }
-  .alert-strip strong { color: var(--rdc-red); }
-
-  /* ===== MODALES ===== */
+  /* ═══ MODALES ═══ */
   .modal-backdrop {
     display: none; position: fixed; inset: 0; z-index: 300;
-    background: rgba(13,27,42,0.55); backdrop-filter: blur(2px);
+    background: rgba(18,57,94,0.5); backdrop-filter: blur(3px);
     align-items: flex-start; justify-content: center; overflow-y: auto; padding: 3vh 1rem;
   }
   .modal-backdrop.open { display: flex; }
   .modal {
-    background: var(--paper-light); border-radius: 8px; width: 100%; max-width: 780px;
-    border-top: 5px solid var(--rdc-yellow); box-shadow: 0 20px 60px rgba(0,0,0,0.35);
-    margin-bottom: 3vh;
+    background: #fff; border-radius: 16px; width: 100%; max-width: 800px;
+    box-shadow: 0 24px 70px rgba(18,57,94,0.4);
+    margin-bottom: 3vh; overflow: hidden;
   }
-  .modal-head { padding: 1.2rem 1.5rem 0.8rem; display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
-  .modal-head h2 { font-family: 'Fraunces', serif; font-size: 1.3rem; }
-  .modal-head .sub { font-size: 0.78rem; color: var(--muted); margin-top: 0.15rem; }
-  .modal-close { background: none; border: none; font-size: 1.5rem; line-height: 1; color: var(--muted); padding: 0.2rem 0.5rem; }
-  .modal-close:hover { color: var(--rdc-red); }
-  .modal-body { padding: 0.4rem 1.5rem 1.5rem; }
+  .modal-head {
+    padding: 1.25rem 1.6rem 1rem;
+    background: linear-gradient(135deg, #1466b8, #2b8ae0);
+    color: #fff;
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;
+  }
+  .modal-head h2 { font-size: 1.3rem; font-weight: 800; }
+  .modal-head .sub { font-size: 0.8rem; opacity: 0.9; margin-top: 0.15rem; }
+  .modal-close { background: rgba(255,255,255,0.15); border: none; border-radius: 8px; font-size: 1.3rem; line-height: 1; color: #fff; padding: 0.3rem 0.6rem; }
+  .modal-close:hover { background: var(--red); }
+  .modal-body { padding: 1.2rem 1.6rem 1.6rem; }
 
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem 1rem; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem 1.1rem; }
   .form-grid .full { grid-column: 1 / -1; }
   @media (max-width: 640px) { .form-grid { grid-template-columns: 1fr; } }
-  .field label { display: block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--ink-soft); margin-bottom: 0.28rem; }
-  .field label .req { color: var(--rdc-red); }
+  .field label { display: block; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--navy); margin-bottom: 0.3rem; }
+  .field label .req { color: var(--red); }
   .field input, .field select, .field textarea {
-    width: 100%; padding: 0.55rem 0.65rem; border: 1px solid var(--line); border-radius: 4px;
-    background: #fff; font-size: 0.88rem;
+    width: 100%; padding: 0.58rem 0.7rem; border: 1px solid var(--line); border-radius: 8px;
+    background: var(--bg); font-size: 0.88rem;
   }
   .field textarea { resize: vertical; min-height: 64px; }
-  .field input:focus, .field select:focus, .field textarea:focus { outline: 2px solid rgba(15,81,50,0.35); border-color: var(--forest); }
-  .field .note { font-size: 0.7rem; color: var(--muted); margin-top: 0.2rem; }
-  .check-inline { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; padding-top: 1.4rem; }
+  .field input:focus, .field select:focus, .field textarea:focus { outline: 2px solid rgba(24,120,209,0.35); border-color: var(--blue); background: #fff; }
+  .field .note { font-size: 0.7rem; color: var(--muted); margin-top: 0.22rem; }
+  .check-inline { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; padding-top: 1.5rem; }
   .check-inline input { width: auto; }
   .form-actions { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 1.3rem; flex-wrap: wrap; }
-  .sens-switch { display: flex; gap: 0; border: 1px solid var(--line); border-radius: 5px; overflow: hidden; margin-bottom: 1.1rem; }
-  .sens-switch button { flex: 1; padding: 0.6rem; border: none; background: #fff; font-weight: 700; font-size: 0.82rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
-  .sens-switch button.on-in { background: var(--forest); color: #fff; }
-  .sens-switch button.on-out { background: var(--rdc-blue); color: #fff; }
+  .sens-switch { display: flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin-bottom: 1.1rem; }
+  .sens-switch button { flex: 1; padding: 0.65rem; border: none; background: #fff; font-weight: 800; font-size: 0.84rem; letter-spacing: 0.03em; color: var(--muted); }
+  .sens-switch button.on-in { background: var(--blue); color: #fff; }
+  .sens-switch button.on-out { background: var(--yellow); color: var(--navy); }
 
-  /* ===== FICHE DÉTAIL ===== */
-  .detail-num { font-family: 'IBM Plex Mono'; font-weight: 700; font-size: 1rem; }
-  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem 1.4rem; margin: 0.9rem 0; }
+  /* ═══ ASSISTANT INTELLIGENT ═══ */
+  .smart-bar {
+    display: none;
+    background: linear-gradient(135deg, #eef6ff, #e8f2fd);
+    border: 1px solid rgba(24,120,209,0.3);
+    border-radius: 10px;
+    padding: 0.7rem 0.9rem; margin-bottom: 1rem;
+    font-size: 0.82rem;
+  }
+  .smart-bar.on { display: block; }
+  .smart-bar .smart-title { font-weight: 800; color: var(--blue-strong); display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.3rem; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; }
+  .smart-bar .sug { display: inline-flex; align-items: center; gap: 0.4rem; background: #fff; border: 1px solid var(--line); border-radius: 20px; padding: 0.22rem 0.4rem 0.22rem 0.75rem; margin: 0.18rem 0.3rem 0.18rem 0; font-size: 0.78rem; }
+  .smart-bar .sug b { color: var(--blue-strong); }
+  .smart-bar .sug button { background: var(--yellow); border: none; border-radius: 14px; padding: 0.12rem 0.6rem; font-size: 0.7rem; font-weight: 800; color: var(--navy); }
+  .smart-bar .dup { color: var(--danger); font-weight: 600; margin-top: 0.35rem; }
+  .smart-bar .dup .link-rep { color: var(--danger); }
+
+  /* ═══ FICHE DÉTAIL ═══ */
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem 1.4rem; margin: 0.9rem 0; }
   .detail-grid .full { grid-column: 1 / -1; }
   @media (max-width: 640px) { .detail-grid { grid-template-columns: 1fr; } }
-  .dt { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); font-weight: 700; }
-  .dd { font-size: 0.9rem; margin-top: 0.1rem; }
-  .dd.big { font-weight: 600; }
+  .dt { font-size: 0.67rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 800; }
+  .dd { font-size: 0.92rem; margin-top: 0.12rem; }
+  .dd.big { font-weight: 700; }
   .status-line { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin: 0.8rem 0 0.4rem; }
-  .hist { margin-top: 1rem; border-top: 1px dashed var(--line); padding-top: 0.8rem; }
-  .hist h4 { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 0.5rem; }
+  .hist { margin-top: 1.1rem; border-top: 1px dashed var(--line); padding-top: 0.9rem; }
+  .hist h4 { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.09em; color: var(--muted); margin-bottom: 0.5rem; }
   .hist ul { list-style: none; }
-  .hist li { font-size: 0.78rem; padding: 0.22rem 0; color: var(--ink-soft); }
+  .hist li { font-size: 0.79rem; padding: 0.22rem 0; }
   .hist li .h-date { font-family: 'IBM Plex Mono'; font-size: 0.7rem; color: var(--muted); margin-right: 0.6rem; }
-  .link-rep { color: var(--forest); font-weight: 600; cursor: pointer; text-decoration: underline; }
+  .link-rep { color: var(--blue); font-weight: 700; cursor: pointer; text-decoration: underline; }
 
-  /* ===== JOURNAL / PARAMÈTRES ===== */
-  .journal-list { list-style: none; background: #fff; border: 1px solid var(--line); border-radius: 6px; }
-  .journal-list li { padding: 0.65rem 1rem; border-bottom: 1px solid var(--line); font-size: 0.83rem; display: flex; gap: 1rem; align-items: baseline; }
+  /* ═══ JOURNAL / PARAMÈTRES ═══ */
+  .journal-list { list-style: none; background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+  .journal-list li { padding: 0.68rem 1.1rem; border-bottom: 1px solid var(--line); font-size: 0.84rem; display: flex; gap: 1rem; align-items: baseline; }
   .journal-list li:last-child { border-bottom: none; }
   .journal-list .j-date { font-family: 'IBM Plex Mono'; font-size: 0.72rem; color: var(--muted); white-space: nowrap; }
   .svc-manage { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.6rem; }
-  .svc-tag { background: var(--paper-warm); border: 1px solid var(--line); border-radius: 14px; padding: 0.25rem 0.75rem; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 0.45rem; }
-  .svc-tag button { background: none; border: none; color: var(--rdc-red); font-weight: 700; font-size: 0.85rem; line-height: 1; }
-  .add-svc { display: flex; gap: 0.5rem; margin-top: 0.8rem; }
-  .add-svc input { flex: 1; padding: 0.5rem 0.65rem; border: 1px solid var(--line); border-radius: 4px; }
+  .svc-tag { background: var(--blue-pale); border-radius: 20px; padding: 0.28rem 0.85rem; font-size: 0.8rem; font-weight: 600; color: var(--blue-strong); display: inline-flex; align-items: center; gap: 0.45rem; }
+  .svc-tag button { background: none; border: none; color: var(--red); font-weight: 800; font-size: 0.9rem; line-height: 1; }
+  .add-svc { display: flex; gap: 0.5rem; margin-top: 0.9rem; }
+  .add-svc input { flex: 1; padding: 0.55rem 0.7rem; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); }
 
-  /* ===== TOAST ===== */
+  /* ═══ TOAST ═══ */
   #toast {
-    position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(120%);
-    background: var(--ink); color: var(--paper); padding: 0.7rem 1.3rem; border-radius: 6px;
-    border-left: 4px solid var(--rdc-yellow); font-size: 0.85rem; z-index: 500;
-    transition: transform 0.25s ease; max-width: 90vw;
+    position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(130%);
+    background: var(--navy); color: #fff; padding: 0.75rem 1.4rem; border-radius: 10px;
+    border-left: 5px solid var(--yellow); font-size: 0.86rem; z-index: 500;
+    transition: transform 0.25s ease; max-width: 90vw; box-shadow: 0 10px 30px rgba(18,57,94,0.35);
   }
   #toast.show { transform: translateX(-50%) translateY(0); }
 
-  /* ===== IMPRESSION ===== */
+  /* ═══ IMPRESSION ═══ */
   #print-area { display: none; }
   @media print {
     body > *:not(#print-area) { display: none !important; }
     body { background: #fff; }
     #print-area { display: block; padding: 1.5cm 1cm; font-size: 11pt; color: #000; }
-    #print-area h1 { font-family: 'Fraunces', serif; font-size: 15pt; text-align: center; margin-bottom: 0.2cm; }
+    #print-area h1 { font-size: 15pt; text-align: center; margin-bottom: 0.2cm; }
     #print-area .p-head { text-align: center; margin-bottom: 0.7cm; }
-    #print-area .p-head .p-org { font-weight: 700; font-size: 10pt; letter-spacing: 0.05em; text-transform: uppercase; }
+    #print-area .p-head .p-org { font-weight: 800; font-size: 10pt; letter-spacing: 0.05em; text-transform: uppercase; }
     #print-area .p-head .p-sub { font-size: 9pt; color: #333; }
     #print-area .p-rule { border: none; border-top: 2.5pt solid #000; margin: 0.25cm 0 0.5cm; }
     #print-area table { width: 100%; border-collapse: collapse; font-size: 9pt; }
@@ -323,39 +378,50 @@
 
   @media (max-width: 700px) {
     .wrap { padding: 1.2rem 1rem 3rem; }
-    .topbar-inner { padding: 0.7rem 1rem; }
-    .tabs { padding: 0 0.6rem; }
-    .view-head h1 { font-size: 1.4rem; }
+    .topbar-inner { padding: 0.6rem 1rem; gap: 0.8rem; }
+    .hero-inner { padding: 1.8rem 1rem 2rem; }
+    .view-head h2 { font-size: 1.45rem; }
   }
 </style>
 </head>
 <body>
 
-<nav class="topbar">
+<!-- ═══════════ NAVIGATION ═══════════ -->
+<header class="topbar">
   <div class="topbar-inner">
-    <div class="brand">
-      <span class="brand-flag" aria-hidden="true">
-        <svg viewBox="0 0 90 60"><rect width="90" height="60" fill="#007fff"/><polygon points="0,60 78,0 90,0 90,9 12,60" fill="#fcd116"/><polygon points="0,60 81,0 87,0 6,60" fill="#ce1126"/><polygon points="10,4 12.4,11.2 20,11.2 13.8,15.7 16.2,22.9 10,18.4 3.8,22.9 6.2,15.7 0,11.2 7.6,11.2" fill="#fcd116" transform="translate(4,2) scale(0.85)"/></svg>
+    <a class="logo" href="index.html" title="Retour au portail">
+      <span class="logo-block">
+        <span><span class="l-itie">iTiE</span><span class="l-rdc">RDC</span><span class="l-loupe">🔍</span></span>
+        <small>Initiative pour la Transparence des Industries Extractives</small>
       </span>
-      <span>Gestion des Courriers<small>ITIE-RDC · Projet PAAJ · Secrétariat Technique</small></span>
-    </div>
-    <div class="top-actions">
-      <a class="btn btn-ghost" href="index.html">← Portail</a>
-      <button class="btn btn-primary" onclick="App.openForm('entrant')">+ Courrier entrant</button>
-      <button class="btn btn-forest" onclick="App.openForm('sortant')">+ Courrier sortant</button>
-    </div>
+    </a>
+    <nav class="nav-links" role="tablist">
+      <button class="active" data-view="dashboard" onclick="App.show('dashboard')">Accueil</button>
+      <button data-view="entrants" onclick="App.show('entrants')">Courriers entrants <span class="badge" id="badge-in" hidden></span></button>
+      <button data-view="sortants" onclick="App.show('sortants')">Courriers sortants</button>
+      <button data-view="journal" onclick="App.show('journal')">Journal</button>
+      <button data-view="parametres" onclick="App.show('parametres')">Paramètres</button>
+    </nav>
   </div>
-</nav>
+</header>
 
-<div class="tabs-bar">
-  <div class="tabs" role="tablist">
-    <button class="tab active" data-view="dashboard" onclick="App.show('dashboard')">Tableau de bord</button>
-    <button class="tab" data-view="entrants" onclick="App.show('entrants')">Courriers entrants <span class="badge" id="badge-in" hidden></span></button>
-    <button class="tab" data-view="sortants" onclick="App.show('sortants')">Courriers sortants</button>
-    <button class="tab" data-view="journal" onclick="App.show('journal')">Journal d'activité</button>
-    <button class="tab" data-view="parametres" onclick="App.show('parametres')">Paramètres</button>
+<!-- ═══════════ HERO (charte) ═══════════ -->
+<section class="hero" id="hero">
+  <div class="hero-inner">
+    <div>
+      <h1><span class="accent-bar"></span>Gestion intelligente des courriers du Secrétariat Technique</h1>
+      <p>De l'enregistrement à l'archivage : l'application trace chaque correspondance entrante et sortante, impute automatiquement les services compétents, surveille les échéances et produit registres et bordereaux officiels.</p>
+      <div class="hero-cta">
+        <button class="btn btn-yellow" onclick="App.openForm('entrant')">+ Enregistrer un courrier entrant</button>
+        <button class="btn btn-white" onclick="App.openForm('sortant')">+ Courrier sortant</button>
+      </div>
+    </div>
+    <div class="keycard">
+      <h3>Chiffres clés du registre</h3>
+      <div id="keycard-rows"></div>
+    </div>
   </div>
-</div>
+</section>
 
 <main class="wrap">
 
@@ -363,11 +429,12 @@
   <section class="view active" id="view-dashboard">
     <div class="view-head">
       <div>
-        <h1>Tableau de bord</h1>
-        <p>Vue d'ensemble du registre des correspondances — suivez les flux, les imputations et les échéances de traitement.</p>
+        <div class="eyebrow">Tableau de bord · Registre des correspondances</div>
+        <h2>Ce que le registre dit du courrier</h2>
+        <p>Flux, imputations et délais de traitement — toutes les valeurs proviennent directement du registre chronologique.</p>
       </div>
-      <div class="top-actions">
-        <button class="btn btn-outline" onclick="App.printRegistre()">🖨 Imprimer le registre</button>
+      <div class="head-actions">
+        <button class="btn btn-white" onclick="App.printRegistre()">🖨 Imprimer le registre</button>
       </div>
     </div>
 
@@ -403,22 +470,23 @@
   <section class="view" id="view-entrants">
     <div class="view-head">
       <div>
-        <h1>Registre des courriers entrants</h1>
-        <p>Chronologie des correspondances reçues : enregistrement, imputation aux services, suivi du traitement jusqu'à la clôture.</p>
+        <div class="eyebrow">Registre chronologique · Arrivées</div>
+        <h2>Courriers entrants</h2>
+        <p>Enregistrement, imputation aux services, suivi du traitement jusqu'à la clôture. Les courriers en retard sont marqués en rouge.</p>
       </div>
-      <div class="top-actions">
-        <button class="btn btn-outline" onclick="App.exportCSV('entrant')">⬇ Export CSV</button>
-        <button class="btn btn-primary" onclick="App.openForm('entrant')">+ Enregistrer</button>
+      <div class="head-actions">
+        <button class="btn btn-white" onclick="App.exportCSV('entrant')">⬇ Export CSV</button>
+        <button class="btn btn-yellow" onclick="App.openForm('entrant')">+ Enregistrer</button>
       </div>
     </div>
     <div class="filters">
-      <input type="search" id="f-in-q" placeholder="Rechercher (n° chrono, objet, expéditeur, référence…)" oninput="App.renderTables()" />
+      <input type="search" id="f-in-q" placeholder="Recherche intelligente (n° chrono, objet, expéditeur, référence — accents ignorés)…" oninput="App.renderTables()" />
       <select id="f-in-statut" onchange="App.renderTables()"></select>
       <select id="f-in-priorite" onchange="App.renderTables()"></select>
       <select id="f-in-service" onchange="App.renderTables()"></select>
       <input type="date" id="f-in-du" onchange="App.renderTables()" title="Reçus à partir du" />
       <input type="date" id="f-in-au" onchange="App.renderTables()" title="Reçus jusqu'au" />
-      <button class="btn btn-outline btn-sm" onclick="App.resetFilters('in')">Réinitialiser</button>
+      <button class="btn btn-white btn-sm" onclick="App.resetFilters('in')">Réinitialiser</button>
     </div>
     <div class="table-wrap">
       <table class="registry" id="table-in">
@@ -442,22 +510,23 @@
   <section class="view" id="view-sortants">
     <div class="view-head">
       <div>
-        <h1>Registre des courriers sortants</h1>
+        <div class="eyebrow">Registre chronologique · Départs</div>
+        <h2>Courriers sortants</h2>
         <p>Correspondances émises par le Secrétariat Technique : rédaction, signature, expédition et archivage.</p>
       </div>
-      <div class="top-actions">
-        <button class="btn btn-outline" onclick="App.exportCSV('sortant')">⬇ Export CSV</button>
-        <button class="btn btn-forest" onclick="App.openForm('sortant')">+ Enregistrer</button>
+      <div class="head-actions">
+        <button class="btn btn-white" onclick="App.exportCSV('sortant')">⬇ Export CSV</button>
+        <button class="btn btn-blue" onclick="App.openForm('sortant')">+ Enregistrer</button>
       </div>
     </div>
     <div class="filters">
-      <input type="search" id="f-out-q" placeholder="Rechercher (n° chrono, objet, destinataire…)" oninput="App.renderTables()" />
+      <input type="search" id="f-out-q" placeholder="Recherche intelligente (n° chrono, objet, destinataire — accents ignorés)…" oninput="App.renderTables()" />
       <select id="f-out-statut" onchange="App.renderTables()"></select>
       <select id="f-out-service" onchange="App.renderTables()"></select>
       <select id="f-out-mode" onchange="App.renderTables()"></select>
       <input type="date" id="f-out-du" onchange="App.renderTables()" title="Émis à partir du" />
       <input type="date" id="f-out-au" onchange="App.renderTables()" title="Émis jusqu'au" />
-      <button class="btn btn-outline btn-sm" onclick="App.resetFilters('out')">Réinitialiser</button>
+      <button class="btn btn-white btn-sm" onclick="App.resetFilters('out')">Réinitialiser</button>
     </div>
     <div class="table-wrap">
       <table class="registry" id="table-out">
@@ -481,8 +550,9 @@
   <section class="view" id="view-journal">
     <div class="view-head">
       <div>
-        <h1>Journal d'activité</h1>
-        <p>Trace horodatée de toutes les opérations effectuées sur le registre (enregistrements, modifications, changements de statut, suppressions).</p>
+        <div class="eyebrow">Traçabilité</div>
+        <h2>Journal d'activité</h2>
+        <p>Trace horodatée de toutes les opérations : enregistrements, modifications, changements de statut, relances, impressions et suppressions.</p>
       </div>
       <button class="btn btn-danger" onclick="App.clearJournal()">Vider le journal</button>
     </div>
@@ -493,29 +563,30 @@
   <section class="view" id="view-parametres">
     <div class="view-head">
       <div>
-        <h1>Paramètres</h1>
+        <div class="eyebrow">Configuration</div>
+        <h2>Paramètres</h2>
         <p>Services d'imputation, sauvegarde et restauration des données du registre.</p>
       </div>
     </div>
     <div class="panel">
       <h3>Services / Directions</h3>
-      <p style="font-size:0.83rem;color:var(--muted)">Liste des services auxquels les courriers peuvent être imputés.</p>
+      <p style="font-size:0.84rem;color:var(--muted)">Liste des services auxquels les courriers peuvent être imputés. L'assistant intelligent s'appuie sur cette liste pour ses suggestions.</p>
       <div class="svc-manage" id="svc-manage"></div>
       <div class="add-svc">
-        <input type="text" id="new-svc" placeholder="Nom du nouveau service (ex. Cellule Communication)" onkeydown="if(event.key==='Enter')App.addService()" />
-        <button class="btn btn-forest" onclick="App.addService()">Ajouter</button>
+        <input type="text" id="new-svc" placeholder="Nom du nouveau service (ex. Cellule Genre et Inclusion)" onkeydown="if(event.key==='Enter')App.addService()" />
+        <button class="btn btn-blue" onclick="App.addService()">Ajouter</button>
       </div>
     </div>
     <div class="panel">
       <h3>Données du registre</h3>
-      <p style="font-size:0.83rem;color:var(--muted);margin-bottom:0.8rem">
+      <p style="font-size:0.84rem;color:var(--muted);margin-bottom:0.9rem">
         Les données sont conservées localement dans ce navigateur. Exportez régulièrement une sauvegarde JSON pour sécuriser le registre ou le transférer sur un autre poste.
       </p>
-      <div class="top-actions" style="flex-wrap:wrap">
-        <button class="btn btn-forest" onclick="App.backup()">⬇ Sauvegarde complète (JSON)</button>
-        <button class="btn btn-outline" onclick="document.getElementById('restore-file').click()">⬆ Restaurer une sauvegarde</button>
+      <div class="head-actions">
+        <button class="btn btn-blue" onclick="App.backup()">⬇ Sauvegarde complète (JSON)</button>
+        <button class="btn btn-white" onclick="document.getElementById('restore-file').click()">⬆ Restaurer une sauvegarde</button>
         <input type="file" id="restore-file" accept="application/json" hidden onchange="App.restore(this)" />
-        <button class="btn btn-outline" onclick="App.seedDemo()">Charger des données de démonstration</button>
+        <button class="btn btn-white" onclick="App.seedDemo()">Charger des données de démonstration</button>
         <button class="btn btn-danger" onclick="App.wipe()">Effacer toutes les données</button>
       </div>
     </div>
@@ -537,6 +608,11 @@
         <button type="button" id="sw-in" onclick="App.setSens('entrant')">↓ Entrant</button>
         <button type="button" id="sw-out" onclick="App.setSens('sortant')">↑ Sortant</button>
       </div>
+      <div class="smart-bar" id="smart-bar">
+        <div class="smart-title">💡 Assistant intelligent</div>
+        <div id="smart-suggestions"></div>
+        <div id="smart-dup"></div>
+      </div>
       <form id="courrier-form" onsubmit="App.save(event)">
         <div class="form-grid">
           <div class="field">
@@ -550,7 +626,7 @@
           </div>
           <div class="field">
             <label id="lbl-correspondant">Expéditeur <span class="req">*</span></label>
-            <input type="text" id="fld-correspondant" required placeholder="Institution ou personne" />
+            <input type="text" id="fld-correspondant" required placeholder="Institution ou personne" oninput="App.smartAnalyse()" />
           </div>
           <div class="field">
             <label>Date portée sur le courrier</label>
@@ -558,7 +634,7 @@
           </div>
           <div class="field full">
             <label>Objet <span class="req">*</span></label>
-            <input type="text" id="fld-objet" required placeholder="Objet du courrier" />
+            <input type="text" id="fld-objet" required placeholder="Objet du courrier — l'assistant analyse ce champ pour proposer type, service et priorité" oninput="App.smartAnalyse()" />
           </div>
           <div class="field">
             <label id="lbl-reference">Référence du correspondant</label>
@@ -574,12 +650,12 @@
           </div>
           <div class="field">
             <label>Priorité</label>
-            <select id="fld-priorite"></select>
+            <select id="fld-priorite" onchange="App.autoEcheance()"></select>
           </div>
           <div class="field" id="grp-echeance">
             <label>Échéance de traitement</label>
             <input type="date" id="fld-echeance" />
-            <div class="note">Date limite souhaitée pour la réponse ou le traitement.</div>
+            <div class="note">Proposée automatiquement selon la priorité (modifiable).</div>
           </div>
           <div class="field" id="grp-mode" hidden>
             <label>Mode d'envoi</label>
@@ -615,8 +691,8 @@
           </div>
         </div>
         <div class="form-actions">
-          <button type="button" class="btn btn-outline" onclick="App.closeForm()">Annuler</button>
-          <button type="submit" class="btn btn-primary" id="form-submit">Enregistrer</button>
+          <button type="button" class="btn btn-white" onclick="App.closeForm()">Annuler</button>
+          <button type="submit" class="btn btn-yellow" id="form-submit">Enregistrer</button>
         </div>
       </form>
     </div>
@@ -629,7 +705,7 @@
     <div class="modal-head">
       <div>
         <h2 id="detail-title">Fiche courrier</h2>
-        <div class="sub detail-num" id="detail-num"></div>
+        <div class="sub mono" id="detail-num"></div>
       </div>
       <button class="modal-close" onclick="App.closeDetail()" aria-label="Fermer">×</button>
     </div>
@@ -650,6 +726,7 @@ const LS_LOG  = 'itierdc_courriers_journal_v1';
 
 const TYPES = ['Lettre officielle','Note de service','Note circulaire','Invitation','Rapport','Facture / Pièce comptable','Demande','Bordereau de transmission','Communiqué','Autre'];
 const PRIORITES = ['Normale','Urgente','Très urgente'];
+const DELAIS = { 'Normale': 10, 'Urgente': 5, 'Très urgente': 2 };
 const MODES = ['Porteur','Poste','Courrier électronique','Courrier express (DHL…)','Dépôt en mains propres'];
 const STATUTS = {
   entrant: ['Enregistré','Imputé','En traitement','Traité','Archivé','Classé sans suite'],
@@ -663,6 +740,20 @@ const STATUT_CLASS = {
 const STATUT_CLOS = ['Traité','Archivé','Classé sans suite','Expédié'];
 const PRIO_CLASS = { 'Normale':'pr-normale','Urgente':'pr-urgente','Très urgente':'pr-tres-urgente' };
 const DEFAULT_SERVICES = ['Coordination Nationale','Secrétariat Technique','Direction Administrative et Financière','Cellule Technique / Rapportage','Cellule Communication','Cellule Juridique','Unité Passation des Marchés'];
+
+/* Règles de l'assistant : mots-clés (sans accents, minuscules) → suggestions */
+const SMART_RULES = [
+  { kw: ['facture','paiement','comptable','budget','decaissement','fonds','tresorerie','salaire'], service: 'Direction Administrative et Financière', type: 'Facture / Pièce comptable' },
+  { kw: ['invitation','atelier','reunion','ceremonie','conference','seminaire'], type: 'Invitation' },
+  { kw: ['rapport','declaration','donnees','rapportage','collecte','statistique','reconciliation'], service: 'Cellule Technique / Rapportage', type: 'Rapport' },
+  { kw: ['presse','communication','publication','site web','media','sensibilisation'], service: 'Cellule Communication', type: 'Communiqué' },
+  { kw: ['contrat','juridique','litige','convention','avenant','contentieux'], service: 'Cellule Juridique' },
+  { kw: ['marche','appel d\'offres','passation','soumission','cotation'], service: 'Unité Passation des Marchés' },
+  { kw: ['validation','norme itie','secretariat international','conseil d\'administration'], service: 'Coordination Nationale', priorite: 'Très urgente' },
+  { kw: ['urgent','immediat','sans delai','imperatif'], priorite: 'Très urgente' },
+  { kw: ['demande','requete','sollicitation'], type: 'Demande' },
+  { kw: ['circulaire'], type: 'Note circulaire' }
+];
 
 /* ═══════════════════ ÉTAT ═══════════════════ */
 let courriers = load(LS_KEY, []);
@@ -686,6 +777,7 @@ function persist() {
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const todayISO = () => new Date().toISOString().slice(0, 10);
+const norm = s => String(s ?? '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 const fmtDate = iso => {
   if (!iso) return '—';
   const [y, m, d] = iso.split('-');
@@ -738,7 +830,8 @@ const App = {
   /* ---------- Navigation ---------- */
   show(view) {
     document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + view));
-    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.view === view));
+    document.querySelectorAll('.nav-links button').forEach(t => t.classList.toggle('active', t.dataset.view === view));
+    $('hero').style.display = view === 'dashboard' ? '' : 'none';
     if (view === 'dashboard') this.renderDashboard();
     if (view === 'journal') this.renderJournal();
     if (view === 'parametres') this.renderParams();
@@ -763,22 +856,33 @@ const App = {
     const urgents = enCours.filter(c => c.priorite !== 'Normale');
     const inMonth = entrants.filter(c => (c.dateReception || '').startsWith(ym)).length;
     const outMonth = sortants.filter(c => (c.dateEnvoi || '').startsWith(ym)).length;
-    const traites = entrants.filter(c => ['Traité','Archivé'].includes(c.statut)).length;
-    const taux = entrants.length ? Math.round(100 * traites / entrants.length) : 0;
+    const traites = entrants.filter(c => ['Traité','Archivé'].includes(c.statut));
+    const taux = entrants.length ? Math.round(100 * traites.length / entrants.length) : 0;
+
+    // Délai moyen de traitement (jours entre réception et clôture)
+    const delais = traites.filter(c => c.dateCloture && c.dateReception)
+      .map(c => Math.max(0, Math.round((new Date(c.dateCloture) - new Date(c.dateReception)) / 86400000)));
+    const delaiMoyen = delais.length ? (delais.reduce((a, b) => a + b, 0) / delais.length).toFixed(1) : null;
+
+    $('keycard-rows').innerHTML = `
+      <div class="krow"><span>Courriers enregistrés</span><span class="kval">${courriers.length}</span></div>
+      <div class="krow"><span>En attente de traitement</span><span class="kval">${enCours.length}</span></div>
+      <div class="krow"><span>Échéances dépassées</span><span class="kval">${retards.length}</span></div>
+      <div class="krow"><span>Taux de traitement</span><span class="kval">${taux} %</span></div>`;
 
     $('kpi-grid').innerHTML = `
       <div class="kpi"><div class="kpi-num">${entrants.length}</div><div class="kpi-label">Courriers entrants</div><div class="kpi-sub">${inMonth} reçu(s) ce mois</div></div>
-      <div class="kpi k-blue"><div class="kpi-num">${sortants.length}</div><div class="kpi-label">Courriers sortants</div><div class="kpi-sub">${outMonth} émis ce mois</div></div>
-      <div class="kpi k-yellow"><div class="kpi-num">${enCours.length}</div><div class="kpi-label">En attente de traitement</div><div class="kpi-sub">dont ${urgents.length} urgent(s)</div></div>
+      <div class="kpi k-yellow"><div class="kpi-num">${sortants.length}</div><div class="kpi-label">Courriers sortants</div><div class="kpi-sub">${outMonth} émis ce mois</div></div>
+      <div class="kpi k-navy"><div class="kpi-num">${enCours.length}</div><div class="kpi-label">En attente</div><div class="kpi-sub">dont ${urgents.length} urgent(s)</div></div>
       <div class="kpi k-red"><div class="kpi-num">${retards.length}</div><div class="kpi-label">Échéances dépassées</div><div class="kpi-sub">à traiter en priorité</div></div>
-      <div class="kpi k-earth"><div class="kpi-num">${taux}%</div><div class="kpi-label">Taux de traitement</div><div class="kpi-sub">${traites} entrant(s) clôturé(s)</div></div>`;
+      <div class="kpi k-green"><div class="kpi-num">${delaiMoyen ?? '—'}</div><div class="kpi-label">Délai moyen (jours)</div><div class="kpi-sub">${delaiMoyen ? delais.length + ' clôture(s) mesurée(s)' : 'aucune clôture mesurée'}</div></div>`;
 
     const badge = $('badge-in');
     badge.hidden = retards.length === 0;
     badge.textContent = retards.length;
 
     $('dash-alert').innerHTML = retards.length
-      ? `<div class="alert-strip">⚠️ <strong>${retards.length} courrier(s) entrant(s)</strong> ont dépassé leur échéance de traitement. Consultez la liste ci-dessous et relancez les services concernés.</div>`
+      ? `<div class="alert-strip">⚠️ <strong>${retards.length} courrier(s) entrant(s)</strong> ont dépassé leur échéance de traitement. Ouvrez leur fiche pour enregistrer une relance auprès des services concernés.</div>`
       : '';
 
     // Graphique 12 mois
@@ -845,7 +949,7 @@ const App = {
 
   filtered(sens) {
     const p = sens === 'entrant' ? 'in' : 'out';
-    const q = $(`f-${p}-q`).value.trim().toLowerCase();
+    const q = norm($(`f-${p}-q`).value.trim());
     const st = $(`f-${p}-statut`).value;
     const svc = $(`f-${p}-service`).value;
     const du = $(`f-${p}-du`).value, au = $(`f-${p}-au`).value;
@@ -862,8 +966,8 @@ const App = {
       if (du && d < du) return false;
       if (au && d > au) return false;
       if (q) {
-        const hay = [c.numero, c.objet, c.correspondant, c.reference, c.service, c.signataire, c.observations, c.instructions].join(' ').toLowerCase();
-        if (!hay.includes(q)) return false;
+        const hay = norm([c.numero, c.objet, c.correspondant, c.reference, c.service, c.signataire, c.observations, c.instructions].join(' '));
+        if (!q.split(/\s+/).every(tok => hay.includes(tok))) return false;
       }
       return true;
     });
@@ -919,6 +1023,69 @@ const App = {
     $('foot-out').textContent = `${outs.length} courrier(s) affiché(s) sur ${courriers.filter(c => c.sens === 'sortant').length} enregistré(s)`;
   },
 
+  /* ---------- Assistant intelligent ---------- */
+  smartAnalyse() {
+    const text = norm($('fld-objet').value + ' ' + $('fld-correspondant').value);
+    const sugDiv = $('smart-suggestions');
+    const dupDiv = $('smart-dup');
+    const bar = $('smart-bar');
+    if (text.trim().length < 4) { bar.classList.remove('on'); return; }
+
+    // Suggestions par mots-clés
+    const found = { service: null, type: null, priorite: null };
+    for (const rule of SMART_RULES) {
+      if (rule.kw.some(k => text.includes(k))) {
+        if (rule.service && !found.service && services.includes(rule.service)) found.service = rule.service;
+        if (rule.type && !found.type) found.type = rule.type;
+        if (rule.priorite && !found.priorite) found.priorite = rule.priorite;
+      }
+    }
+    const sugs = [];
+    if (found.service && $('fld-service').value !== found.service)
+      sugs.push(`<span class="sug">Service : <b>${esc(found.service)}</b><button type="button" onclick="App.applySug('service','${esc(found.service)}')">Appliquer</button></span>`);
+    if (found.type && $('fld-type').value !== found.type)
+      sugs.push(`<span class="sug">Type : <b>${esc(found.type)}</b><button type="button" onclick="App.applySug('type','${esc(found.type)}')">Appliquer</button></span>`);
+    if (found.priorite && $('fld-priorite').value !== found.priorite)
+      sugs.push(`<span class="sug">Priorité : <b>${esc(found.priorite)}</b><button type="button" onclick="App.applySug('priorite','${esc(found.priorite)}')">Appliquer</button></span>`);
+    sugDiv.innerHTML = sugs.length ? sugs.join('') : '<span style="color:var(--muted)">Aucune suggestion pour le moment — continuez la saisie de l\'objet.</span>';
+
+    // Détection de doublons : même correspondant + objet similaire, à ±45 jours
+    const objTokens = new Set(norm($('fld-objet').value).split(/\W+/).filter(w => w.length > 3));
+    const corr = norm($('fld-correspondant').value);
+    let dup = null;
+    if (objTokens.size >= 2) {
+      for (const c of courriers) {
+        if (c.id === editId) continue;
+        const cTokens = new Set(norm(c.objet).split(/\W+/).filter(w => w.length > 3));
+        const inter = [...objTokens].filter(w => cTokens.has(w)).length;
+        const sim = inter / Math.max(1, Math.min(objTokens.size, cTokens.size));
+        const sameCorr = corr && norm(c.correspondant).includes(corr.slice(0, 12));
+        if (sim >= 0.6 && (sameCorr || sim >= 0.85)) { dup = c; break; }
+      }
+    }
+    dupDiv.innerHTML = dup
+      ? `<div class="dup">⚠ Doublon possible : <span class="link-rep" onclick="App.openDetail('${dup.id}')">${esc(dup.numero)}</span> — « ${esc(dup.objet)} » (${fmtDate(fluxDate(dup))}). Vérifiez avant d'enregistrer.</div>`
+      : '';
+    bar.classList.add('on');
+  },
+
+  applySug(field, value) {
+    $('fld-' + field).value = value;
+    if (field === 'priorite') this.autoEcheance();
+    this.smartAnalyse();
+  },
+
+  autoEcheance() {
+    if (formSens !== 'entrant') return;
+    const ech = $('fld-echeance');
+    if (ech.dataset.touched === '1' && ech.value) return;
+    const jours = DELAIS[$('fld-priorite').value] ?? 10;
+    const base = $('fld-dateFlux').value || todayISO();
+    const d = new Date(base);
+    d.setDate(d.getDate() + jours);
+    ech.value = d.toISOString().slice(0, 10);
+  },
+
   /* ---------- Formulaire ---------- */
   openForm(sens, id = null) {
     editId = id;
@@ -928,6 +1095,7 @@ const App = {
     $('form-title').textContent = c ? 'Modifier le courrier' : 'Enregistrer un courrier';
     $('form-sub').textContent = c ? c.numero : 'Le numéro chrono sera attribué automatiquement.';
     $('form-submit').textContent = c ? 'Enregistrer les modifications' : 'Enregistrer au registre';
+    $('smart-bar').classList.remove('on');
     this.setSens(formSens, c);
     $('form-backdrop').classList.add('open');
     setTimeout(() => $('fld-correspondant').focus(), 60);
@@ -961,13 +1129,16 @@ const App = {
     fillSelect($('fld-statut'), STATUTS[sens], { selected: c?.statut || STATUTS[sens][0] });
     fillSelect($('fld-modeEnvoi'), MODES, { blank: '— Sélectionner —', selected: c?.modeEnvoi || '' });
     $('fld-signataire').value = c?.signataire || '';
-    $('fld-echeance').value = c?.echeance || '';
+    const ech = $('fld-echeance');
+    ech.value = c?.echeance || '';
+    ech.dataset.touched = c?.echeance ? '1' : '0';
+    ech.onchange = () => { ech.dataset.touched = '1'; };
     $('fld-pieces').value = c?.pieces || '';
     $('fld-confidentiel').checked = !!c?.confidentiel;
     $('fld-instructions').value = c?.instructions || '';
     $('fld-observations').value = c?.observations || '';
+    if (!c && isIn) this.autoEcheance();
 
-    // Liaison : proposer les courriers du sens opposé
     const opposite = courriers.filter(x => x.sens !== sens).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
     $('fld-reponseA').innerHTML = '<option value="">— Aucun —</option>' +
       opposite.map(x => `<option value="${x.id}"${c?.reponseA === x.id ? ' selected' : ''}>${esc(x.numero)} · ${esc(x.objet.slice(0, 60))}</option>`).join('');
@@ -1006,6 +1177,7 @@ const App = {
     if (existing) {
       const oldStatut = existing.statut;
       Object.assign(existing, data);
+      if (oldStatut !== data.statut && ['Traité','Archivé'].includes(data.statut) && !existing.dateCloture) existing.dateCloture = todayISO();
       existing.historique.push({ ts: Date.now(), txt: oldStatut !== data.statut ? `Statut modifié : ${oldStatut} → ${data.statut}` : 'Fiche modifiée' });
       log('Modification', `${existing.numero} — ${existing.objet}`);
       toast(`Courrier ${existing.numero} mis à jour.`);
@@ -1015,6 +1187,7 @@ const App = {
         id: uid(),
         numero: nextNumero(formSens, year),
         createdAt: Date.now(),
+        dateCloture: null,
         historique: [{ ts: Date.now(), txt: 'Enregistrement au registre' }]
       }, data);
       courriers.push(c);
@@ -1046,15 +1219,20 @@ const App = {
       ['Priorité', `<span class="chip ${PRIO_CLASS[c.priorite] || ''}">${esc(c.priorite)}</span>`],
       ['Pièces jointes', esc(c.pieces || '—')]
     ];
-    if (isIn) rows.push(['Échéance', c.echeance ? (isOverdue(c) ? `<span class="chip late">${fmtDate(c.echeance)} — dépassée</span>` : fmtDate(c.echeance)) : '—']);
-    else { rows.push(['Mode d\'envoi', esc(c.modeEnvoi || '—')]); rows.push(['Signataire', esc(c.signataire || '—')]); }
+    if (isIn) {
+      rows.push(['Échéance', c.echeance ? (isOverdue(c) ? `<span class="chip late">${fmtDate(c.echeance)} — dépassée</span>` : fmtDate(c.echeance)) : '—']);
+      if (c.dateCloture) rows.push(['Clôturé le', fmtDate(c.dateCloture)]);
+    } else {
+      rows.push(['Mode d\'envoi', esc(c.modeEnvoi || '—')]);
+      rows.push(['Signataire', esc(c.signataire || '—')]);
+    }
 
     const statutBtns = STATUTS[c.sens].filter(s => s !== c.statut)
-      .map(s => `<button class="btn btn-outline btn-sm" onclick="App.setStatut('${c.id}', '${esc(s)}')">→ ${esc(s)}</button>`).join(' ');
+      .map(s => `<button class="btn btn-white btn-sm" onclick="App.setStatut('${c.id}', '${esc(s)}')">→ ${esc(s)}</button>`).join(' ');
 
     $('detail-body').innerHTML = `
       <div class="status-line">
-        <span class="chip ${STATUT_CLASS[c.statut] || ''}" style="font-size:0.78rem">${esc(c.statut)}</span>
+        <span class="chip ${STATUT_CLASS[c.statut] || ''}" style="font-size:0.8rem">${esc(c.statut)}</span>
         ${c.confidentiel ? '<span class="chip conf">Confidentiel</span>' : ''}
         ${isOverdue(c) ? '<span class="chip late">En retard</span>' : ''}
       </div>
@@ -1073,9 +1251,10 @@ const App = {
       </div>
       <div class="form-actions">
         <button class="btn btn-danger" onclick="App.remove('${c.id}')">Supprimer</button>
-        ${isIn ? `<button class="btn btn-outline" onclick="App.printBordereau('${c.id}')">🖨 Bordereau de transmission</button>` : ''}
-        <button class="btn btn-outline" onclick="App.replyTo('${c.id}')">↩ ${isIn ? 'Créer la réponse (sortant)' : 'Enregistrer la suite (entrant)'}</button>
-        <button class="btn btn-primary" onclick="App.closeDetail(); App.openForm(null, '${c.id}')">✎ Modifier</button>
+        ${isIn && !isClos(c) ? `<button class="btn btn-white" onclick="App.relance('${c.id}')">📣 Enregistrer une relance</button>` : ''}
+        ${isIn ? `<button class="btn btn-white" onclick="App.printBordereau('${c.id}')">🖨 Bordereau de transmission</button>` : ''}
+        <button class="btn btn-white" onclick="App.replyTo('${c.id}')">↩ ${isIn ? 'Créer la réponse (sortant)' : 'Enregistrer la suite (entrant)'}</button>
+        <button class="btn btn-yellow" onclick="App.closeDetail(); App.openForm(null, '${c.id}')">✎ Modifier</button>
       </div>`;
     $('detail-backdrop').classList.add('open');
   },
@@ -1087,11 +1266,22 @@ const App = {
     if (!c) return;
     const old = c.statut;
     c.statut = statut;
+    if (['Traité','Archivé'].includes(statut) && !c.dateCloture) c.dateCloture = todayISO();
     c.historique.push({ ts: Date.now(), txt: `Statut modifié : ${old} → ${statut}` });
     log('Changement de statut', `${c.numero} : ${old} → ${statut}`);
     this.refresh();
     this.openDetail(id);
     toast(`${c.numero} : statut « ${statut} ».`);
+  },
+
+  relance(id) {
+    const c = courriers.find(x => x.id === id);
+    if (!c) return;
+    c.historique.push({ ts: Date.now(), txt: `Relance adressée au service « ${c.service || '—'} »` });
+    log('Relance', `${c.numero} — relance au service ${c.service || '—'}`);
+    this.refresh();
+    this.openDetail(id);
+    toast(`Relance enregistrée pour ${c.numero}.`);
   },
 
   replyTo(id) {
@@ -1169,13 +1359,13 @@ const App = {
     if (!list.length) { toast('Aucun courrier à exporter avec ces filtres.'); return; }
     const isIn = sens === 'entrant';
     const heads = isIn
-      ? ['N° chrono','Date réception','Date courrier','Expéditeur','Référence','Objet','Type','Service imputé','Priorité','Échéance','Statut','Confidentiel','Pièces jointes','Instructions','Observations']
+      ? ['N° chrono','Date réception','Date courrier','Expéditeur','Référence','Objet','Type','Service imputé','Priorité','Échéance','Statut','Clôturé le','Confidentiel','Pièces jointes','Instructions','Observations']
       : ['N° chrono','Date envoi','Date courrier','Destinataire','Référence','Objet','Type','Service émetteur','Signataire','Mode d\'envoi','Statut','Confidentiel','Pièces jointes','Observations'];
     const cell = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
     const lines = [heads.map(cell).join(';')];
     for (const c of list) {
       const row = isIn
-        ? [c.numero, fmtDate(c.dateReception), fmtDate(c.dateCourrier), c.correspondant, c.reference, c.objet, c.type, c.service, c.priorite, fmtDate(c.echeance), c.statut, c.confidentiel ? 'Oui' : 'Non', c.pieces, c.instructions, c.observations]
+        ? [c.numero, fmtDate(c.dateReception), fmtDate(c.dateCourrier), c.correspondant, c.reference, c.objet, c.type, c.service, c.priorite, fmtDate(c.echeance), c.statut, fmtDate(c.dateCloture), c.confidentiel ? 'Oui' : 'Non', c.pieces, c.instructions, c.observations]
         : [c.numero, fmtDate(c.dateEnvoi), fmtDate(c.dateCourrier), c.correspondant, c.reference, c.objet, c.type, c.service, c.signataire, c.modeEnvoi, c.statut, c.confidentiel ? 'Oui' : 'Non', c.pieces, c.observations];
       lines.push(row.map(cell).join(';'));
     }
@@ -1236,7 +1426,7 @@ const App = {
   printHeader(titre) {
     return `<div class="p-head">
       <div class="p-org">République Démocratique du Congo</div>
-      <div class="p-sub">Initiative pour la Transparence des Industries Extractives — ITIE-RDC · Projet PAAJ · Secrétariat Technique</div>
+      <div class="p-sub">Initiative pour la Transparence des Industries Extractives — ITIE-RDC · Secrétariat Technique</div>
       <hr class="p-rule" />
       <h1>${titre}</h1>
     </div>`;
@@ -1294,13 +1484,13 @@ const App = {
     const y = new Date().getFullYear();
     const d = (offset) => { const dt = new Date(); dt.setDate(dt.getDate() + offset); return dt.toISOString().slice(0, 10); };
     const demo = [
-      { sens: 'entrant', dateReception: d(-24), correspondant: 'Ministère des Finances', reference: '128/CAB/MIN/FIN/2026', objet: 'Transmission des états de paiements du secteur forestier — exercice 2025', type: 'Lettre officielle', service: 'Cellule Technique / Rapportage', priorite: 'Urgente', echeance: d(-4), statut: 'En traitement', pieces: '1 tableau annexe', instructions: 'Vérifier la concordance avec les déclarations des entreprises.' },
+      { sens: 'entrant', dateReception: d(-24), correspondant: 'Ministère des Finances', reference: '128/CAB/MIN/FIN/2026', objet: 'Transmission des états de paiements du secteur extractif — exercice 2025', type: 'Lettre officielle', service: 'Cellule Technique / Rapportage', priorite: 'Urgente', echeance: d(-4), statut: 'En traitement', pieces: '1 tableau annexe', instructions: 'Vérifier la concordance avec les déclarations des entreprises.' },
       { sens: 'entrant', dateReception: d(-15), correspondant: 'Secrétariat International ITIE (Oslo)', reference: 'EITI/2026/117', objet: 'Préparation de la Validation 2026 — calendrier et exigences', type: 'Lettre officielle', service: 'Coordination Nationale', priorite: 'Très urgente', echeance: d(6), statut: 'Imputé', pieces: '2 annexes', instructions: 'Préparer un projet de feuille de route sous huitaine.' },
-      { sens: 'entrant', dateReception: d(-9), correspondant: 'Ministère de l\'Environnement et Développement Durable', reference: '512/SG/EDD/2026', objet: 'Désignation du point focal REDD+ pour le rapportage forestier', type: 'Note de service', service: 'Secrétariat Technique', priorite: 'Normale', echeance: d(12), statut: 'Enregistré', pieces: '—' },
-      { sens: 'entrant', dateReception: d(-6), correspondant: 'Coalition Publiez Ce Que Vous Payez — RDC', reference: 'PCQVP/026/2026', objet: 'Demande d\'accès aux données de production forestière désagrégées', type: 'Demande', service: 'Cellule Communication', priorite: 'Normale', echeance: d(9), statut: 'Imputé', pieces: '1 note de position' },
-      { sens: 'entrant', dateReception: d(-2), correspondant: 'PNUD RDC', reference: 'UNDP/CD/2026/389', objet: 'Invitation à l\'atelier de restitution du Projet PAAJ — Kinshasa', type: 'Invitation', service: 'Coordination Nationale', priorite: 'Urgente', echeance: d(3), statut: 'Enregistré', pieces: 'Agenda provisoire' },
+      { sens: 'entrant', dateReception: d(-9), correspondant: 'Ministère des Mines', reference: '512/SG/MINES/2026', objet: 'Désignation du point focal pour le rapportage FARI', type: 'Note de service', service: 'Secrétariat Technique', priorite: 'Normale', echeance: d(12), statut: 'Enregistré', pieces: '—' },
+      { sens: 'entrant', dateReception: d(-6), correspondant: 'Coalition Publiez Ce Que Vous Payez — RDC', reference: 'PCQVP/026/2026', objet: 'Demande d\'accès aux données de production minière désagrégées', type: 'Demande', service: 'Cellule Communication', priorite: 'Normale', echeance: d(9), statut: 'Imputé', pieces: '1 note de position' },
+      { sens: 'entrant', dateReception: d(-2), correspondant: 'PNUD RDC', reference: 'UNDP/CD/2026/389', objet: 'Invitation à l\'atelier de restitution du modèle FARI — Kinshasa', type: 'Invitation', service: 'Coordination Nationale', priorite: 'Urgente', echeance: d(3), statut: 'Enregistré', pieces: 'Agenda provisoire' },
       { sens: 'sortant', dateEnvoi: d(-12), correspondant: 'Ministère des Finances', reference: `042/ITIE-RDC/ST/${y}`, objet: 'Accusé de réception et observations sur les états de paiements 2025', type: 'Lettre officielle', service: 'Cellule Technique / Rapportage', priorite: 'Normale', signataire: 'Le Coordonnateur National', modeEnvoi: 'Porteur', statut: 'Expédié', pieces: '1 note technique' },
-      { sens: 'sortant', dateEnvoi: d(-5), correspondant: 'Ensemble des entreprises forestières déclarantes', reference: `047/ITIE-RDC/ST/${y}`, objet: 'Circulaire : lancement de la collecte des déclarations — exercice 2025', type: 'Note circulaire', service: 'Cellule Technique / Rapportage', priorite: 'Urgente', signataire: 'Le Secrétaire Technique', modeEnvoi: 'Courrier électronique', statut: 'Expédié', pieces: 'Formulaires de déclaration' },
+      { sens: 'sortant', dateEnvoi: d(-5), correspondant: 'Ensemble des entreprises extractives déclarantes', reference: `047/ITIE-RDC/ST/${y}`, objet: 'Circulaire : lancement de la collecte des déclarations — exercice 2025', type: 'Note circulaire', service: 'Cellule Technique / Rapportage', priorite: 'Urgente', signataire: 'Le Secrétaire Technique', modeEnvoi: 'Courrier électronique', statut: 'Expédié', pieces: 'Formulaires de déclaration' },
       { sens: 'sortant', dateEnvoi: d(-1), correspondant: 'Secrétariat International ITIE (Oslo)', reference: `051/ITIE-RDC/CN/${y}`, objet: 'Réponse : feuille de route de préparation à la Validation 2026', type: 'Lettre officielle', service: 'Coordination Nationale', priorite: 'Très urgente', signataire: 'Le Coordonnateur National', modeEnvoi: 'Courrier électronique', statut: 'Signé', pieces: 'Feuille de route (12 p.)' }
     ];
     let n = 0;
@@ -1310,12 +1500,11 @@ const App = {
         id: uid() + (n++),
         numero: nextNumero(item.sens, year),
         createdAt: Date.now() - (demo.length - n) * 60000,
-        confidentiel: false, dateCourrier: null, reponseA: null,
+        confidentiel: false, dateCourrier: null, reponseA: null, dateCloture: null,
         instructions: '', observations: '', echeance: null, modeEnvoi: null, signataire: null,
         historique: [{ ts: Date.now(), txt: 'Enregistrement au registre (démonstration)' }]
       }, item));
     }
-    // Lier la réponse Oslo
     const oslo = courriers.find(c => c.reference === 'EITI/2026/117');
     const rep = courriers.find(c => (c.reference || '').startsWith('051/ITIE-RDC'));
     if (oslo && rep) rep.reponseA = oslo.id;
