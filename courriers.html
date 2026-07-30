@@ -3,354 +3,440 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Gestion des Courriers · Secrétariat Technique ITIE-RDC</title>
+<title>Letters · Bureau d'Ordre — Secrétariat Technique ITIE-RDC</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,700&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&family=Public+Sans:ital,wght@0,600;0,900;1,900&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --blue: #1878d1;
-    --blue-strong: #1466b8;
-    --blue-light: #2b8ae0;
-    --blue-pale: #e3eefb;
+    --paper: #f4f0e5;
+    --paper-deep: #eae4d3;
+    --card: #fdfcf7;
+    --ink: #1c2b3a;
     --navy: #12395e;
-    --red: #ce1126;
+    --blue: #1878d1;
     --yellow: #ffc107;
-    --yellow-deep: #f5b301;
-    --bg: #f2f6fb;
-    --card: #ffffff;
-    --muted: #5b7186;
-    --line: #dde7f0;
-    --ok: #1e8e5a;
-    --warn: #d97706;
-    --danger: #d3202f;
-    --radius: 14px;
-    --shadow: 0 4px 18px rgba(18,57,94,0.08);
+    --red: #ce1126;
+    --muted: #6d7568;
+    --hair: #d6cdb8;
+    --hair-dark: #b9ae93;
+    --ok: #2e6e4e;
+    --warn: #a05c10;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
   body {
-    font-family: 'Public Sans', 'Segoe UI', sans-serif;
-    background: var(--bg);
-    color: var(--navy);
+    font-family: 'IBM Plex Sans', sans-serif;
+    background: var(--paper);
+    background-image: repeating-linear-gradient(0deg, rgba(28,43,58,0.018) 0 1px, transparent 1px 29px);
+    color: var(--ink);
     line-height: 1.55;
     min-height: 100vh;
   }
   .mono { font-family: 'IBM Plex Mono', monospace; }
   button { font-family: inherit; cursor: pointer; }
-  input, select, textarea { font-family: inherit; font-size: 0.9rem; color: var(--navy); }
+  input, select, textarea { font-family: inherit; font-size: 0.9rem; color: var(--ink); }
 
-  /* ═══ BARRE DE NAVIGATION (charte : fond blanc, souligné jaune) ═══ */
-  .topbar {
-    position: sticky; top: 0; z-index: 100;
-    background: #fff;
-    box-shadow: 0 2px 10px rgba(18,57,94,0.08);
+  /* ═══ COQUILLE : BARRE LATÉRALE + CONTENU ═══ */
+  .shell { display: flex; min-height: 100vh; }
+  .side {
+    width: 264px; flex-shrink: 0;
+    background: var(--navy);
+    background-image: linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0) 140px);
+    color: #e9eef4;
+    display: flex; flex-direction: column;
+    position: sticky; top: 0; height: 100vh; overflow-y: auto;
+    border-right: 4px solid var(--yellow);
   }
-  .topbar-inner {
-    max-width: 1440px; margin: 0 auto;
-    padding: 0.7rem 2rem;
-    display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;
+  .side-logo { display: block; background: #fdfcf7; padding: 0.9rem 1rem 0.7rem; border-bottom: 4px solid var(--red); }
+  .logo-svg { height: 2.9rem; width: auto; display: block; }
+  .side-title {
+    padding: 1rem 1.25rem 0.9rem;
+    font-family: 'Fraunces', serif; font-weight: 900; font-size: 1.55rem; letter-spacing: 0.01em;
+    color: #fff; line-height: 1.1;
+    border-bottom: 1px solid rgba(255,255,255,0.14);
   }
-  .logo { display: flex; align-items: baseline; gap: 0.15rem; text-decoration: none; line-height: 1; }
-  .logo .l-itie { font-weight: 900; font-style: italic; font-size: 1.7rem; color: var(--blue); letter-spacing: -0.02em; }
-  .logo .l-rdc  { font-weight: 900; font-style: italic; font-size: 1.7rem; color: var(--red); letter-spacing: -0.02em; }
-  .logo .l-loupe { font-size: 1.05rem; margin-left: 0.1rem; }
-  .logo-block { display: flex; flex-direction: column; }
-  .logo-block small { font-size: 0.58rem; color: var(--muted); letter-spacing: 0.02em; margin-top: 0.15rem; }
-  .nav-links { display: flex; gap: 0.4rem; margin-left: auto; flex-wrap: wrap; }
+  .side-title span { display: block; font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 0.6rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--yellow); margin-top: 0.45rem; }
+
+  .nav-links { display: flex; flex-direction: column; padding: 0.9rem 0; }
   .nav-links button {
-    background: none; border: none;
-    padding: 0.55rem 0.9rem 0.5rem;
-    font-size: 0.92rem; font-weight: 600; color: var(--navy);
-    border-bottom: 3px solid transparent;
-    transition: color 0.15s, border-color 0.15s;
+    display: flex; align-items: center; gap: 0.7rem;
+    background: none; border: none; text-align: left;
+    color: rgba(233,238,244,0.75);
+    padding: 0.62rem 1.25rem;
+    font-size: 0.78rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase;
+    border-left: 4px solid transparent;
+    transition: background 0.15s, color 0.15s;
   }
-  .nav-links button:hover { color: var(--blue); }
-  .nav-links button.active { color: var(--blue); border-bottom-color: var(--yellow); }
+  .nav-links button:hover { color: #fff; background: rgba(255,255,255,0.05); }
+  .nav-links button.active {
+    color: #fff; background: rgba(255,255,255,0.08);
+    border-left-color: var(--yellow);
+  }
+  .nav-links .n-ico { font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; width: 1.1rem; text-align: center; color: var(--yellow); }
   .nav-links .badge {
-    background: var(--red); color: #fff; border-radius: 10px;
-    font-size: 0.62rem; padding: 0.08rem 0.42rem; margin-left: 0.3rem; vertical-align: 2px;
+    margin-left: auto;
+    background: var(--red); color: #fff;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; font-weight: 700;
+    padding: 0.05rem 0.45rem;
   }
 
-  /* ═══ BOUTONS (charte : pilule jaune / bleu) ═══ */
+  .side-sep {
+    margin: 0.8rem 1.25rem 0.4rem;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; letter-spacing: 0.24em; text-transform: uppercase;
+    color: rgba(233,238,244,0.5);
+    border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 0.3rem;
+  }
+  .side-stats { padding: 0.2rem 1.25rem 0.6rem; }
+  .side-stats .srow {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 0.76rem; padding: 0.28rem 0;
+    border-bottom: 1px dotted rgba(255,255,255,0.14);
+    color: rgba(233,238,244,0.8);
+  }
+  .side-stats .srow b { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; color: #fff; }
+  .side-stats .srow.alerte b { color: #ff8d97; }
+  .side-actions { padding: 1rem 1.25rem 1.4rem; display: flex; flex-direction: column; gap: 0.55rem; margin-top: auto; }
+
+  .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+  /* ═══ EN-TÊTE DOCUMENT ═══ */
+  .doc-head {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap;
+    padding: 0.7rem 2.2rem;
+    border-bottom: 2px solid var(--ink);
+    box-shadow: 0 3px 0 -1px var(--ink);
+    background: var(--paper);
+    position: sticky; top: 0; z-index: 90;
+  }
+  .doc-head .dh-line {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink);
+  }
+  .doc-head .dh-right { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+
+  /* ═══ BOUTONS — rectangulaires, typographiques ═══ */
   .btn {
-    display: inline-flex; align-items: center; gap: 0.45rem;
-    border: none; border-radius: 8px;
-    padding: 0.6rem 1.15rem;
-    font-size: 0.86rem; font-weight: 700;
-    transition: all 0.15s;
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem;
+    border: 1.5px solid var(--ink); border-radius: 0;
+    padding: 0.55rem 1.05rem;
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    background: var(--card); color: var(--ink);
+    box-shadow: 2px 2px 0 var(--ink);
+    transition: transform 0.1s, box-shadow 0.1s;
   }
-  .btn-yellow { background: var(--yellow); color: var(--navy); box-shadow: 0 3px 10px rgba(245,179,1,0.35); }
-  .btn-yellow:hover { background: var(--yellow-deep); transform: translateY(-1px); }
-  .btn-blue { background: var(--blue); color: #fff; }
-  .btn-blue:hover { background: var(--blue-strong); }
-  .btn-white { background: #fff; color: var(--blue); border: 1px solid var(--line); }
-  .btn-white:hover { border-color: var(--blue); }
-  .btn-danger { background: #fff; color: var(--danger); border: 1px solid rgba(211,32,47,0.35); }
-  .btn-danger:hover { background: rgba(211,32,47,0.06); }
-  .btn-sm { padding: 0.35rem 0.7rem; font-size: 0.76rem; border-radius: 7px; }
+  .btn:hover { transform: translate(-1px,-1px); box-shadow: 3px 3px 0 var(--ink); }
+  .btn:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 var(--ink); }
+  .btn-yellow { background: var(--yellow); }
+  .btn-blue { background: var(--navy); color: #fff; }
+  .btn-white { background: var(--card); }
+  .btn-ghost { background: transparent; color: #fff; border-color: rgba(255,255,255,0.6); box-shadow: 2px 2px 0 rgba(0,0,0,0.35); }
+  .btn-ghost:hover { border-color: var(--yellow); color: var(--yellow); box-shadow: 3px 3px 0 rgba(0,0,0,0.35); }
+  .btn-danger { color: var(--red); border-color: var(--red); box-shadow: 2px 2px 0 var(--red); }
+  .btn-danger:hover { box-shadow: 3px 3px 0 var(--red); }
+  .btn-sm { padding: 0.32rem 0.65rem; font-size: 0.64rem; box-shadow: 1.5px 1.5px 0 var(--ink); }
 
-  /* ═══ HERO BLEU (charte : dégradé + carte chiffres clés) ═══ */
-  .hero {
-    background: linear-gradient(135deg, #1466b8 0%, #1d7fd6 55%, #2b8ae0 100%);
-    color: #fff;
-    position: relative; overflow: hidden;
-  }
-  .hero::after {
-    content: ''; position: absolute; inset: 0;
-    background-image: radial-gradient(rgba(255,255,255,0.14) 1.5px, transparent 1.5px);
-    background-size: 34px 34px; opacity: 0.5; pointer-events: none;
-  }
-  .hero-inner {
-    max-width: 1440px; margin: 0 auto; padding: 2.6rem 2rem 2.8rem;
-    display: grid; grid-template-columns: 1.25fr 1fr; gap: 2.5rem; align-items: center;
-    position: relative; z-index: 1;
-  }
-  @media (max-width: 980px) { .hero-inner { grid-template-columns: 1fr; } }
-  .hero h1 { font-size: clamp(1.9rem, 4vw, 3rem); font-weight: 900; line-height: 1.12; letter-spacing: -0.015em; }
-  .hero h1 .accent-bar { display: inline-block; width: 8px; height: 0.85em; background: var(--yellow); margin-right: 0.45rem; vertical-align: -0.08em; border-radius: 2px; }
-  .hero p { margin-top: 1rem; font-size: 1.02rem; opacity: 0.94; max-width: 56ch; }
-  .hero-cta { display: flex; gap: 0.8rem; margin-top: 1.6rem; flex-wrap: wrap; }
-  .keycard {
-    background: rgba(255,255,255,0.10);
-    border: 1px solid rgba(255,255,255,0.35);
-    border-radius: var(--radius);
-    padding: 1.4rem 1.6rem;
-    backdrop-filter: blur(4px);
-  }
-  .keycard h3 { font-size: 1.12rem; font-weight: 800; margin-bottom: 0.7rem; }
-  .keycard .krow {
-    display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
-    padding: 0.62rem 0; border-bottom: 1px solid rgba(255,255,255,0.22);
-    font-size: 0.92rem;
-  }
-  .keycard .krow:last-child { border-bottom: none; }
-  .keycard .kval { color: var(--yellow); font-weight: 800; font-size: 1.15rem; white-space: nowrap; }
-
-  /* ═══ STRUCTURE ═══ */
-  .wrap { max-width: 1440px; margin: 0 auto; padding: 2rem 2rem 4rem; }
+  /* ═══ STRUCTURE DES VUES ═══ */
+  .wrap { max-width: 1240px; width: 100%; margin: 0 auto; padding: 2rem 2.2rem 4rem; }
   .view { display: none; }
   .view.active { display: block; }
   .eyebrow {
-    font-size: 0.74rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase;
-    color: var(--blue); margin-bottom: 0.4rem;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; font-weight: 600;
+    letter-spacing: 0.26em; text-transform: uppercase;
+    color: var(--red); margin-bottom: 0.5rem;
   }
-  .view-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
-  .view-head h2 { font-size: 1.85rem; font-weight: 900; letter-spacing: -0.015em; line-height: 1.15; }
-  .view-head p { color: var(--muted); font-size: 0.9rem; max-width: 62ch; margin-top: 0.35rem; }
+  .eyebrow::before { content: '§ '; color: var(--hair-dark); }
+  .view-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.6rem; padding-bottom: 1.1rem; border-bottom: 1px solid var(--hair-dark); }
+  .view-head h2 { font-family: 'Fraunces', serif; font-size: 2.2rem; font-weight: 900; letter-spacing: -0.01em; line-height: 1.08; }
+  .view-head p { color: var(--muted); font-size: 0.88rem; max-width: 64ch; margin-top: 0.45rem; }
   .head-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
 
-  /* ═══ KPI ═══ */
-  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(195px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
-  .kpi {
-    background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
-    padding: 1.15rem 1.3rem; border-left: 5px solid var(--blue);
+  /* ═══ SYNTHÈSE (bandeau registre) ═══ */
+  .kpi-grid {
+    display: flex; flex-wrap: wrap;
+    background: var(--card);
+    border: 1.5px solid var(--ink);
+    box-shadow: 3px 3px 0 var(--ink);
+    margin-bottom: 1.6rem;
   }
-  .kpi.k-yellow { border-left-color: var(--yellow); }
-  .kpi.k-red { border-left-color: var(--red); }
-  .kpi.k-green { border-left-color: var(--ok); }
-  .kpi.k-navy { border-left-color: var(--navy); }
-  .kpi-num { font-size: 2.05rem; font-weight: 900; line-height: 1.1; letter-spacing: -0.02em; }
-  .kpi-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.09em; color: var(--muted); font-weight: 700; margin-top: 0.25rem; }
-  .kpi-sub { font-size: 0.76rem; color: var(--muted); margin-top: 0.3rem; }
+  .kpi {
+    flex: 1 1 150px;
+    padding: 1rem 1.25rem 0.9rem;
+    border-right: 1px solid var(--hair);
+    position: relative;
+  }
+  .kpi:last-child { border-right: none; }
+  .kpi::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: var(--navy); }
+  .kpi.k-yellow::before { background: var(--yellow); }
+  .kpi.k-red::before { background: var(--red); }
+  .kpi.k-green::before { background: var(--ok); }
+  .kpi.k-navy::before { background: var(--ink); }
+  .kpi-num { font-family: 'Fraunces', serif; font-size: 2.3rem; font-weight: 900; line-height: 1.05; margin-top: 0.3rem; }
+  .kpi-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); font-weight: 600; margin-top: 0.3rem; }
+  .kpi-sub { font-size: 0.72rem; color: var(--muted); margin-top: 0.25rem; font-style: italic; }
 
-  .panel-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 1.2rem; align-items: start; }
+  .panel-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 1.3rem; align-items: start; }
   @media (max-width: 980px) { .panel-grid { grid-template-columns: 1fr; } }
-  .panel { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.3rem 1.4rem; margin-bottom: 1.2rem; }
-  .panel h3 { font-size: 1.05rem; font-weight: 800; margin-bottom: 0.9rem; display: flex; justify-content: space-between; align-items: baseline; gap: 0.6rem; }
-  .panel h3 .hint { font-weight: 500; font-size: 0.72rem; color: var(--muted); }
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--hair-dark); border-top: 3px double var(--ink);
+    padding: 1.15rem 1.3rem 1.25rem; margin-bottom: 1.3rem;
+  }
+  .panel h3 {
+    font-family: 'Fraunces', serif; font-size: 1.12rem; font-weight: 700;
+    margin-bottom: 0.9rem; padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--hair);
+    display: flex; justify-content: space-between; align-items: baseline; gap: 0.6rem;
+  }
+  .panel h3 .hint { font-family: 'IBM Plex Mono', monospace; font-weight: 400; font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
 
-  /* Graphique en barres */
-  .chart { display: flex; align-items: flex-end; gap: 6px; height: 150px; padding-top: 0.4rem; }
+  /* Graphique — encre sur papier */
+  .chart { display: flex; align-items: flex-end; gap: 6px; height: 150px; padding-top: 0.4rem; border-bottom: 1.5px solid var(--ink); }
   .chart .col { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 3px; height: 100%; min-width: 0; }
   .chart .bars { display: flex; align-items: flex-end; gap: 2px; width: 100%; flex: 1; justify-content: center; }
-  .chart .bar { width: 40%; max-width: 16px; border-radius: 3px 3px 0 0; min-height: 2px; }
-  .chart .bar.in { background: var(--blue); }
-  .chart .bar.out { background: var(--yellow); }
-  .chart .lbl { font-size: 0.6rem; color: var(--muted); text-transform: uppercase; }
-  .legend { display: flex; gap: 1.1rem; font-size: 0.74rem; color: var(--muted); margin-top: 0.6rem; }
-  .legend span::before { content: ''; display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 0.35rem; vertical-align: -1px; }
-  .legend .li-in::before { background: var(--blue); }
-  .legend .li-out::before { background: var(--yellow); }
+  .chart .bar { width: 40%; max-width: 15px; min-height: 2px; }
+  .chart .bar.in { background: var(--navy); }
+  .chart .bar.out { background: transparent; border: 1.5px solid var(--navy); border-bottom: none; background-image: repeating-linear-gradient(45deg, var(--navy) 0 1px, transparent 1px 4px); }
+  .chart .lbl { font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem; color: var(--muted); text-transform: uppercase; }
+  .legend { display: flex; gap: 1.2rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-top: 0.6rem; }
+  .legend span::before { content: ''; display: inline-block; width: 11px; height: 11px; margin-right: 0.4rem; vertical-align: -1px; }
+  .legend .li-in::before { background: var(--navy); }
+  .legend .li-out::before { border: 1.5px solid var(--navy); background-image: repeating-linear-gradient(45deg, var(--navy) 0 1px, transparent 1px 4px); }
 
-  .mini-list { list-style: none; }
+  .mini-list { list-style: none; counter-reset: ml; }
   .mini-list li {
+    counter-increment: ml;
     display: flex; justify-content: space-between; gap: 0.8rem; align-items: baseline;
-    padding: 0.52rem 0; border-bottom: 1px solid var(--line); font-size: 0.85rem; cursor: pointer;
+    padding: 0.5rem 0; border-bottom: 1px dotted var(--hair-dark); font-size: 0.84rem; cursor: pointer;
   }
+  .mini-list li::before { content: counter(ml, decimal-leading-zero); font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; color: var(--hair-dark); }
   .mini-list li:last-child { border-bottom: none; }
   .mini-list li:hover .obj { color: var(--blue); text-decoration: underline; }
   .mini-list .obj { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .mini-list .meta { font-size: 0.72rem; color: var(--muted); white-space: nowrap; }
-  .empty-note { color: var(--muted); font-size: 0.84rem; font-style: italic; padding: 0.4rem 0; }
+  .mini-list .meta { font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; color: var(--muted); white-space: nowrap; }
+  .empty-note { color: var(--muted); font-size: 0.83rem; font-style: italic; padding: 0.4rem 0; }
 
-  .svc-row { display: flex; align-items: center; gap: 0.7rem; padding: 0.34rem 0; font-size: 0.82rem; }
+  .svc-row { display: flex; align-items: center; gap: 0.7rem; padding: 0.36rem 0; font-size: 0.82rem; border-bottom: 1px dotted var(--hair); }
+  .svc-row:last-child { border-bottom: none; }
   .svc-row .svc-name { width: 42%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .svc-row .svc-bar { flex: 1; height: 9px; background: var(--blue-pale); border-radius: 5px; overflow: hidden; }
-  .svc-row .svc-fill { height: 100%; background: linear-gradient(90deg, var(--blue), var(--blue-light)); border-radius: 5px; }
-  .svc-row .svc-n { font-family: 'IBM Plex Mono'; font-size: 0.72rem; color: var(--muted); width: 2.2rem; text-align: right; }
+  .svc-row .svc-bar { flex: 1; height: 10px; background: var(--paper-deep); border: 1px solid var(--hair-dark); }
+  .svc-row .svc-fill { height: 100%; background: var(--navy); }
+  .svc-row .svc-n { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--ink); width: 2.2rem; text-align: right; font-weight: 600; }
 
-  /* ═══ ALERTE ═══ */
+  /* ═══ AVIS ═══ */
   .alert-strip {
-    background: #fdecec; border: 1px solid rgba(206,17,38,0.3);
-    border-left: 5px solid var(--red); border-radius: 10px;
-    padding: 0.8rem 1.1rem; margin-bottom: 1.3rem; font-size: 0.87rem;
+    background: var(--card);
+    border: 1.5px solid var(--red);
+    box-shadow: 3px 3px 0 var(--red);
+    padding: 0.75rem 1.1rem; margin-bottom: 1.4rem; font-size: 0.85rem;
     display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap;
   }
-  .alert-strip strong { color: var(--red); }
+  .alert-strip strong { color: var(--red); text-transform: uppercase; font-size: 0.78rem; letter-spacing: 0.05em; }
 
   /* ═══ FILTRES ═══ */
   .filters {
-    display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center;
-    background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
-    padding: 0.8rem 1rem; margin-bottom: 1.1rem;
+    display: flex; gap: 0.55rem; flex-wrap: wrap; align-items: center;
+    background: var(--paper-deep);
+    border: 1px solid var(--hair-dark);
+    padding: 0.7rem 0.9rem; margin-bottom: 1.2rem;
   }
   .filters input[type="search"] { flex: 1 1 230px; }
   .filters input, .filters select {
-    padding: 0.5rem 0.65rem; border: 1px solid var(--line); border-radius: 8px;
-    background: var(--bg); font-size: 0.84rem;
+    padding: 0.48rem 0.6rem; border: 1px solid var(--hair-dark); border-radius: 0;
+    background: var(--card); font-size: 0.82rem;
   }
-  .filters input:focus, .filters select:focus { outline: 2px solid rgba(24,120,209,0.35); border-color: var(--blue); }
+  .filters input:focus, .filters select:focus { outline: 2px solid var(--yellow); border-color: var(--ink); }
 
-  /* ═══ TABLEAUX ═══ */
-  .table-wrap { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); overflow-x: auto; }
-  table.registry { width: 100%; border-collapse: collapse; font-size: 0.84rem; min-width: 880px; }
+  /* ═══ REGISTRE (tableaux) ═══ */
+  .table-wrap {
+    background: var(--card);
+    border: 1.5px solid var(--ink);
+    box-shadow: 4px 4px 0 var(--ink);
+    overflow-x: auto;
+  }
+  table.registry { width: 100%; border-collapse: collapse; font-size: 0.83rem; min-width: 880px; }
   table.registry th {
-    text-align: left; font-size: 0.67rem; text-transform: uppercase; letter-spacing: 0.09em;
-    color: #fff; background: var(--navy); padding: 0.65rem 0.85rem; white-space: nowrap;
+    text-align: left;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--ink); background: var(--paper-deep);
+    padding: 0.6rem 0.8rem; white-space: nowrap;
+    border-bottom: 2.5px double var(--ink);
     cursor: pointer; user-select: none;
   }
-  table.registry th:first-child { border-top-left-radius: var(--radius); }
-  table.registry th:last-child { border-top-right-radius: var(--radius); }
-  table.registry th .arrow { opacity: 0.55; font-size: 0.6rem; }
-  table.registry td { padding: 0.66rem 0.85rem; border-bottom: 1px solid var(--line); vertical-align: top; }
-  table.registry tbody tr { cursor: pointer; transition: background 0.12s; }
-  table.registry tbody tr:hover { background: var(--blue-pale); }
+  table.registry th .arrow { opacity: 0.45; font-size: 0.6rem; }
+  table.registry td { padding: 0.62rem 0.8rem; border-bottom: 1px solid var(--hair); vertical-align: top; }
+  table.registry tbody tr { cursor: pointer; transition: background 0.1s; }
+  table.registry tbody tr:hover { background: #f6efdb; }
+  table.registry tr.overdue { background: rgba(206,17,38,0.045); }
   table.registry tr.overdue td:first-child { box-shadow: inset 4px 0 0 var(--red); }
-  .num-cell { font-family: 'IBM Plex Mono'; font-weight: 600; font-size: 0.78rem; white-space: nowrap; }
+  .num-cell { font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 0.76rem; white-space: nowrap; }
   .obj-cell { max-width: 360px; }
   .obj-cell .obj-main { font-weight: 600; }
-  .obj-cell .obj-sub { font-size: 0.72rem; color: var(--muted); margin-top: 0.1rem; }
+  .obj-cell .obj-sub { font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; color: var(--muted); margin-top: 0.15rem; }
   td.nowrap { white-space: nowrap; }
-
-  .chip {
-    display: inline-block; padding: 0.15rem 0.6rem; border-radius: 20px;
-    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.02em; white-space: nowrap;
+  .table-foot {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0.6rem 0.9rem;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.64rem; letter-spacing: 0.04em; color: var(--muted);
+    border-top: 1.5px solid var(--ink);
+    flex-wrap: wrap; gap: 0.6rem;
+    background: var(--paper-deep);
   }
-  .chip.st-enregistre { background: var(--blue-pale); color: var(--blue-strong); }
-  .chip.st-impute { background: #ede7fb; color: #6d4fc4; }
-  .chip.st-traitement { background: #fff3cd; color: #9a7500; }
-  .chip.st-traite { background: #ddf3e8; color: var(--ok); }
-  .chip.st-archive { background: #e7ecf1; color: #56708a; }
-  .chip.st-sans-suite { background: #e7ecf1; color: #56708a; text-decoration: line-through; }
-  .chip.st-redaction { background: var(--blue-pale); color: var(--blue-strong); }
-  .chip.st-signe { background: #fff3cd; color: #9a7500; }
-  .chip.st-expedie { background: #ddf3e8; color: var(--ok); }
-  .chip.pr-normale { background: #e7ecf1; color: #46607a; }
-  .chip.pr-urgente { background: #fde8d2; color: var(--warn); }
-  .chip.pr-tres-urgente { background: #fdd9dc; color: var(--danger); }
-  .chip.late { background: var(--red); color: #fff; }
-  .chip.soon { background: #fde8d2; color: var(--warn); }
-  .chip.conf { background: var(--navy); color: var(--yellow); }
-  .chip.sens-in { background: var(--blue-pale); color: var(--blue-strong); }
-  .chip.sens-out { background: #fff3cd; color: #9a7500; }
 
-  .table-foot { display: flex; justify-content: space-between; align-items: center; padding: 0.7rem 1rem; font-size: 0.78rem; color: var(--muted); flex-wrap: wrap; gap: 0.6rem; }
+  /* ═══ TAMPONS (statuts, priorités) ═══ */
+  .chip {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap;
+    padding: 0.1rem 0.45rem;
+    border: 1.5px solid currentColor; border-radius: 2px;
+    background: transparent;
+  }
+  .chip.st-enregistre { color: var(--blue); }
+  .chip.st-impute { color: #7a4fc0; }
+  .chip.st-traitement { color: var(--warn); }
+  .chip.st-traite { color: var(--ok); }
+  .chip.st-archive { color: var(--muted); border-style: dashed; }
+  .chip.st-sans-suite { color: var(--muted); text-decoration: line-through; border-style: dashed; }
+  .chip.st-redaction { color: var(--blue); }
+  .chip.st-signe { color: var(--warn); }
+  .chip.st-expedie { color: var(--ok); }
+  .chip.pr-normale { color: var(--muted); border-color: var(--hair-dark); }
+  .chip.pr-urgente { color: var(--warn); }
+  .chip.pr-tres-urgente { color: var(--red); }
+  .chip.late { color: #fff; background: var(--red); border-color: var(--red); transform: rotate(-1.5deg); }
+  .chip.soon { color: var(--warn); background: rgba(160,92,16,0.09); }
+  .chip.conf { color: var(--yellow); background: var(--ink); border-color: var(--ink); }
+  .chip.sens-in { color: var(--navy); }
+  .chip.sens-out { color: var(--warn); }
 
-  /* ═══ MODALES ═══ */
+  /* ═══ MODALES — fiches administratives ═══ */
   .modal-backdrop {
     display: none; position: fixed; inset: 0; z-index: 300;
-    background: rgba(18,57,94,0.5); backdrop-filter: blur(3px);
+    background: rgba(28,43,58,0.55);
     align-items: flex-start; justify-content: center; overflow-y: auto; padding: 3vh 1rem;
   }
   .modal-backdrop.open { display: flex; }
   .modal {
-    background: #fff; border-radius: 16px; width: 100%; max-width: 800px;
-    box-shadow: 0 24px 70px rgba(18,57,94,0.4);
-    margin-bottom: 3vh; overflow: hidden;
+    background: var(--card); border: 2px solid var(--ink);
+    box-shadow: 8px 8px 0 rgba(28,43,58,0.85);
+    width: 100%; max-width: 800px; margin-bottom: 3vh;
   }
   .modal-head {
-    padding: 1.25rem 1.6rem 1rem;
-    background: linear-gradient(135deg, #1466b8, #2b8ae0);
-    color: #fff;
+    padding: 1.15rem 1.5rem 0.9rem;
+    border-bottom: 3px double var(--ink);
     display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;
+    background: var(--paper-deep);
   }
-  .modal-head h2 { font-size: 1.3rem; font-weight: 800; }
-  .modal-head .sub { font-size: 0.8rem; opacity: 0.9; margin-top: 0.15rem; }
-  .modal-close { background: rgba(255,255,255,0.15); border: none; border-radius: 8px; font-size: 1.3rem; line-height: 1; color: #fff; padding: 0.3rem 0.6rem; }
-  .modal-close:hover { background: var(--red); }
-  .modal-body { padding: 1.2rem 1.6rem 1.6rem; }
+  .modal-head h2 { font-family: 'Fraunces', serif; font-size: 1.45rem; font-weight: 900; }
+  .modal-head .sub { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.08em; color: var(--muted); margin-top: 0.2rem; text-transform: uppercase; }
+  .modal-close {
+    background: var(--card); border: 1.5px solid var(--ink);
+    font-size: 1.1rem; line-height: 1; color: var(--ink);
+    padding: 0.3rem 0.55rem; box-shadow: 2px 2px 0 var(--ink);
+  }
+  .modal-close:hover { background: var(--red); border-color: var(--red); color: #fff; box-shadow: 2px 2px 0 var(--red); }
+  .modal-body { padding: 1.2rem 1.5rem 1.5rem; }
 
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem 1.1rem; }
   .form-grid .full { grid-column: 1 / -1; }
   @media (max-width: 640px) { .form-grid { grid-template-columns: 1fr; } }
-  .field label { display: block; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--navy); margin-bottom: 0.3rem; }
+  .field label {
+    display: block;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink); margin-bottom: 0.3rem;
+  }
   .field label .req { color: var(--red); }
   .field input, .field select, .field textarea {
-    width: 100%; padding: 0.58rem 0.7rem; border: 1px solid var(--line); border-radius: 8px;
-    background: var(--bg); font-size: 0.88rem;
+    width: 100%; padding: 0.55rem 0.65rem;
+    border: 1px solid var(--hair-dark); border-radius: 0;
+    background: #fff; font-size: 0.88rem;
   }
   .field textarea { resize: vertical; min-height: 64px; }
-  .field input:focus, .field select:focus, .field textarea:focus { outline: 2px solid rgba(24,120,209,0.35); border-color: var(--blue); background: #fff; }
-  .field .note { font-size: 0.7rem; color: var(--muted); margin-top: 0.22rem; }
+  .field input:focus, .field select:focus, .field textarea:focus { outline: 2px solid var(--yellow); border-color: var(--ink); }
+  .field .note { font-size: 0.68rem; color: var(--muted); margin-top: 0.22rem; font-style: italic; }
   .check-inline { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; padding-top: 1.5rem; }
   .check-inline input { width: auto; }
-  .form-actions { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 1.3rem; flex-wrap: wrap; }
-  .sens-switch { display: flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin-bottom: 1.1rem; }
-  .sens-switch button { flex: 1; padding: 0.65rem; border: none; background: #fff; font-weight: 800; font-size: 0.84rem; letter-spacing: 0.03em; color: var(--muted); }
-  .sens-switch button.on-in { background: var(--blue); color: #fff; }
-  .sens-switch button.on-out { background: var(--yellow); color: var(--navy); }
+  .form-actions { display: flex; justify-content: flex-end; gap: 0.7rem; margin-top: 1.4rem; flex-wrap: wrap; }
+  .sens-switch { display: flex; border: 1.5px solid var(--ink); margin-bottom: 1.1rem; }
+  .sens-switch button {
+    flex: 1; padding: 0.6rem; border: none; background: var(--card);
+    font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 0.72rem;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+  }
+  .sens-switch button.on-in { background: var(--navy); color: #fff; }
+  .sens-switch button.on-out { background: var(--yellow); color: var(--ink); }
 
-  /* ═══ ASSISTANT INTELLIGENT ═══ */
+  /* ═══ ASSISTANT ═══ */
   .smart-bar {
     display: none;
-    background: linear-gradient(135deg, #eef6ff, #e8f2fd);
-    border: 1px solid rgba(24,120,209,0.3);
-    border-radius: 10px;
+    background: var(--paper-deep);
+    border: 1px dashed var(--ink);
     padding: 0.7rem 0.9rem; margin-bottom: 1rem;
     font-size: 0.82rem;
   }
   .smart-bar.on { display: block; }
-  .smart-bar .smart-title { font-weight: 800; color: var(--blue-strong); display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.3rem; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; }
-  .smart-bar .sug { display: inline-flex; align-items: center; gap: 0.4rem; background: #fff; border: 1px solid var(--line); border-radius: 20px; padding: 0.22rem 0.4rem 0.22rem 0.75rem; margin: 0.18rem 0.3rem 0.18rem 0; font-size: 0.78rem; }
-  .smart-bar .sug b { color: var(--blue-strong); }
-  .smart-bar .sug button { background: var(--yellow); border: none; border-radius: 14px; padding: 0.12rem 0.6rem; font-size: 0.7rem; font-weight: 800; color: var(--navy); }
-  .smart-bar .dup { color: var(--danger); font-weight: 600; margin-top: 0.35rem; }
-  .smart-bar .dup .link-rep { color: var(--danger); }
+  .smart-bar .smart-title {
+    font-family: 'IBM Plex Mono', monospace; font-weight: 700; color: var(--ink);
+    display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.35rem;
+    font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.16em;
+  }
+  .smart-bar .sug {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    background: var(--card); border: 1px solid var(--hair-dark);
+    padding: 0.2rem 0.4rem 0.2rem 0.7rem; margin: 0.18rem 0.35rem 0.18rem 0; font-size: 0.76rem;
+  }
+  .smart-bar .sug b { color: var(--navy); }
+  .smart-bar .sug button {
+    background: var(--yellow); border: 1px solid var(--ink);
+    padding: 0.1rem 0.55rem; font-size: 0.62rem; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink);
+  }
+  .smart-bar .dup { color: var(--red); font-weight: 600; margin-top: 0.4rem; }
+  .smart-bar .dup .link-rep { color: var(--red); }
 
   /* ═══ FICHE DÉTAIL ═══ */
-  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem 1.4rem; margin: 0.9rem 0; }
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem 1.4rem; margin: 1rem 0; }
   .detail-grid .full { grid-column: 1 / -1; }
   @media (max-width: 640px) { .detail-grid { grid-template-columns: 1fr; } }
-  .dt { font-size: 0.67rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 800; }
-  .dd { font-size: 0.92rem; margin-top: 0.12rem; }
+  .dt { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); font-weight: 700; }
+  .dd { font-size: 0.92rem; margin-top: 0.15rem; border-bottom: 1px dotted var(--hair); padding-bottom: 0.25rem; }
   .dd.big { font-weight: 700; }
-  .status-line { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin: 0.8rem 0 0.4rem; }
-  .hist { margin-top: 1.1rem; border-top: 1px dashed var(--line); padding-top: 0.9rem; }
-  .hist h4 { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.09em; color: var(--muted); margin-bottom: 0.5rem; }
+  .status-line { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin: 0.9rem 0 0.4rem; }
+  .hist { margin-top: 1.2rem; border-top: 3px double var(--hair-dark); padding-top: 0.9rem; }
+  .hist h4 { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.16em; color: var(--muted); margin-bottom: 0.5rem; }
   .hist ul { list-style: none; }
-  .hist li { font-size: 0.79rem; padding: 0.22rem 0; }
-  .hist li .h-date { font-family: 'IBM Plex Mono'; font-size: 0.7rem; color: var(--muted); margin-right: 0.6rem; }
+  .hist li { font-size: 0.79rem; padding: 0.22rem 0; border-bottom: 1px dotted var(--hair); }
+  .hist li:last-child { border-bottom: none; }
+  .hist li .h-date { font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; color: var(--muted); margin-right: 0.6rem; }
   .link-rep { color: var(--blue); font-weight: 700; cursor: pointer; text-decoration: underline; }
 
   /* ═══ JOURNAL / PARAMÈTRES ═══ */
-  .journal-list { list-style: none; background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
-  .journal-list li { padding: 0.68rem 1.1rem; border-bottom: 1px solid var(--line); font-size: 0.84rem; display: flex; gap: 1rem; align-items: baseline; }
+  .journal-list { list-style: none; background: var(--card); border: 1.5px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); }
+  .journal-list li { padding: 0.65rem 1.1rem; border-bottom: 1px solid var(--hair); font-size: 0.84rem; display: flex; gap: 1rem; align-items: baseline; }
   .journal-list li:last-child { border-bottom: none; }
-  .journal-list .j-date { font-family: 'IBM Plex Mono'; font-size: 0.72rem; color: var(--muted); white-space: nowrap; }
-  .svc-manage { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.6rem; }
-  .svc-tag { background: var(--blue-pale); border-radius: 20px; padding: 0.28rem 0.85rem; font-size: 0.8rem; font-weight: 600; color: var(--blue-strong); display: inline-flex; align-items: center; gap: 0.45rem; }
+  .journal-list .j-date { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--muted); white-space: nowrap; }
+  .svc-manage { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.7rem; }
+  .svc-tag {
+    background: var(--paper-deep); border: 1px solid var(--hair-dark);
+    padding: 0.26rem 0.8rem; font-size: 0.78rem; font-weight: 600; color: var(--ink);
+    display: inline-flex; align-items: center; gap: 0.5rem;
+  }
   .svc-tag button { background: none; border: none; color: var(--red); font-weight: 800; font-size: 0.9rem; line-height: 1; }
-  .add-svc { display: flex; gap: 0.5rem; margin-top: 0.9rem; }
-  .add-svc input { flex: 1; padding: 0.55rem 0.7rem; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); }
+  .add-svc { display: flex; gap: 0.6rem; margin-top: 0.9rem; }
+  .add-svc input { flex: 1; padding: 0.55rem 0.7rem; border: 1px solid var(--hair-dark); border-radius: 0; background: #fff; }
 
   /* ═══ TOAST ═══ */
   #toast {
-    position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(130%);
-    background: var(--navy); color: #fff; padding: 0.75rem 1.4rem; border-radius: 10px;
-    border-left: 5px solid var(--yellow); font-size: 0.86rem; z-index: 500;
-    transition: transform 0.25s ease; max-width: 90vw; box-shadow: 0 10px 30px rgba(18,57,94,0.35);
+    position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(140%);
+    background: var(--ink); color: var(--paper);
+    padding: 0.7rem 1.3rem;
+    border: 1.5px solid var(--ink); box-shadow: 3px 3px 0 rgba(0,0,0,0.4);
+    border-left: 6px solid var(--yellow);
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.74rem; z-index: 500;
+    transition: transform 0.25s ease; max-width: 90vw;
   }
   #toast.show { transform: translateX(-50%) translateY(0); }
 
@@ -376,52 +462,149 @@
     #print-area .kv b { display: inline-block; min-width: 4.2cm; text-transform: uppercase; font-size: 8.5pt; }
   }
 
-  @media (max-width: 700px) {
-    .wrap { padding: 1.2rem 1rem 3rem; }
-    .topbar-inner { padding: 0.6rem 1rem; gap: 0.8rem; }
-    .hero-inner { padding: 1.8rem 1rem 2rem; }
-    .view-head h2 { font-size: 1.45rem; }
+  /* ═══ CONNEXION & HABILITATIONS ═══ */
+  body.locked .shell { display: none; }
+  .login-screen {
+    position: fixed; inset: 0; z-index: 600;
+    background: var(--navy);
+    background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.025) 0 2px, transparent 2px 14px);
+    display: flex; align-items: center; justify-content: center; padding: 1rem;
+  }
+  .login-screen[hidden] { display: none; }
+  .login-card {
+    background: var(--card); border: 2px solid var(--ink);
+    box-shadow: 10px 10px 0 rgba(0,0,0,0.5);
+    width: min(430px, 94vw); padding: 1.7rem 1.9rem 1.4rem;
+  }
+  .login-head { border-bottom: 3px double var(--ink); margin-bottom: 1.15rem; padding-bottom: 0.85rem; }
+  .login-brand { font-family: 'Fraunces', serif; font-weight: 900; font-size: 2rem; line-height: 1; }
+  .login-sub { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-top: 0.4rem; }
+  .login-card .field { margin-bottom: 0.85rem; }
+  .login-btn { width: 100%; margin-top: 0.4rem; }
+  .login-err { color: var(--red); font-size: 0.7rem; margin: 0.1rem 0 0.6rem; }
+  .login-note { font-size: 0.74rem; color: var(--muted); font-style: italic; margin-top: 0.85rem; }
+  .side-user { padding: 0.85rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.14); }
+  .su-name { font-weight: 700; color: #fff; font-size: 0.92rem; }
+  .su-role { font-size: 0.58rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--yellow); margin-top: 0.2rem; }
+  .su-actions { display: flex; gap: 0.45rem; margin-top: 0.6rem; flex-wrap: wrap; }
+  body:not(.role-admin) .nav-links button[data-view="parametres"] { display: none; }
+  body:not(.role-admin) .req-admin { display: none !important; }
+  body.role-lecteur .req-write { display: none !important; }
+  .users-wrap { box-shadow: none; border-width: 1px; margin-top: 0.9rem; }
+  .users-wrap table.registry { min-width: 700px; }
+  .users-wrap table.registry tbody tr { cursor: default; }
+  .role-select { padding: 0.3rem 0.4rem; border: 1px solid var(--hair-dark); background: #fff; font-size: 0.78rem; font-family: inherit; }
+  .j-user { color: var(--navy); font-size: 0.68rem; font-weight: 700; font-family: 'IBM Plex Mono', monospace; }
+
+  /* ═══ SCANS & PERSONNALISATION ═══ */
+  .scan-row { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+  .scan-row input[type="file"] { flex: 1 1 220px; padding: 0.4rem; background: #fff; border: 1px solid var(--hair-dark); font-size: 0.78rem; }
+  .scan-row input[type="url"] { flex: 2 1 240px; }
+  .scan-list { margin-top: 0.55rem; display: flex; flex-direction: column; gap: 0.35rem; }
+  .scan-item { display: flex; align-items: center; gap: 0.6rem; font-size: 0.78rem; background: var(--paper-deep); border: 1px solid var(--hair-dark); padding: 0.32rem 0.6rem; }
+  .scan-item .sc-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; }
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 0.6rem 1rem; margin-top: 1rem; }
+  .color-item { display: flex; align-items: center; gap: 0.6rem; font-size: 0.78rem; }
+  .color-item input[type="color"] { width: 42px; height: 30px; padding: 0; border: 1.5px solid var(--ink); background: none; cursor: pointer; }
+  .txt-editor { max-height: 360px; overflow: auto; border: 1px solid var(--hair); margin-top: 0.7rem; padding: 0.35rem 0.6rem; background: #fff; }
+  .txt-row { display: flex; gap: 0.7rem; align-items: center; padding: 0.18rem 0; border-bottom: 1px dotted var(--hair); }
+  .txt-row:last-child { border-bottom: none; }
+  .txt-row .txt-key { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; color: var(--muted); width: 26%; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .txt-row input { flex: 1; padding: 0.3rem 0.5rem; border: 1px solid var(--hair-dark); font-size: 0.78rem; background: var(--paper-light, #fff); }
+
+  /* ═══ RESPONSIVE ═══ */
+  @media (max-width: 860px) {
+    .shell { flex-direction: column; }
+    .side { width: 100%; height: auto; position: static; border-right: none; border-bottom: 4px solid var(--yellow); }
+    .nav-links { flex-direction: row; overflow-x: auto; padding: 0; }
+    .nav-links button { border-left: none; border-bottom: 3px solid transparent; white-space: nowrap; padding: 0.6rem 0.9rem; }
+    .nav-links button.active { border-left: none; border-bottom-color: var(--yellow); }
+    .side-sep, .side-stats { display: none; }
+    .side-actions { flex-direction: row; margin-top: 0; padding: 0.8rem 1rem; }
+    .doc-head { position: static; padding: 0.6rem 1rem; }
+    .wrap { padding: 1.3rem 1rem 3rem; }
+    .view-head h2 { font-size: 1.6rem; }
   }
 </style>
 </head>
-<body>
+<body class="locked">
 
-<!-- ═══════════ NAVIGATION ═══════════ -->
-<header class="topbar">
-  <div class="topbar-inner">
-    <a class="logo" href="index.html" title="Retour au portail">
-      <span class="logo-block">
-        <span><span class="l-itie">iTiE</span><span class="l-rdc">RDC</span><span class="l-loupe">🔍</span></span>
-        <small>Initiative pour la Transparence des Industries Extractives</small>
-      </span>
-    </a>
-    <nav class="nav-links" role="tablist">
-      <button class="active" data-view="dashboard" onclick="App.show('dashboard')">Accueil</button>
-      <button data-view="entrants" onclick="App.show('entrants')">Courriers entrants <span class="badge" id="badge-in" hidden></span></button>
-      <button data-view="sortants" onclick="App.show('sortants')">Courriers sortants</button>
-      <button data-view="journal" onclick="App.show('journal')">Journal</button>
-      <button data-view="parametres" onclick="App.show('parametres')">Paramètres</button>
-    </nav>
+<!-- ═══════════ ÉCRAN DE CONNEXION ═══════════ -->
+<div id="login-screen" class="login-screen" hidden>
+  <div class="login-card">
+    <div class="login-head">
+      <div class="login-brand">Letters</div>
+      <div class="login-sub">ITIE-RDC · Secrétariat Technique — Bureau d'Ordre</div>
+    </div>
+    <form id="login-form" onsubmit="Auth.submitLogin(event)" hidden>
+      <div class="field"><label>Identifiant</label><input type="text" id="lg-username" autocomplete="username" required /></div>
+      <div class="field"><label>Mot de passe</label><input type="password" id="lg-pass" autocomplete="current-password" required /></div>
+      <div class="login-err mono" id="login-err" hidden></div>
+      <button type="submit" class="btn btn-yellow login-btn">Ouvrir une session</button>
+      <p class="login-note">Les comptes d'accès sont attribués par l'administrateur du registre.</p>
+    </form>
+    <form id="setup-form" onsubmit="Auth.submitSetup(event)" hidden>
+      <p class="login-note" style="margin:0 0 1rem">Première utilisation — créez le compte <strong>administrateur</strong> qui gérera les utilisateurs et les paramètres du registre.</p>
+      <div class="field"><label>Identifiant administrateur</label><input type="text" id="su-username" required pattern="[A-Za-z0-9._-]{3,24}" title="3 à 24 caractères : lettres, chiffres, point, tiret, tiret bas" /></div>
+      <div class="field"><label>Nom complet</label><input type="text" id="su-name" placeholder="facultatif" /></div>
+      <div class="field"><label>Mot de passe (6 caractères min.)</label><input type="password" id="su-pass" required minlength="6" /></div>
+      <div class="field"><label>Confirmer le mot de passe</label><input type="password" id="su-pass2" required minlength="6" /></div>
+      <div class="login-err mono" id="setup-err" hidden></div>
+      <button type="submit" class="btn btn-yellow login-btn">Créer le compte administrateur</button>
+    </form>
   </div>
-</header>
+</div>
 
-<!-- ═══════════ HERO (charte) ═══════════ -->
-<section class="hero" id="hero">
-  <div class="hero-inner">
-    <div>
-      <h1><span class="accent-bar"></span>Gestion intelligente des courriers du Secrétariat Technique</h1>
-      <p>De l'enregistrement à l'archivage : l'application trace chaque correspondance entrante et sortante, impute automatiquement les services compétents, surveille les échéances et produit registres et bordereaux officiels.</p>
-      <div class="hero-cta">
-        <button class="btn btn-yellow" onclick="App.openForm('entrant')">+ Enregistrer un courrier entrant</button>
-        <button class="btn btn-white" onclick="App.openForm('sortant')">+ Courrier sortant</button>
+<div class="shell">
+
+  <!-- ═══════════ BARRE LATÉRALE ═══════════ -->
+  <aside class="side">
+    <a class="side-logo" href="index.html" title="Retour au portail">
+      <svg class="logo-svg" viewBox="0 0 206 66" role="img" aria-label="ITIE RDC — Initiative pour la Transparence des Industries Extractives">
+              <!-- Carte de la RDC (bleue), placée sous les lettres -->
+              <g transform="translate(140,2) scale(0.58)">
+                <path d="M22,10 C27,5 36,2 45,1 L60,1 C68,1 75,2 80,4 L96,9 C98,12 99,16 99,20 C97,25 93,29 91,33 C89,37 88,39 89,42 C91,47 92,51 92,55 C91,60 91,65 91,70 C90,74 90,77 89,80 L84,97 L76,99 C73,95 72,90 72,85 L65,84 L55,87 C50,85 45,82 40,80 C36,78 32,75 28,73 L20,70 C15,67 9,64 6,62 L1,60 L2,56 C4,54 6,52 8,50 C11,47 14,43 16,40 C18,37 20,33 22,30 C24,26 25,22 26,18 C25,15 23,13 22,10 Z" fill="#2a6cb5"/>
+              </g>
+              <!-- Wordmark -->
+              <text x="2" y="41" font-family="'Public Sans','Segoe UI',sans-serif" font-style="italic" font-weight="900" font-size="40" letter-spacing="-1.5" fill="#2a6cb5">iTiE</text>
+              <text x="71" y="41" font-family="'Public Sans','Segoe UI',sans-serif" font-style="italic" font-weight="900" font-size="40" letter-spacing="-1.5" fill="#e01f26">RDC</text>
+              <!-- Loupe (bas droit de la carte) -->
+              <circle cx="181" cy="45" r="9.5" fill="rgba(252,209,22,0.4)" stroke="#12395e" stroke-width="4.5"/>
+              <line x1="188" y1="52" x2="199" y2="63" stroke="#12395e" stroke-width="6" stroke-linecap="round"/>
+              <!-- Sous-titre -->
+              <text x="2" y="60" font-family="'Public Sans','Segoe UI',sans-serif" font-weight="600" font-size="6.5" fill="#12395e">Initiative pour la Transparence des Industries Extractives</text>
+            </svg>
+    </a>
+    <div class="side-title">Letters<span>Bureau d'ordre · Courriers</span></div>
+    <div class="side-user" id="side-user" hidden>
+      <div class="su-name" id="su-name-disp"></div>
+      <div class="su-role mono" id="su-role-disp"></div>
+      <div class="su-actions">
+        <button class="btn btn-ghost btn-sm" onclick="Auth.changeOwnPass()">Mot de passe</button>
+        <button class="btn btn-ghost btn-sm" onclick="Auth.logout()">Déconnexion</button>
       </div>
     </div>
-    <div class="keycard">
-      <h3>Chiffres clés du registre</h3>
-      <div id="keycard-rows"></div>
+    <nav class="nav-links" role="tablist">
+      <button class="active" data-view="dashboard" onclick="App.show('dashboard')"><span class="n-ico">§</span>Tableau de bord</button>
+      <button data-view="entrants" onclick="App.show('entrants')"><span class="n-ico">↓</span>Entrants <span class="badge" id="badge-in" hidden></span></button>
+      <button data-view="sortants" onclick="App.show('sortants')"><span class="n-ico">↑</span>Sortants</button>
+      <button data-view="journal" onclick="App.show('journal')"><span class="n-ico">≡</span>Journal</button>
+      <button data-view="parametres" onclick="App.show('parametres')"><span class="n-ico">◎</span>Paramètres</button>
+    </nav>
+    <div class="side-sep">Synthèse du registre</div>
+    <div class="side-stats" id="side-stats"></div>
+    <div class="side-actions">
+      <button class="btn btn-yellow req-write" onclick="App.openForm('entrant')">+ Courrier entrant</button>
+      <button class="btn btn-ghost req-write" onclick="App.openForm('sortant')">+ Courrier sortant</button>
     </div>
-  </div>
-</section>
+  </aside>
+
+  <!-- ═══════════ CONTENU ═══════════ -->
+  <div class="main">
+    <header class="doc-head">
+      <span class="dh-line">Rép. Dém. du Congo — ITIE-RDC · Secrétariat Technique — Bureau d'Ordre</span>
+      <span class="dh-right" id="doc-date"></span>
+    </header>
 
 <main class="wrap">
 
@@ -476,7 +659,7 @@
       </div>
       <div class="head-actions">
         <button class="btn btn-white" onclick="App.exportCSV('entrant')">⬇ Export CSV</button>
-        <button class="btn btn-yellow" onclick="App.openForm('entrant')">+ Enregistrer</button>
+        <button class="btn btn-yellow req-write" onclick="App.openForm('entrant')">+ Enregistrer</button>
       </div>
     </div>
     <div class="filters">
@@ -516,7 +699,7 @@
       </div>
       <div class="head-actions">
         <button class="btn btn-white" onclick="App.exportCSV('sortant')">⬇ Export CSV</button>
-        <button class="btn btn-blue" onclick="App.openForm('sortant')">+ Enregistrer</button>
+        <button class="btn btn-blue req-write" onclick="App.openForm('sortant')">+ Enregistrer</button>
       </div>
     </div>
     <div class="filters">
@@ -554,7 +737,7 @@
         <h2>Journal d'activité</h2>
         <p>Trace horodatée de toutes les opérations : enregistrements, modifications, changements de statut, relances, impressions et suppressions.</p>
       </div>
-      <button class="btn btn-danger" onclick="App.clearJournal()">Vider le journal</button>
+      <button class="btn btn-danger req-admin" onclick="App.clearJournal()">Vider le journal</button>
     </div>
     <ul class="journal-list" id="journal-list"></ul>
   </section>
@@ -569,12 +752,50 @@
       </div>
     </div>
     <div class="panel">
+      <h3>Utilisateurs &amp; habilitations</h3>
+      <p style="font-size:0.84rem;color:var(--muted)">Chaque agent accède au registre avec l'identifiant et le mot de passe que vous lui attribuez. Trois niveaux d'habilitation : <strong>Administrateur</strong> (tout, y compris cette section), <strong>Gestionnaire du courrier</strong> (enregistrement et traitement des courriers), <strong>Consultation seule</strong> (lecture, impression et export uniquement).</p>
+      <div class="table-wrap users-wrap">
+        <table class="registry"><thead><tr><th>Identifiant</th><th>Nom</th><th>Habilitation</th><th>État</th><th>Dernière connexion</th><th>Actions</th></tr></thead><tbody id="tbody-users"></tbody></table>
+      </div>
+      <div class="form-grid" style="margin-top:1.1rem">
+        <div class="field"><label>Identifiant</label><input type="text" id="u-username" placeholder="ex. mkalenga" autocomplete="off" /></div>
+        <div class="field"><label>Nom complet</label><input type="text" id="u-name" placeholder="ex. M. Kalenga Mwamba" /></div>
+        <div class="field"><label>Habilitation</label><select id="u-role"><option value="gestionnaire">Gestionnaire du courrier</option><option value="lecteur">Consultation seule</option><option value="admin">Administrateur</option></select></div>
+        <div class="field"><label>Mot de passe attribué</label><input type="text" id="u-pass" placeholder="6 caractères minimum" autocomplete="off" /></div>
+        <div class="full" style="text-align:right"><button class="btn btn-blue" onclick="Auth.createUser()">Créer l'utilisateur</button></div>
+      </div>
+    </div>
+    <div class="panel">
       <h3>Services / Directions</h3>
       <p style="font-size:0.84rem;color:var(--muted)">Liste des services auxquels les courriers peuvent être imputés. L'assistant intelligent s'appuie sur cette liste pour ses suggestions.</p>
       <div class="svc-manage" id="svc-manage"></div>
       <div class="add-svc">
         <input type="text" id="new-svc" placeholder="Nom du nouveau service (ex. Cellule Genre et Inclusion)" onkeydown="if(event.key==='Enter')App.addService()" />
         <button class="btn btn-blue" onclick="App.addService()">Ajouter</button>
+      </div>
+    </div>
+    <div class="panel">
+      <h3>Apparence de l'application</h3>
+      <p style="font-size:0.84rem;color:var(--muted)">Choisissez un thème prêt à l'emploi ou ajustez chaque couleur ; la taille du texte est également réglable. Les choix s'appliquent immédiatement et sont conservés sur ce poste.</p>
+      <div class="head-actions" style="margin-top:0.8rem">
+        <button class="btn btn-white btn-sm" onclick="Custom.applyPreset('bureau')">Bureau d'Ordre (défaut)</button>
+        <button class="btn btn-white btn-sm" onclick="Custom.applyPreset('moderne')">Moderne clair</button>
+        <button class="btn btn-white btn-sm" onclick="Custom.applyPreset('sombre')">Sombre</button>
+        <button class="btn btn-danger btn-sm" onclick="Custom.resetTheme()">Réinitialiser l'apparence</button>
+      </div>
+      <div class="color-grid" id="color-grid"></div>
+      <div class="field" style="max-width:280px;margin-top:0.9rem">
+        <label>Taille du texte : <span id="ui-scale-val">100</span> %</label>
+        <input type="range" id="ui-scale" min="85" max="120" step="1" value="100" oninput="Custom.setScale(this.value)" />
+      </div>
+    </div>
+    <div class="panel">
+      <h3>Textes &amp; intitulés</h3>
+      <p style="font-size:0.84rem;color:var(--muted)">Modifiez n'importe quel libellé affiché dans l'application : noms des onglets, titres, intitulés des champs, boutons, colonnes des registres, écran de connexion… La modification s'applique immédiatement.</p>
+      <input type="search" id="txt-filter" placeholder="Filtrer les libellés (ex. expéditeur, statut, journal…)" style="width:100%;margin-top:0.7rem;padding:0.5rem 0.65rem;border:1px solid var(--hair-dark);background:#fff" oninput="Custom.renderTexts()" />
+      <div id="txt-editor" class="txt-editor"></div>
+      <div class="head-actions" style="margin-top:0.8rem">
+        <button class="btn btn-danger btn-sm" onclick="Custom.resetTexts()">Réinitialiser tous les textes</button>
       </div>
     </div>
     <div class="panel">
@@ -593,12 +814,15 @@
   </section>
 </main>
 
+  </div>
+</div>
+
 <!-- ══════════ MODALE FORMULAIRE ══════════ -->
 <div class="modal-backdrop" id="form-backdrop" onclick="if(event.target===this)App.closeForm()">
   <div class="modal" role="dialog" aria-modal="true">
     <div class="modal-head">
       <div>
-        <h2 id="form-title">Enregistrer un courrier</h2>
+        <h2 data-no-txt id="form-title">Enregistrer un courrier</h2>
         <div class="sub" id="form-sub"></div>
       </div>
       <button class="modal-close" onclick="App.closeForm()" aria-label="Fermer">×</button>
@@ -621,11 +845,11 @@
             <div class="note">Attribué automatiquement à l'enregistrement.</div>
           </div>
           <div class="field">
-            <label id="lbl-date-flux">Date de réception <span class="req">*</span></label>
+            <label data-no-txt id="lbl-date-flux">Date de réception <span class="req">*</span></label>
             <input type="date" id="fld-dateFlux" required />
           </div>
           <div class="field">
-            <label id="lbl-correspondant">Expéditeur <span class="req">*</span></label>
+            <label data-no-txt id="lbl-correspondant">Expéditeur <span class="req">*</span></label>
             <input type="text" id="fld-correspondant" required placeholder="Institution ou personne" oninput="App.smartAnalyse()" />
           </div>
           <div class="field">
@@ -637,7 +861,7 @@
             <input type="text" id="fld-objet" required placeholder="Objet du courrier — l'assistant analyse ce champ pour proposer type, service et priorité" oninput="App.smartAnalyse()" />
           </div>
           <div class="field">
-            <label id="lbl-reference">Référence du correspondant</label>
+            <label data-no-txt id="lbl-reference">Référence du correspondant</label>
             <input type="text" id="fld-reference" placeholder="ex. N/Réf. 045/DG/2026" />
           </div>
           <div class="field">
@@ -645,7 +869,7 @@
             <select id="fld-type"></select>
           </div>
           <div class="field">
-            <label id="lbl-service">Service imputé <span class="req">*</span></label>
+            <label data-no-txt id="lbl-service">Service imputé <span class="req">*</span></label>
             <select id="fld-service" required></select>
           </div>
           <div class="field">
@@ -669,12 +893,22 @@
             <label>Pièces jointes</label>
             <input type="text" id="fld-pieces" placeholder="ex. 2 annexes, 1 rapport" />
           </div>
+          <div class="field full">
+            <label>Courrier numérisé — scan, photo ou lien Drive</label>
+            <div class="scan-row">
+              <input type="file" id="fld-scan-file" accept="image/*,application/pdf" />
+              <input type="url" id="fld-scan-url" placeholder="ou collez un lien vers le document (Google Drive, OneDrive…)" />
+              <button type="button" class="btn btn-white btn-sm" onclick="App.addScanLink()">Ajouter le lien</button>
+            </div>
+            <div id="scan-list" class="scan-list"></div>
+            <div class="note">Les images sont compressées puis conservées dans l'application. Pour les PDF volumineux (&gt; 1,5 Mo), déposez le fichier dans votre Drive et collez le lien de partage.</div>
+          </div>
           <div class="field check-inline">
             <input type="checkbox" id="fld-confidentiel" />
             <label for="fld-confidentiel" style="margin:0;text-transform:none;font-size:0.85rem;letter-spacing:0">Courrier confidentiel</label>
           </div>
           <div class="field" id="grp-reponse">
-            <label id="lbl-reponse">En réponse au courrier</label>
+            <label data-no-txt id="lbl-reponse">En réponse au courrier</label>
             <select id="fld-reponseA"></select>
           </div>
           <div class="field">
@@ -692,7 +926,7 @@
         </div>
         <div class="form-actions">
           <button type="button" class="btn btn-white" onclick="App.closeForm()">Annuler</button>
-          <button type="submit" class="btn btn-yellow" id="form-submit">Enregistrer</button>
+          <button type="submit" class="btn btn-yellow" data-no-txt id="form-submit">Enregistrer</button>
         </div>
       </form>
     </div>
@@ -704,7 +938,7 @@
   <div class="modal" role="dialog" aria-modal="true">
     <div class="modal-head">
       <div>
-        <h2 id="detail-title">Fiche courrier</h2>
+        <h2 data-no-txt id="detail-title">Fiche courrier</h2>
         <div class="sub mono" id="detail-num"></div>
       </div>
       <button class="modal-close" onclick="App.closeDetail()" aria-label="Fermer">×</button>
@@ -760,6 +994,7 @@ let courriers = load(LS_KEY, []);
 let services  = load(LS_SVC, DEFAULT_SERVICES.slice());
 let journal   = load(LS_LOG, []);
 let editId    = null;
+let formScans = [];
 let formSens  = 'entrant';
 let sortState = { in: { key: 'numero', dir: -1 }, out: { key: 'numero', dir: -1 } };
 
@@ -768,9 +1003,13 @@ function load(key, fallback) {
   catch { return fallback; }
 }
 function persist() {
-  localStorage.setItem(LS_KEY, JSON.stringify(courriers));
-  localStorage.setItem(LS_SVC, JSON.stringify(services));
-  localStorage.setItem(LS_LOG, JSON.stringify(journal));
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify(courriers));
+    localStorage.setItem(LS_SVC, JSON.stringify(services));
+    localStorage.setItem(LS_LOG, JSON.stringify(journal));
+  } catch (e) {
+    alert('Stockage local saturé : la dernière opération n\'a pas pu être enregistrée entièrement.\nSupprimez des documents numérisés volumineux (ou remplacez-les par des liens Drive), puis réessayez.');
+  }
 }
 
 /* ═══════════════════ UTILITAIRES ═══════════════════ */
@@ -807,7 +1046,7 @@ function isSoon(c) {
 }
 
 function log(action, detail) {
-  journal.unshift({ ts: Date.now(), action, detail });
+  journal.unshift({ ts: Date.now(), action, detail, user: currentUser ? currentUser.username : '—' });
   if (journal.length > 500) journal.length = 500;
 }
 
@@ -824,14 +1063,394 @@ function fillSelect(sel, options, { blank = null, selected = '' } = {}) {
     options.map(o => `<option value="${esc(o)}"${o === selected ? ' selected' : ''}>${esc(o)}</option>`).join('');
 }
 
+
+
+/* ═══════════════════ PERSONNALISATION (apparence & textes) ═══════════════════ */
+const LS_THEME = 'itierdc_courriers_theme_v1';
+const LS_TEXTS = 'itierdc_courriers_texts_v1';
+const THEME_VARS = [
+  ['--navy', 'Barre latérale'], ['--paper', 'Fond principal'], ['--paper-deep', 'Fond secondaire'],
+  ['--card', 'Cartes & panneaux'], ['--ink', 'Encre / texte'], ['--blue', 'Bleu (accents)'],
+  ['--yellow', 'Jaune (boutons)'], ['--red', 'Rouge (alertes)'], ['--muted', 'Texte secondaire'],
+  ['--hair', 'Filets clairs'], ['--hair-dark', 'Filets appuyés']
+];
+const THEME_DEFAULTS = { '--navy':'#12395e','--paper':'#f4f0e5','--paper-deep':'#eae4d3','--card':'#fdfcf7','--ink':'#1c2b3a','--blue':'#1878d1','--yellow':'#ffc107','--red':'#ce1126','--muted':'#6d7568','--hair':'#d6cdb8','--hair-dark':'#b9ae93' };
+const THEME_PRESETS = {
+  bureau: {},
+  moderne: { '--paper':'#f2f6fb','--paper-deep':'#e2ebf5','--card':'#ffffff','--ink':'#16324c','--hair':'#d5e0ea','--hair-dark':'#b3c6d8','--navy':'#0f4c81' },
+  sombre: { '--paper':'#1b2530','--paper-deep':'#141c26','--card':'#233240','--ink':'#e8eef5','--muted':'#9fb0c0','--hair':'#33465a','--hair-dark':'#4a6076','--navy':'#0c1c2e' }
+};
+
+const Custom = {
+  theme: (() => { try { return JSON.parse(localStorage.getItem(LS_THEME)) || {}; } catch { return {}; } })(),
+  texts: (() => { try { return JSON.parse(localStorage.getItem(LS_TEXTS)) || {}; } catch { return {}; } })(),
+  defaults: {},
+
+  init() {
+    this.applyTheme();
+    this.captureDefaults();
+    this.applyTexts();
+  },
+
+  /* ── Apparence ── */
+  saveTheme() { localStorage.setItem(LS_THEME, JSON.stringify(this.theme)); },
+  applyTheme() {
+    const r = document.documentElement;
+    for (const [k] of THEME_VARS) r.style.setProperty(k, (this.theme.vars || {})[k] || THEME_DEFAULTS[k]);
+    r.style.fontSize = (this.theme.scale || 100) + '%';
+  },
+  currentVar(k) { return (this.theme.vars || {})[k] || THEME_DEFAULTS[k]; },
+  setVar(k, v) {
+    if (!can('settings')) return;
+    this.theme.vars = this.theme.vars || {};
+    this.theme.vars[k] = v;
+    this.saveTheme(); this.applyTheme();
+  },
+  setScale(v) {
+    if (!can('settings')) return;
+    this.theme.scale = +v;
+    $('ui-scale-val').textContent = v;
+    this.saveTheme(); this.applyTheme();
+  },
+  applyPreset(name) {
+    if (!can('settings')) return;
+    this.theme.vars = Object.assign({}, THEME_PRESETS[name] || {});
+    this.saveTheme(); this.applyTheme(); this.renderColors();
+    log('Personnalisation', `Thème appliqué : ${name}`); persist(); App.renderJournal();
+    toast('Thème appliqué.');
+  },
+  resetTheme() {
+    if (!can('settings')) return;
+    this.theme = {};
+    localStorage.removeItem(LS_THEME);
+    this.applyTheme(); this.renderColors();
+    const sc = $('ui-scale'); if (sc) { sc.value = 100; $('ui-scale-val').textContent = '100'; }
+    toast('Apparence réinitialisée.');
+  },
+  renderColors() {
+    const g = $('color-grid'); if (!g) return;
+    g.innerHTML = THEME_VARS.map(([k, label]) =>
+      `<label class="color-item"><input type="color" value="${this.currentVar(k)}" onchange="Custom.setVar('${k}', this.value)" /> ${label}</label>`).join('');
+    const sc = $('ui-scale'); if (sc) { sc.value = this.theme.scale || 100; $('ui-scale-val').textContent = this.theme.scale || 100; }
+  },
+
+  /* ── Textes ── */
+  DYN_IDS: ['side-stats','kpi-grid','chart','svc-load','dash-overdue','dash-recent','dash-alert','tbody-in','tbody-out','tbody-users','journal-list','svc-manage','detail-body','smart-suggestions','smart-dup','scan-list','color-grid','txt-editor','login-err','setup-err','toast'],
+  ownText(el) { return Array.from(el.childNodes).filter(n => n.nodeType === 3).map(n => n.textContent).join('').replace(/\s+/g, ' ').trim(); },
+  setOwnText(el, txt) {
+    let done = false;
+    Array.from(el.childNodes).forEach(n => {
+      if (n.nodeType !== 3) return;
+      if (!done && n.textContent.trim()) { n.textContent = txt; done = true; }
+      else if (n.textContent.trim()) n.textContent = '';
+    });
+    if (!done) el.appendChild(document.createTextNode(txt));
+  },
+  discover() {
+    const sel = 'h2, h3, h4, p, label, button, th, small, .eyebrow, .dh-line, .login-brand, .login-sub, .side-title, .login-note';
+    const seen = {};
+    const out = [];
+    document.querySelectorAll(sel).forEach(el => {
+      if (el.closest('[data-no-txt]')) return;
+      if (this.DYN_IDS.some(id => el.closest('#' + id))) return;
+      const ownNodes = Array.from(el.childNodes).filter(n => n.nodeType === 3 && n.textContent.trim());
+      if (ownNodes.length !== 1) return;
+      const txt = ownNodes[0].textContent.replace(/\s+/g, ' ').trim();
+      const anchor = el.closest('[id]');
+      const base = (anchor ? anchor.id : 'app') + '·' + el.tagName.toLowerCase();
+      seen[base] = (seen[base] || 0) + 1;
+      out.push({ key: base + '·' + seen[base], el, txt });
+    });
+    return out;
+  },
+  captureDefaults() { this.discover().forEach(x => { this.defaults[x.key] = x.txt; }); },
+  applyTexts() {
+    if (!Object.keys(this.texts).length) return;
+    this.discover().forEach(x => { if (this.texts[x.key] !== undefined) this.setOwnText(x.el, this.texts[x.key]); });
+  },
+  setText(key, val) {
+    if (!can('settings')) return;
+    val = val.trim();
+    if (!val || val === this.defaults[key]) delete this.texts[key];
+    else this.texts[key] = val;
+    localStorage.setItem(LS_TEXTS, JSON.stringify(this.texts));
+    const target = this.discover().find(x => x.key === key);
+    if (target) this.setOwnText(target.el, val || this.defaults[key] || '');
+  },
+  resetTexts() {
+    if (!can('settings')) return;
+    if (!confirm('Rétablir tous les libellés d\'origine ?')) return;
+    this.texts = {};
+    localStorage.removeItem(LS_TEXTS);
+    this.discover().forEach(x => { if (this.defaults[x.key] !== undefined) this.setOwnText(x.el, this.defaults[x.key]); });
+    this.renderTexts();
+    toast('Libellés d\'origine rétablis.');
+  },
+  renderTexts() {
+    const box = $('txt-editor'); if (!box) return;
+    const q = norm(($('txt-filter') || { value: '' }).value.trim());
+    const rows = this.discover().filter(x => !q || norm(x.txt).includes(q) || norm(this.defaults[x.key] || '').includes(q));
+    box.innerHTML = rows.map(x =>
+      `<div class="txt-row"><span class="txt-key" title="${esc(x.key)}">${esc(this.defaults[x.key] || x.key)}</span><input value="${esc(x.txt)}" onchange="Custom.setText('${esc(x.key)}', this.value)" /></div>`).join('') ||
+      '<div class="empty-note">Aucun libellé ne correspond au filtre.</div>';
+  }
+};
+
+/* ═══════════════════ AUTHENTIFICATION & HABILITATIONS ═══════════════════ */
+const LS_USERS = 'itierdc_courriers_users_v1';
+const SS_SESSION = 'itierdc_courriers_session_v1';
+const ROLES = { admin: 'Administrateur', gestionnaire: 'Gestionnaire du courrier', lecteur: 'Consultation seule' };
+const PERMS = { admin: ['read', 'write', 'settings'], gestionnaire: ['read', 'write'], lecteur: ['read'] };
+let users = load(LS_USERS, []);
+let currentUser = null;
+
+function saveUsers() { localStorage.setItem(LS_USERS, JSON.stringify(users)); }
+function can(p) { return !!currentUser && (PERMS[currentUser.role] || []).includes(p); }
+
+function jsHash(str) {
+  let h1 = 0x811c9dc5 >>> 0, h2 = 0xcbf29ce4 >>> 0;
+  for (let r = 0; r < 64; r++) for (let i = 0; i < str.length; i++) {
+    h1 = Math.imul(h1 ^ str.charCodeAt(i), 16777619) >>> 0;
+    h2 = (Math.imul(h2, 31) + str.charCodeAt(i) + r) >>> 0;
+  }
+  return h1.toString(16).padStart(8, '0') + h2.toString(16).padStart(8, '0');
+}
+async function hashPass(pass, salt) {
+  const msg = salt + '::' + pass;
+  try {
+    if (crypto && crypto.subtle) {
+      let buf = new TextEncoder().encode(msg);
+      for (let i = 0; i < 5; i++) buf = new Uint8Array(await crypto.subtle.digest('SHA-256', buf));
+      return 'S:' + Array.from(buf).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+  } catch (e) { /* contexte sans WebCrypto */ }
+  return 'J:' + jsHash(msg);
+}
+async function verifyPass(pass, salt, stored) {
+  if (String(stored).startsWith('J:')) return ('J:' + jsHash(salt + '::' + pass)) === stored;
+  return (await hashPass(pass, salt)) === stored;
+}
+
+const Auth = {
+  settingsUnlocked: false,
+
+  init() {
+    const sid = sessionStorage.getItem(SS_SESSION);
+    const u = sid ? users.find(x => x.id === sid && x.active !== false) : null;
+    if (u) this.enter(u); else this.gate();
+  },
+
+  gate() {
+    document.body.classList.add('locked');
+    $('login-screen').hidden = false;
+    const setup = users.length === 0;
+    $('setup-form').hidden = !setup;
+    $('login-form').hidden = setup;
+    setTimeout(() => { const f = $(setup ? 'su-username' : 'lg-username'); if (f) f.focus(); }, 80);
+  },
+
+  err(id, msg) { const e = $(id); e.textContent = msg; e.hidden = false; },
+
+  async submitSetup(ev) {
+    ev.preventDefault();
+    const username = $('su-username').value.trim().toLowerCase();
+    const name = $('su-name').value.trim();
+    const p1 = $('su-pass').value, p2 = $('su-pass2').value;
+    if (p1.length < 6) return this.err('setup-err', 'Le mot de passe doit compter au moins 6 caractères.');
+    if (p1 !== p2) return this.err('setup-err', 'Les deux mots de passe ne correspondent pas.');
+    const salt = uid();
+    const u = { id: uid(), username, name: name || username, role: 'admin', salt, pass: await hashPass(p1, salt), active: true, createdAt: Date.now(), lastLogin: null };
+    users.push(u);
+    saveUsers();
+    journal.unshift({ ts: Date.now(), action: 'Initialisation', detail: `Compte administrateur « ${username} » créé`, user: username });
+    persist();
+    this.loginAs(u);
+  },
+
+  async submitLogin(ev) {
+    ev.preventDefault();
+    const username = $('lg-username').value.trim().toLowerCase();
+    const pass = $('lg-pass').value;
+    const u = users.find(x => x.username === username);
+    if (!u || !(await verifyPass(pass, u.salt, u.pass))) return this.err('login-err', 'Identifiant ou mot de passe incorrect.');
+    if (u.active === false) return this.err('login-err', 'Ce compte a été désactivé par l\'administrateur.');
+    this.loginAs(u);
+  },
+
+  loginAs(u) {
+    sessionStorage.setItem(SS_SESSION, u.id);
+    journal.unshift({ ts: Date.now(), action: 'Connexion', detail: `Ouverture de session (${ROLES[u.role]})`, user: u.username });
+    this.enter(u);
+  },
+
+  enter(u) {
+    currentUser = u;
+    u.lastLogin = Date.now();
+    saveUsers();
+    persist();
+    $('login-screen').hidden = true;
+    document.body.classList.remove('locked');
+    document.body.classList.toggle('role-admin', u.role === 'admin');
+    document.body.classList.toggle('role-lecteur', u.role === 'lecteur');
+    $('side-user').hidden = false;
+    $('su-name-disp').textContent = u.name;
+    $('su-role-disp').textContent = ROLES[u.role];
+    const active = document.querySelector('.view.active');
+    if (active && active.id === 'view-parametres' && u.role !== 'admin') App.show('dashboard');
+    App.refresh();
+  },
+
+  logout() {
+    if (currentUser) {
+      journal.unshift({ ts: Date.now(), action: 'Déconnexion', detail: 'Fermeture de session', user: currentUser.username });
+      persist();
+    }
+    sessionStorage.removeItem(SS_SESSION);
+    location.reload();
+  },
+
+  async changeOwnPass() {
+    const old = prompt('Mot de passe actuel :');
+    if (old === null) return;
+    if (!(await verifyPass(old, currentUser.salt, currentUser.pass))) { toast('Mot de passe actuel incorrect.'); return; }
+    const p = prompt('Nouveau mot de passe (6 caractères minimum) :');
+    if (p === null) return;
+    if (p.length < 6) { toast('Mot de passe trop court (6 caractères minimum).'); return; }
+    currentUser.salt = uid();
+    currentUser.pass = await hashPass(p, currentUser.salt);
+    saveUsers();
+    log('Utilisateurs', 'Changement de son propre mot de passe');
+    persist();
+    App.renderJournal();
+    toast('Votre mot de passe a été modifié.');
+  },
+
+  /* ── Gestion des comptes (administrateur) ── */
+  async createUser() {
+    if (!can('settings')) { toast('Réservé à l\'administrateur.'); return; }
+    const username = $('u-username').value.trim().toLowerCase();
+    const name = $('u-name').value.trim();
+    const role = $('u-role').value;
+    const pass = $('u-pass').value;
+    if (!username || !pass) { toast('Identifiant et mot de passe requis.'); return; }
+    if (!/^[a-z0-9._-]{3,24}$/.test(username)) { toast('Identifiant invalide (3 à 24 caractères : lettres, chiffres, . _ -).'); return; }
+    if (pass.length < 6) { toast('Mot de passe trop court (6 caractères minimum).'); return; }
+    if (users.some(x => x.username === username)) { toast('Cet identifiant existe déjà.'); return; }
+    const salt = uid();
+    users.push({ id: uid(), username, name: name || username, role, salt, pass: await hashPass(pass, salt), active: true, createdAt: Date.now(), lastLogin: null });
+    saveUsers();
+    ['u-username', 'u-name', 'u-pass'].forEach(i => { $(i).value = ''; });
+    log('Utilisateurs', `Compte « ${username} » créé — ${ROLES[role]}`);
+    persist();
+    this.renderUsers();
+    App.renderJournal();
+    toast(`Utilisateur « ${username} » créé (${ROLES[role]}).`);
+  },
+
+  async resetPass(id) {
+    if (!can('settings')) return;
+    const u = users.find(x => x.id === id);
+    if (!u) return;
+    const p = prompt(`Nouveau mot de passe pour « ${u.username} » (6 caractères minimum) :`);
+    if (p === null) return;
+    if (p.length < 6) { toast('Mot de passe trop court (6 caractères minimum).'); return; }
+    u.salt = uid();
+    u.pass = await hashPass(p, u.salt);
+    saveUsers();
+    log('Utilisateurs', `Mot de passe réinitialisé pour « ${u.username} »`);
+    persist();
+    App.renderJournal();
+    toast(`Mot de passe de « ${u.username} » réinitialisé.`);
+  },
+
+  countActiveAdmins() { return users.filter(x => x.role === 'admin' && x.active !== false).length; },
+
+  setRole(id, role) {
+    if (!can('settings')) return;
+    const u = users.find(x => x.id === id);
+    if (!u) return;
+    if (u.role === 'admin' && role !== 'admin' && this.countActiveAdmins() <= 1) {
+      toast('Impossible : il doit rester au moins un administrateur actif.');
+      this.renderUsers();
+      return;
+    }
+    u.role = role;
+    saveUsers();
+    log('Utilisateurs', `Habilitation de « ${u.username} » : ${ROLES[role]}`);
+    persist();
+    this.renderUsers();
+    App.renderJournal();
+    toast(`« ${u.username} » : ${ROLES[role]}.`);
+  },
+
+  toggleActive(id) {
+    if (!can('settings')) return;
+    const u = users.find(x => x.id === id);
+    if (!u || u.id === currentUser.id) return;
+    if (u.active !== false && u.role === 'admin' && this.countActiveAdmins() <= 1) { toast('Impossible : il doit rester au moins un administrateur actif.'); return; }
+    u.active = u.active === false;
+    saveUsers();
+    log('Utilisateurs', `Compte « ${u.username} » ${u.active ? 'réactivé' : 'désactivé'}`);
+    persist();
+    this.renderUsers();
+    App.renderJournal();
+  },
+
+  removeUser(id) {
+    if (!can('settings')) return;
+    const u = users.find(x => x.id === id);
+    if (!u || u.id === currentUser.id) return;
+    if (u.role === 'admin' && this.countActiveAdmins() <= 1) { toast('Impossible : il doit rester au moins un administrateur actif.'); return; }
+    if (!confirm(`Supprimer définitivement le compte « ${u.username} » ?`)) return;
+    users = users.filter(x => x.id !== id);
+    saveUsers();
+    log('Utilisateurs', `Compte « ${u.username} » supprimé`);
+    persist();
+    this.renderUsers();
+    App.renderJournal();
+    toast(`Compte « ${u.username} » supprimé.`);
+  },
+
+  renderUsers() {
+    if (!currentUser) return;
+    const tb = $('tbody-users');
+    if (!tb) return;
+    tb.innerHTML = users.map(u => `
+      <tr>
+        <td class="num-cell">${esc(u.username)}</td>
+        <td>${esc(u.name)}</td>
+        <td><select class="role-select" onchange="Auth.setRole('${u.id}', this.value)" ${u.id === currentUser.id ? 'disabled title="Modifiez votre propre rôle via un autre administrateur"' : ''}>
+          ${Object.entries(ROLES).map(([k, v]) => `<option value="${k}"${u.role === k ? ' selected' : ''}>${v}</option>`).join('')}
+        </select></td>
+        <td>${u.active !== false ? '<span class="chip st-traite">Actif</span>' : '<span class="chip st-sans-suite">Désactivé</span>'}</td>
+        <td class="nowrap">${u.lastLogin ? fmtDateTime(u.lastLogin) : '—'}</td>
+        <td class="nowrap">
+          <button class="btn btn-white btn-sm" onclick="Auth.resetPass('${u.id}')">Mot de passe</button>
+          ${u.id !== currentUser.id ? `<button class="btn btn-white btn-sm" onclick="Auth.toggleActive('${u.id}')">${u.active !== false ? 'Désactiver' : 'Réactiver'}</button>
+          <button class="btn btn-danger btn-sm" onclick="Auth.removeUser('${u.id}')" title="Supprimer le compte">×</button>` : ''}
+        </td>
+      </tr>`).join('');
+  }
+};
+
 /* ═══════════════════ APPLICATION ═══════════════════ */
 const App = {
 
   /* ---------- Navigation ---------- */
-  show(view) {
+  async show(view) {
+    if (view === 'parametres') {
+      if (!can('settings')) { toast('Section réservée à l\'administrateur.'); return; }
+      if (!Auth.settingsUnlocked) {
+        const p = prompt('Accès aux Paramètres — confirmez le mot de passe administrateur :');
+        if (p === null) return;
+        if (!(await verifyPass(p, currentUser.salt, currentUser.pass))) { toast('Mot de passe incorrect — accès refusé.'); return; }
+        Auth.settingsUnlocked = true;
+        log('Paramètres', 'Accès aux Paramètres déverrouillé par mot de passe');
+        persist();
+      }
+    }
     document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + view));
     document.querySelectorAll('.nav-links button').forEach(t => t.classList.toggle('active', t.dataset.view === view));
-    $('hero').style.display = view === 'dashboard' ? '' : 'none';
     if (view === 'dashboard') this.renderDashboard();
     if (view === 'journal') this.renderJournal();
     if (view === 'parametres') this.renderParams();
@@ -864,11 +1483,11 @@ const App = {
       .map(c => Math.max(0, Math.round((new Date(c.dateCloture) - new Date(c.dateReception)) / 86400000)));
     const delaiMoyen = delais.length ? (delais.reduce((a, b) => a + b, 0) / delais.length).toFixed(1) : null;
 
-    $('keycard-rows').innerHTML = `
-      <div class="krow"><span>Courriers enregistrés</span><span class="kval">${courriers.length}</span></div>
-      <div class="krow"><span>En attente de traitement</span><span class="kval">${enCours.length}</span></div>
-      <div class="krow"><span>Échéances dépassées</span><span class="kval">${retards.length}</span></div>
-      <div class="krow"><span>Taux de traitement</span><span class="kval">${taux} %</span></div>`;
+    $('side-stats').innerHTML = `
+      <div class="srow"><span>Enregistrés</span><b>${courriers.length}</b></div>
+      <div class="srow"><span>En attente</span><b>${enCours.length}</b></div>
+      <div class="srow${retards.length ? ' alerte' : ''}"><span>En retard</span><b>${retards.length}</b></div>
+      <div class="srow"><span>Traités</span><b>${taux} %</b></div>`;
 
     $('kpi-grid').innerHTML = `
       <div class="kpi"><div class="kpi-num">${entrants.length}</div><div class="kpi-label">Courriers entrants</div><div class="kpi-sub">${inMonth} reçu(s) ce mois</div></div>
@@ -995,7 +1614,7 @@ const App = {
            : soon ? `<span class="chip soon">${fmtDate(c.echeance)}</span>` : fmtDate(c.echeance))
         : '—';
       return `<tr class="${late ? 'overdue' : ''}" onclick="App.openDetail('${c.id}')">
-        <td class="num-cell">${esc(c.numero)}${c.confidentiel ? ' <span class="chip conf">Conf.</span>' : ''}</td>
+        <td class="num-cell">${esc(c.numero)}${c.confidentiel ? ' <span class="chip conf">Conf.</span>' : ''}${c.scans && c.scans.length ? ` <span title="${c.scans.length} document(s) numérisé(s)">📎</span>` : ''}</td>
         <td class="nowrap">${fmtDate(c.dateReception)}</td>
         <td>${esc(c.correspondant)}</td>
         <td class="obj-cell"><div class="obj-main">${esc(c.objet)}</div>${c.reference ? `<div class="obj-sub">Réf. ${esc(c.reference)}</div>` : ''}</td>
@@ -1011,7 +1630,7 @@ const App = {
     const outs = this.applySort(this.filtered('sortant'), 'out');
     $('tbody-out').innerHTML = outs.length ? outs.map(c => `
       <tr onclick="App.openDetail('${c.id}')">
-        <td class="num-cell">${esc(c.numero)}${c.confidentiel ? ' <span class="chip conf">Conf.</span>' : ''}</td>
+        <td class="num-cell">${esc(c.numero)}${c.confidentiel ? ' <span class="chip conf">Conf.</span>' : ''}${c.scans && c.scans.length ? ` <span title="${c.scans.length} document(s) numérisé(s)">📎</span>` : ''}</td>
         <td class="nowrap">${fmtDate(c.dateEnvoi)}</td>
         <td>${esc(c.correspondant)}</td>
         <td class="obj-cell"><div class="obj-main">${esc(c.objet)}</div>${c.reponseA ? `<div class="obj-sub">En réponse à ${esc((courriers.find(x => x.id === c.reponseA) || {}).numero || '?')}</div>` : ''}</td>
@@ -1086,8 +1705,73 @@ const App = {
     ech.value = d.toISOString().slice(0, 10);
   },
 
+
+  /* ---------- Courriers numérisés ---------- */
+  async handleScanFile(ev) {
+    const file = ev.target.files[0];
+    ev.target.value = '';
+    if (!file) return;
+    if (file.type === 'application/pdf') {
+      if (file.size > 1500000) { alert('PDF trop volumineux pour être conservé dans l\'application (max 1,5 Mo).\nDéposez-le dans votre Drive et collez le lien de partage.'); return; }
+      const reader = new FileReader();
+      reader.onload = () => { formScans.push({ id: uid(), type: 'file', name: file.name, mime: 'application/pdf', data: reader.result }); this.renderScanList(); };
+      reader.readAsDataURL(file);
+      return;
+    }
+    if (!file.type.startsWith('image/')) { toast('Format non pris en charge (image ou PDF).'); return; }
+    const data = await new Promise(res => {
+      const img = new Image();
+      img.onload = () => {
+        const max = 1400;
+        const k = Math.min(1, max / Math.max(img.width, img.height));
+        const cv = document.createElement('canvas');
+        cv.width = Math.round(img.width * k); cv.height = Math.round(img.height * k);
+        cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+        URL.revokeObjectURL(img.src);
+        res(cv.toDataURL('image/jpeg', 0.82));
+      };
+      img.src = URL.createObjectURL(file);
+    });
+    formScans.push({ id: uid(), type: 'file', name: file.name.replace(/\.[^.]+$/, '') + '.jpg', mime: 'image/jpeg', data });
+    this.renderScanList();
+    toast('Document numérisé ajouté (image compressée).');
+  },
+
+  addScanLink() {
+    const inp = $('fld-scan-url');
+    const url = inp.value.trim();
+    if (!/^https?:\/\//i.test(url)) { toast('Collez un lien complet commençant par https://'); return; }
+    formScans.push({ id: uid(), type: 'link', name: url.replace(/^https?:\/\//i, '').slice(0, 60), url });
+    inp.value = '';
+    this.renderScanList();
+  },
+
+  removeScan(i) { formScans.splice(i, 1); this.renderScanList(); },
+
+  renderScanList() {
+    const box = $('scan-list'); if (!box) return;
+    box.innerHTML = formScans.map((sc, i) =>
+      `<div class="scan-item">${sc.type === 'link' ? '🔗' : '📄'} <span class="sc-name">${esc(sc.name)}</span>
+        <button type="button" class="btn btn-white btn-sm" onclick="App.openScan('form', ${i})">Voir</button>
+        <button type="button" class="btn btn-danger btn-sm" onclick="App.removeScan(${i})">Retirer</button>
+      </div>`).join('');
+  },
+
+  openScan(ref, i) {
+    const sc = ref === 'form' ? formScans[i] : (courriers.find(x => x.id === ref) || {}).scans?.[i];
+    if (!sc) return;
+    if (sc.type === 'link') { window.open(sc.url, '_blank', 'noopener'); return; }
+    const [meta, b64] = sc.data.split(',');
+    const mime = (meta.match(/data:(.*?)[;,]/) || [])[1] || 'application/octet-stream';
+    const bin = atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let j = 0; j < bin.length; j++) arr[j] = bin.charCodeAt(j);
+    window.open(URL.createObjectURL(new Blob([arr], { type: mime })), '_blank', 'noopener');
+  },
+
   /* ---------- Formulaire ---------- */
   openForm(sens, id = null) {
+    if (!can('write')) { toast('Habilitation insuffisante — consultation seule.'); return; }
     editId = id;
     const c = id ? courriers.find(x => x.id === id) : null;
     formSens = c ? c.sens : sens;
@@ -1137,6 +1821,9 @@ const App = {
     $('fld-confidentiel').checked = !!c?.confidentiel;
     $('fld-instructions').value = c?.instructions || '';
     $('fld-observations').value = c?.observations || '';
+    formScans = (c && Array.isArray(c.scans)) ? c.scans.map(x => Object.assign({}, x)) : [];
+    $('fld-scan-url').value = '';
+    this.renderScanList();
     if (!c && isIn) this.autoEcheance();
 
     const opposite = courriers.filter(x => x.sens !== sens).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
@@ -1148,6 +1835,7 @@ const App = {
 
   save(ev) {
     ev.preventDefault();
+    if (!can('write')) { toast('Habilitation insuffisante — consultation seule.'); return; }
     const isIn = formSens === 'entrant';
     const dateFlux = $('fld-dateFlux').value;
     const existing = editId ? courriers.find(x => x.id === editId) : null;
@@ -1170,6 +1858,7 @@ const App = {
       instructions: isIn ? $('fld-instructions').value.trim() : '',
       observations: $('fld-observations').value.trim(),
       reponseA: $('fld-reponseA').value || null,
+      scans: formScans.slice(),
       dateReception: isIn ? dateFlux : null,
       dateEnvoi: isIn ? null : dateFlux
     };
@@ -1241,20 +1930,21 @@ const App = {
         ${rows.map(([t, d, big]) => `<div><div class="dt">${t}</div><div class="dd${big ? ' big' : ''}">${d}</div></div>`).join('')}
         ${linked ? `<div class="full"><div class="dt">${isIn ? 'Fait suite à' : 'En réponse à'}</div><div class="dd"><span class="link-rep" onclick="App.openDetail('${linked.id}')">${esc(linked.numero)} — ${esc(linked.objet)}</span></div></div>` : ''}
         ${replies.length ? `<div class="full"><div class="dt">Courriers liés</div><div class="dd">${replies.map(r => `<span class="link-rep" onclick="App.openDetail('${r.id}')">${esc(r.numero)}</span>`).join(' · ')}</div></div>` : ''}
+        ${(c.scans && c.scans.length) ? `<div class="full"><div class="dt">Courrier numérisé</div><div class="dd">${c.scans.map((sc, i) => `<button class="btn btn-white btn-sm" onclick="App.openScan('${c.id}', ${i})">${sc.type === 'link' ? '🔗' : '📄'} ${esc(sc.name || 'Document ' + (i + 1))}</button>`).join(' ')}</div></div>` : ''}
         ${c.instructions ? `<div class="full"><div class="dt">Instructions de la hiérarchie</div><div class="dd">${esc(c.instructions)}</div></div>` : ''}
         ${c.observations ? `<div class="full"><div class="dt">Observations</div><div class="dd">${esc(c.observations)}</div></div>` : ''}
       </div>
-      <div class="status-line"><span class="dt" style="width:100%">Faire évoluer le statut</span>${statutBtns}</div>
+      ${can('write') ? `<div class="status-line"><span class="dt" style="width:100%">Faire évoluer le statut</span>${statutBtns}</div>` : ''}
       <div class="hist">
         <h4>Historique</h4>
         <ul>${c.historique.slice().reverse().map(h => `<li><span class="h-date">${fmtDateTime(h.ts)}</span>${esc(h.txt)}</li>`).join('')}</ul>
       </div>
       <div class="form-actions">
-        <button class="btn btn-danger" onclick="App.remove('${c.id}')">Supprimer</button>
-        ${isIn && !isClos(c) ? `<button class="btn btn-white" onclick="App.relance('${c.id}')">📣 Enregistrer une relance</button>` : ''}
+        ${can('write') ? `<button class="btn btn-danger" onclick="App.remove('${c.id}')">Supprimer</button>` : ''}
+        ${can('write') && isIn && !isClos(c) ? `<button class="btn btn-white" onclick="App.relance('${c.id}')">📣 Enregistrer une relance</button>` : ''}
         ${isIn ? `<button class="btn btn-white" onclick="App.printBordereau('${c.id}')">🖨 Bordereau de transmission</button>` : ''}
-        <button class="btn btn-white" onclick="App.replyTo('${c.id}')">↩ ${isIn ? 'Créer la réponse (sortant)' : 'Enregistrer la suite (entrant)'}</button>
-        <button class="btn btn-yellow" onclick="App.closeDetail(); App.openForm(null, '${c.id}')">✎ Modifier</button>
+        ${can('write') ? `<button class="btn btn-white" onclick="App.replyTo('${c.id}')">↩ ${isIn ? 'Créer la réponse (sortant)' : 'Enregistrer la suite (entrant)'}</button>
+        <button class="btn btn-yellow" onclick="App.closeDetail(); App.openForm(null, '${c.id}')">✎ Modifier</button>` : ''}
       </div>`;
     $('detail-backdrop').classList.add('open');
   },
@@ -1262,6 +1952,7 @@ const App = {
   closeDetail() { $('detail-backdrop').classList.remove('open'); },
 
   setStatut(id, statut) {
+    if (!can('write')) { toast('Habilitation insuffisante — consultation seule.'); return; }
     const c = courriers.find(x => x.id === id);
     if (!c) return;
     const old = c.statut;
@@ -1275,6 +1966,7 @@ const App = {
   },
 
   relance(id) {
+    if (!can('write')) { toast('Habilitation insuffisante — consultation seule.'); return; }
     const c = courriers.find(x => x.id === id);
     if (!c) return;
     c.historique.push({ ts: Date.now(), txt: `Relance adressée au service « ${c.service || '—'} »` });
@@ -1297,6 +1989,7 @@ const App = {
   },
 
   remove(id) {
+    if (!can('write')) { toast('Habilitation insuffisante — consultation seule.'); return; }
     const c = courriers.find(x => x.id === id);
     if (!c) return;
     if (!confirm(`Supprimer définitivement le courrier ${c.numero} ?\n« ${c.objet} »`)) return;
@@ -1311,11 +2004,12 @@ const App = {
   /* ---------- Journal ---------- */
   renderJournal() {
     $('journal-list').innerHTML = journal.length
-      ? journal.map(j => `<li><span class="j-date">${fmtDateTime(j.ts)}</span><span><strong>${esc(j.action)}</strong> — ${esc(j.detail)}</span></li>`).join('')
+      ? journal.map(j => `<li><span class="j-date">${fmtDateTime(j.ts)}</span><span><strong>${esc(j.action)}</strong> <span class="j-user">[${esc(j.user || '—')}]</span> — ${esc(j.detail)}</span></li>`).join('')
       : '<li><span class="empty-note">Aucune activité enregistrée.</span></li>';
   },
 
   clearJournal() {
+    if (!can('settings')) { toast('Réservé à l\'administrateur.'); return; }
     if (!confirm('Vider le journal d\'activité ?')) return;
     journal = [];
     persist();
@@ -1327,9 +2021,13 @@ const App = {
   renderParams() {
     $('svc-manage').innerHTML = services.map((s, i) =>
       `<span class="svc-tag">${esc(s)}<button title="Retirer" onclick="App.removeService(${i})">×</button></span>`).join('');
+    Auth.renderUsers();
+    Custom.renderColors();
+    Custom.renderTexts();
   },
 
   addService() {
+    if (!can('settings')) { toast('Réservé à l\'administrateur.'); return; }
     const v = $('new-svc').value.trim();
     if (!v) return;
     if (services.some(s => s.toLowerCase() === v.toLowerCase())) { toast('Ce service existe déjà.'); return; }
@@ -1343,6 +2041,7 @@ const App = {
   },
 
   removeService(i) {
+    if (!can('settings')) { toast('Réservé à l\'administrateur.'); return; }
     const s = services[i];
     const used = courriers.some(c => c.service === s);
     if (used && !confirm(`Le service « ${s} » est utilisé par des courriers existants (ils le conserveront). Retirer de la liste ?`)) return;
@@ -1375,13 +2074,15 @@ const App = {
   },
 
   backup() {
-    const payload = { app: 'itierdc-gestion-courriers', version: 1, exportedAt: new Date().toISOString(), services, courriers, journal };
+    if (!can('settings')) { toast('Réservé à l\'administrateur.'); return; }
+    const payload = { app: 'itierdc-gestion-courriers', version: 3, exportedAt: new Date().toISOString(), services, courriers, journal, users, theme: Custom.theme, texts: Custom.texts };
     this.download(`sauvegarde-courriers-${todayISO()}.json`, JSON.stringify(payload, null, 2), 'application/json');
     log('Sauvegarde', `Export JSON complet (${courriers.length} courrier(s))`);
     toast('Sauvegarde JSON téléchargée.');
   },
 
   restore(input) {
+    if (!can('settings')) { toast('Réservé à l\'administrateur.'); return; }
     const file = input.files[0];
     input.value = '';
     if (!file) return;
@@ -1394,7 +2095,18 @@ const App = {
         courriers = data.courriers;
         services = Array.isArray(data.services) && data.services.length ? data.services : services;
         journal = Array.isArray(data.journal) ? data.journal : journal;
-        log('Restauration', `Sauvegarde restaurée (${courriers.length} courrier(s))`);
+        if (data.theme && typeof data.theme === 'object') { Custom.theme = data.theme; Custom.saveTheme(); Custom.applyTheme(); }
+        if (data.texts && typeof data.texts === 'object') { Custom.texts = data.texts; localStorage.setItem(LS_TEXTS, JSON.stringify(Custom.texts)); Custom.applyTexts(); }
+        let usersRestored = false;
+        if (Array.isArray(data.users) && data.users.length) { users = data.users; saveUsers(); usersRestored = true; }
+        log('Restauration', `Sauvegarde restaurée (${courriers.length} courrier(s)${usersRestored ? ', comptes utilisateurs inclus' : ''})`);
+        if (usersRestored && !users.find(x => x.id === currentUser.id)) {
+          persist();
+          alert('Les comptes utilisateurs ont été restaurés depuis la sauvegarde — veuillez vous reconnecter.');
+          sessionStorage.removeItem(SS_SESSION);
+          location.reload();
+          return;
+        }
         this.initFilters();
         this.refresh();
         toast('Sauvegarde restaurée avec succès.');
@@ -1414,6 +2126,7 @@ const App = {
   },
 
   wipe() {
+    if (!can('settings')) { toast('Réservé à l\'administrateur.'); return; }
     if (!confirm('Effacer TOUTES les données du registre (courriers, journal) ? Cette action est irréversible.')) return;
     if (!confirm('Confirmez-vous la suppression définitive ?')) return;
     courriers = []; journal = [];
@@ -1480,6 +2193,7 @@ const App = {
 
   /* ---------- Démonstration ---------- */
   seedDemo() {
+    if (!can('settings')) { toast('Réservé à l\'administrateur.'); return; }
     if (courriers.length && !confirm('Ajouter des données de démonstration au registre existant ?')) return;
     const y = new Date().getFullYear();
     const d = (offset) => { const dt = new Date(); dt.setDate(dt.getDate() + offset); return dt.toISOString().slice(0, 10); };
@@ -1520,13 +2234,17 @@ const App = {
     this.renderTables();
     this.renderJournal();
     this.renderParams();
+    $('fld-scan-file').addEventListener('change', e => this.handleScanFile(e));
+    $('doc-date').textContent = new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') { this.closeForm(); this.closeDetail(); }
     });
   }
 };
 
+Custom.init();
 App.init();
+Auth.init();
 </script>
 </body>
 </html>
