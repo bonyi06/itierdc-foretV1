@@ -1045,6 +1045,8 @@ async function verifyPass(pass, salt, stored) {
 }
 
 const Auth = {
+  settingsUnlocked: false,
+
   init() {
     const sid = sessionStorage.getItem(SS_SESSION);
     const u = sid ? users.find(x => x.id === sid && x.active !== false) : null;
@@ -1248,8 +1250,18 @@ const Auth = {
 const App = {
 
   /* ---------- Navigation ---------- */
-  show(view) {
-    if (view === 'parametres' && !can('settings')) { toast('Section réservée à l\'administrateur.'); return; }
+  async show(view) {
+    if (view === 'parametres') {
+      if (!can('settings')) { toast('Section réservée à l\'administrateur.'); return; }
+      if (!Auth.settingsUnlocked) {
+        const p = prompt('Accès aux Paramètres — confirmez le mot de passe administrateur :');
+        if (p === null) return;
+        if (!(await verifyPass(p, currentUser.salt, currentUser.pass))) { toast('Mot de passe incorrect — accès refusé.'); return; }
+        Auth.settingsUnlocked = true;
+        log('Paramètres', 'Accès aux Paramètres déverrouillé par mot de passe');
+        persist();
+      }
+    }
     document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + view));
     document.querySelectorAll('.nav-links button').forEach(t => t.classList.toggle('active', t.dataset.view === view));
     if (view === 'dashboard') this.renderDashboard();
